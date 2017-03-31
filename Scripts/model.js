@@ -3,10 +3,7 @@ Game.model = (function(music){
 	'use strict';
 
 	//Variables for the game model go here
-	var that = {},
-		defaultPlayer,
-		defaultSound,
-		defaultScreen;
+	var that = {};
 
 	//This function initializes the Game model
 	that.initialize = function(){
