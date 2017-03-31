@@ -5,11 +5,11 @@ Game.input.Keyboard = function(){
 		keyRepeat = {},
 		handlers = {},
 		nextHandlerId = 0,
+		firstHandlerId = 0,
 		that = {};
 
 	//Allows the client code to register a keyboard handler
 	that.registerHandler = function(handler, key, repeat, rate){
-
 		//If no repeat rate was passed in, use a value of 0 = no delay
 		if(rate === undefined){
 			rate = 0;
@@ -24,13 +24,13 @@ Game.input.Keyboard = function(){
 			key: key,
 			repeat: repeat,
 			rate: rate,
-			elapsedTime: rate,	// Initialize an initial elapsed time so the very first keypress will be valid
+			elapsedTime: rate,	//Initialize an initial elapsed time so the very first keypress will be valid
 			handler: handler
 		});
 
 		nextHandlerId += 1;
 
-		// Return an handler id in case the client wants to unregister the handler in the future.
+		//Return an handler id in case the client wants to unregister the handler in the future.
 		return handlers[key][handlers[key].length - 1].id;
 	};
 
@@ -48,6 +48,16 @@ Game.input.Keyboard = function(){
 		}
 	};
 
+	//Unregisters all handlers
+	that.unregisterAll = function(){
+		var keyCode, idIterator;
+		for(keyCode = 3; keyCode <= 224; keyCode++){
+			for(idIterator = firstHandlerId; idIterator < nextHandlerId; idIterator++){
+				that.unregisterHandler(keyCode, idIterator);
+			}
+		}
+	}
+	
 	//Called when the 'keydown' event is fired from the browser
 	function keyDown(event){
 		keys[event.keyCode] = event.timeStamp;

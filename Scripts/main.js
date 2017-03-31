@@ -2,15 +2,15 @@
 Game.main = (function(renderer, input, model, menu){
 	'use strict';
 	var lastTimeStamp = performance.now(),
-		frameTimes = [],
-		//Score and things will have an x > 1.0
-		textFPS = {
-			text : 'FPS',
-			font : '30px Arial, sans-serif',
-			fill : 'rgba(255, 255, 255, 1)',
-			pos : { x : 1.025, y : 1.00 }
-		},
-		myKeyboard = input.Keyboard();
+	frameTimes = [],
+	//Score and things will have an x > 1.0
+	textFPS = {
+		text : 'FPS',
+		font : '30px Arial, sans-serif',
+		fill : 'rgba(255, 255, 255, 1)',
+		pos : { x : 1.025, y : 1.00 }
+	};
+	
 	//Process any captured input
 	function processInput(elapsedTime){
 		myKeyboard.update(elapsedTime);
@@ -25,11 +25,10 @@ Game.main = (function(renderer, input, model, menu){
 	//Render the game
 	function render(elapsedTime){
 		var averageTime = 0,
-			fps = 0;
-
+		fps = 0;
+		
 		renderer.core.clearCanvas();
-		//model.render(Game.renderer);
-
+		
 		//Show FPS over last several frames
 		frameTimes.push(elapsedTime);
 		if(frameTimes.length > 50){
@@ -40,8 +39,8 @@ Game.main = (function(renderer, input, model, menu){
 			textFPS.text = 'FPS: ' + fps;
 			renderer.core.drawText(textFPS);
 		}
-		menu.render(Game.renderer);
 		
+		menu.render(Game.renderer);
 	}
 
 	//The gameloop
@@ -60,11 +59,6 @@ Game.main = (function(renderer, input, model, menu){
 	function initialize(){
 		renderer.core.initialize();
 		menu.initialize();
-		
-		textFPS.height = renderer.core.measureTextHeight(textFPS);
-		textFPS.width = renderer.core.measureTextWidth(textFPS);
-
-		//model.initialize(200);	//Start the Game with a bunch of randomly placed circles.
 
 		//Let's listen to a few keyboard inputs to control the simulation
 		myKeyboard.registerHandler(function(){
@@ -78,61 +72,15 @@ Game.main = (function(renderer, input, model, menu){
 			input.KeyEvent.DOM_VK_UP, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.selectMenu();
-			},
-			input.KeyEvent.DOM_VK_RETURN, false
-		);
-		myKeyboard.registerHandler(function(){
-				menu.selectMenu();
+				menu.selectMenu(myKeyboard);
 			},
 			input.KeyEvent.DOM_VK_Z, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.cancelButton();
+				menu.cancelButton(myKeyboard);
 			},
 			input.KeyEvent.DOM_VK_X, false
 		);
-		/*myKeyboard.registerHandler(function(){
-				model.toggleQuadTreeRendering();
-			},
-			input.KeyEvent.DOM_VK_Q, false
-		);
-		myKeyboard.registerHandler(function(){
-				model.toggleEntityRendering();
-			},
-			input.KeyEvent.DOM_VK_E, false
-		);
-		myKeyboard.registerHandler(function(){
-				model.toggleEntityMovement();
-			},
-			input.KeyEvent.DOM_VK_M, false
-		);
-		myKeyboard.registerHandler(function(){
-				model.toggleUseQuadTree();
-			},
-			input.KeyEvent.DOM_VK_U, false
-		);
-
-		myKeyboard.registerHandler(function(){
-				model.quadTreeCriteria = model.quadTreeCriteria + 1;
-			},
-			input.KeyEvent.DOM_VK_UP, false
-		);
-		myKeyboard.registerHandler(function(){
-				model.quadTreeCriteria = model.quadTreeCriteria - 1;
-			},
-			input.KeyEvent.DOM_VK_DOWN, false
-		);
-		myKeyboard.registerHandler(function(){
-				model.addCircles(10);
-			},
-			input.KeyEvent.DOM_VK_PAGE_UP, true
-		);
-		myKeyboard.registerHandler(function(){
-				model.removeCircles(10);
-			},
-			input.KeyEvent.DOM_VK_PAGE_DOWN, true
-		);*/
 
 		//Get the gameloop started
 		requestAnimationFrame(gameLoop);

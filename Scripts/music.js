@@ -13,6 +13,7 @@ Game.music = (function(){
 		Game.sounds['Audio/se_graze'] = loadSound('Audio/se_graze.wav');
 		Game.sounds['Audio/se_cancel'] = loadSound('Audio/se_cancel00.wav');
 		Game.sounds['Audio/se_ok'] = loadSound('Audio/se_ok00.wav');
+		Game.sounds['Audio/se_pause'] = loadSound('Audio/se_pause.wav');
 	}
 
 	function playSound(soundToPlay){
