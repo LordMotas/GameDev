@@ -9,6 +9,7 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMenu = [],
 		resultMenu = [],
 		musicMenu = [],
+		pauseMenu = [],
 		textStart = {
 			text : 'Start',
 			font : '30px Arial, sans-serif',
@@ -117,7 +118,24 @@ Game.menu = (function(components, music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.025, y : 0.90 },
 		},
-		
+		pauseGameResume = {
+			text : 'Resume',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.40, y : 0.50 },
+		},
+		pauseGameRetry = {
+			text : 'Retry',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.425, y : 0.55 },
+		},
+		pauseGameQuit = {
+			text : 'Quit',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.430, y : 0.60 },
+		},
 		menuSelection = 0,
 		previousSelection = 0,
 		previousMenuSelection = [],
@@ -140,7 +158,7 @@ Game.menu = (function(components, music, input, model){
 		mainMenu.push({text : textKeyConfig, select : 4});
 		
 		//Craft the gamePlayMenu
-		gamePlayMenu.push({text : gamePlayHIScore});
+		gamePlayMenu.push({text : gamePlayHIScore, select : 5});
 		gamePlayMenu.push({text : gamePlayScore});
 		gamePlayMenu.push({text : gamePlayPlayer});
 		gamePlayMenu.push({text : gamePlayBomb});
@@ -161,6 +179,11 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMenu.push({text : keyConfigPause, back : 0});
 		keyConfigMenu.push({text : keyConfigReset, back : 0});
 		
+		//Craft the pauseMenu
+		pauseMenu.push({text : pauseGameResume, select : 1});
+		pauseMenu.push({text : pauseGameRetry, select : 1}); //Potentially put a function in here
+		pauseMenu.push({text : pauseGameQuit, select : 0, func : function(){menus[1].display = false;}});
+		
 		//index 0
 		menus.push({
 			menuItem : mainMenu,
@@ -169,6 +192,7 @@ Game.menu = (function(components, music, input, model){
 				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.selectMenu(myKeyboard);}, function(){that.cancelButton(myKeyboard);}],
 				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, input.KeyEvent.DOM_VK_Z, input.KeyEvent.DOM_VK_X],
 			},
+			func : function(){for(var i = 0; i < 5; i++){menus[i].display = false;}menus[0].display = true;}
 		});
 		
 		//index 1
@@ -182,7 +206,7 @@ Game.menu = (function(components, music, input, model){
 				pos : { x : 1.025, y : 0.7 },
 			},
 			reg : {
-				handlers : [function(){model.pauseGame();}],
+				handlers : [function(){model.pauseGame(); that.selectMenu(myKeyboard);}],
 				keys : [input.KeyEvent.DOM_VK_ESCAPE],
 			},
 		});
@@ -233,6 +257,23 @@ Game.menu = (function(components, music, input, model){
 				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.selectMenu(myKeyboard);}, function(){that.cancelButton(myKeyboard);}],
 				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, input.KeyEvent.DOM_VK_Z, input.KeyEvent.DOM_VK_X],
 			},
+		});
+		
+		//index 5
+		menus.push({
+			menuItem : pauseMenu,
+			display : false,
+			subtitle : {
+				text : 'Game Paused',
+				font : '42px Arial, sans-serif',
+				fill : 'rgba(255, 255, 255, 1)',
+				pos : { x : 0.25, y : 0.025 },
+			},
+			reg : {
+				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.selectMenu(myKeyboard);}, function(){that.cancelButton(myKeyboard);}],
+				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, input.KeyEvent.DOM_VK_Z, input.KeyEvent.DOM_VK_X],
+			},
+			func : function(){menus[1].display = true;}
 		});
 	};
 	
@@ -298,11 +339,6 @@ Game.menu = (function(components, music, input, model){
 		}
 	};
 	
-	//Executes the function associated with a particular menu
-	that.executeMenu = function(){
-		
-	};
-	
 	that.cancelButton = function(){
 		//Cancel out of whatever menu we happen to be in
 		//Audio sound for cancelling an action
@@ -339,13 +375,17 @@ Game.menu = (function(components, music, input, model){
 		// Draw a border around the unit world
 		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
 
-		//Draw the correct menu
-		for(var i = 0; i < menus[currentMenu].menuItem.length; i++){
-			renderer.core.drawText(menus[currentMenu].menuItem[i].text);
-		}
-		//Draw the subtitle if applicable
-		if(menus[currentMenu].hasOwnProperty('subtitle')){
-			renderer.core.drawText(menus[currentMenu].subtitle);
+		for(var i = 0; i < menus.length; i++){
+			if(menus[i].display){
+				//Draw the correct menu
+				for(var j = 0; j < menus[i].menuItem.length; j++){
+					renderer.core.drawText(menus[i].menuItem[j].text);
+					//Draw the subtitle if applicable
+					if(menus[i].hasOwnProperty('subtitle')){
+						renderer.core.drawText(menus[i].subtitle);
+					}
+				}
+			}
 		}
 	};
 
