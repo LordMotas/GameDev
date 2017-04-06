@@ -73,14 +73,24 @@ Game.main = (function(renderer, input, model, menu){
 			input.KeyEvent.DOM_VK_UP, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.selectMenu(myKeyboard);
+				menu.selectMenu();
 			},
 			input.KeyEvent.DOM_VK_Z, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.cancelButton(myKeyboard);
+				menu.cancelButton();
 			},
 			input.KeyEvent.DOM_VK_X, false
+		);
+		myKeyboard.registerHandler(function(){
+				menu.selectMenu();
+			},
+			input.KeyEvent.DOM_VK_RETURN, false
+		);
+		myKeyboard.registerHandler(function(){
+				menu.cancelButton();
+			},
+			input.KeyEvent.DOM_VK_ESCAPE, false
 		);
 
 		//Get the gameloop started

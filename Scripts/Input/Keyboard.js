@@ -56,7 +56,14 @@ Game.input.Keyboard = function(){
 				that.unregisterHandler(keyCode, idIterator);
 			}
 		}
-	}
+	};
+	
+	that.changeKeys = function(previousKey, newKey){
+		keys[newKey] = keys[previousKey];
+		keyRepeat[newKey] = keyRepeat[previousKey];
+		handlers[newKey] = handlers[previousKey];
+		handlers[previousKey] = [];
+	};
 	
 	//Called when the 'keydown' event is fired from the browser
 	function keyDown(event){
