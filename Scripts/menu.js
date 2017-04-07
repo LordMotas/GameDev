@@ -10,6 +10,7 @@ Game.menu = (function(components, music, input, model){
 		resultMenu = [],
 		pauseMenu = [],
 		creditsMenu = [],
+		//Text for the main menu
 		textStart = {
 			text : 'Start',
 			font : '30px Arial, sans-serif',
@@ -34,6 +35,7 @@ Game.menu = (function(components, music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.025, y : 0.90 },
 		},
+		//Text for the gameplay
 		gamePlayHIScore = {
 			text : 'HIScore',
 			font : '30px Arial, sans-serif',
@@ -77,12 +79,14 @@ Game.menu = (function(components, music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 1.025, y : 0.4 },
 		},
+		//Text for the high score page
 		testResult = {
 			text : 'TestResult',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(255, 255, 255, 1)',
 			pos : { x : 0.025, y : 0.5 },
 		},
+		//Text for the key configuration page
 		keyConfigShot = {
 			text : 'Shot',
 			font : '30px Arial, sans-serif',
@@ -119,6 +123,7 @@ Game.menu = (function(components, music, input, model){
 			fill : 'rgba(255, 255, 255, 1)',
 			pos : { x : 0.35, y : 0.50 },
 		},
+		//Text for the paused screen
 		pauseGameResume = {
 			text : 'Resume',
 			font : '30px Arial, sans-serif',
@@ -131,21 +136,25 @@ Game.menu = (function(components, music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.430, y : 0.60 },
 		},
+		//Text for the credits page
 		creditsText = {
 			text : 'Nicholas Biggs and Tanner Olsen',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.15, y : 0.60 },
 		},
+		//For navigation of the menu
 		menuSelection = 0,
 		previousSelection = 0,
 		previousMenuSelection = [],
+		//Keys that can be configured
 		shotKey,
 		bombKey,
 		focusKey,
 		pauseKey,
 		that = {};
 
+	//Changes the text color in order to show the user 
 	function changeSelectionVisual(currentMenu, oldID, newID){
 		for(var i = 0; i < menus[currentMenu].menuItem.length; i++){
 			menus[currentMenu].menuItem[i].text.fill = 'rgba(136, 136, 136, 1)';
@@ -365,6 +374,7 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMessage.text = "Shot Key changed from " + shotKey + " to " + event.keyCode;
 		var previousKey = shotKey;
 		shotKey = event.keyCode;
+		//For debouncing
 		setTimeout(function(){adjustMenus(previousKey, shotKey);}, 2000);
 	}
 	
@@ -382,6 +392,7 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMessage.text = "Bomb Key changed from " + bombKey + " to " + event.keyCode;
 		var previousKey = bombKey;
 		bombKey = event.keyCode;
+		//For debouncing
 		setTimeout(function(){adjustMenus(previousKey, bombKey);}, 2000);
 	}
 	
@@ -400,6 +411,7 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMessage.text = "Focus Key changed from " + focusKey + " to " + event.keyCode;
 		var previousKey = focusKey;
 		focusKey = event.keyCode;
+		//For debouncing
 		setTimeout(function(){adjustMenus(previousKey, focusKey);}, 2000);
 	}
 	
@@ -418,6 +430,7 @@ Game.menu = (function(components, music, input, model){
 		keyConfigMessage.text = "Pause Key changed from " + pauseKey + " to " + event.keyCode;
 		var previousKey = pauseKey;
 		pauseKey = event.keyCode;
+		//For debouncing
 		setTimeout(function(){adjustMenus(previousKey, pauseKey);}, 2000);
 	}
 	
