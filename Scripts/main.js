@@ -17,17 +17,26 @@ Game.main = (function(renderer, input, model, menu){
 
 	//Update the simulation
 	function update(elapsedTime){
-		if(modelInitialized)
-			model.update(elapsedTime);
 		menu.update(elapsedTime);
+		if(modelInitialized && !cancelNextRequest){
+			model.update(elapsedTime);
+		}
 	}
 
 	//Render the game
-	function render(elapsedTime){
+	function render(elapsedTime){		
 		var averageTime = 0,
 		fps = 0;
 		
 		renderer.core.clearCanvas();
+		if(modelInitialized && !cancelNextRequest){
+			console.log("Rendering");
+			model.render(Game.renderer);
+		}
+		menu.render(Game.renderer);
+		
+		//Draw the border around the world
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
 		
 		//Show FPS over last several frames
 		frameTimes.push(elapsedTime);
@@ -39,22 +48,17 @@ Game.main = (function(renderer, input, model, menu){
 			textFPS.text = 'FPS: ' + fps;
 			renderer.core.drawText(textFPS);
 		}
-		
-		menu.render(Game.renderer);
-		model.render();
 	}
 
 	//The gameloop
 	function gameLoop(time){
-		var elapsedTime = (time - lastTimeStamp);
+		elapsedTime = (time - lastTimeStamp);
 		lastTimeStamp = time;
 
 		processInput(elapsedTime);
-		update(elapsedTime);
 		render(elapsedTime);
-		if(!cancelNextRequest){
-			requestAnimationFrame(gameLoop);
-		}
+		update(elapsedTime);
+		requestAnimationFrame(gameLoop);
 	}
 
 	//The initialization of the game

@@ -133,7 +133,29 @@ Game.renderer.core = (function(){
 			width * world.size,
 			height * world.size);
 	}
-
+	
+	//Draws an image
+	function drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
+		
+		/* console.log(image, " image");
+		console.log(sx, " sx");
+		console.log(sy, " sy");
+		console.log(sWidth, " sWidth");
+		console.log(sHeight, " sHeight");
+		console.log(dx, " dx");
+		console.log(dy, " dy");
+		console.log(dWidth, " dWidth");
+		console.log(dHeight, " dHeight"); */
+		
+		//Convert from pixel to world coordinates on a few items
+		context.drawImage(
+			image,
+			sx, sy,
+			sWidth, sHeight,
+			dx * world.size + world.left, dy * world.size + world.top,
+			dWidth * world.size, dHeight * world.size);
+	}
+	
 	return {
 		initialize: initialize,
 		clearCanvas: clearCanvas,
@@ -143,6 +165,7 @@ Game.renderer.core = (function(){
 		drawLine: drawLine,
 		drawRectangle: drawRectangle,
 		drawCircle: drawCircle,
+		drawImage: drawImage
 	};
 
 }());

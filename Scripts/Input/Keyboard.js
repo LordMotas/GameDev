@@ -58,13 +58,6 @@ Game.input.Keyboard = function(){
 		}
 	};
 	
-	that.changeKeys = function(previousKey, newKey){
-		keys[newKey] = keys[previousKey];
-		keyRepeat[newKey] = keyRepeat[previousKey];
-		handlers[newKey] = handlers[previousKey];
-		handlers[previousKey] = [];
-	};
-	
 	//Called when the 'keydown' event is fired from the browser
 	function keyDown(event){
 		keys[event.keyCode] = event.timeStamp;
@@ -244,3 +237,5 @@ Game.input.KeyEvent = (function(){
 
 	return that;
 }());
+
+myKeyboard = Game.input.Keyboard();

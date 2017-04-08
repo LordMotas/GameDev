@@ -1,5 +1,5 @@
 // This namespace holds the Game main menu
-Game.menu = (function(music, input, model, player){
+Game.menu = (function(music, input, model){
 	'use strict';
 	
 	var currentMenu,
@@ -244,7 +244,7 @@ Game.menu = (function(music, input, model, player){
 		creditsMenu.push({text : creditsText, back : 0});
 		
 		//Craft the pauseMenu
-		pauseMenu.push({text : pauseGameResume, select : 1});
+		pauseMenu.push({text : pauseGameResume, select : 1, func : function(){cancelNextRequest = false}});
 		pauseMenu.push({text : pauseGameQuit, select : 0});
 		
 		//index 0
@@ -281,10 +281,10 @@ Game.menu = (function(music, input, model, player){
 			},
 			reg : {
 				handlers : [function(){model.pauseGame(); that.selectMenu(false);}, 
-							function(){player.moveLeft();}, 
-							function(){player.moveRight();}, 
-							function(){player.moveUp();}, 
-							function(){player.moveDown();}],
+							function(){model.moveLeft(elapsedTime);}, 
+							function(){model.moveRight(elapsedTime);}, 
+							function(){model.moveUp(elapsedTime);}, 
+							function(){model.moveDown(elapsedTime);}],
 				keys : [pauseKey, 
 						leftKey,
 						rightKey,
@@ -292,7 +292,7 @@ Game.menu = (function(music, input, model, player){
 						downKey],
 				ids: [],
 			},
-			func : function(){model.initialize();}
+			func : function(){if(!modelInitialized){model.initialize();} else {cancelNextRequest = false;}}
 		});
 		
 		//index 2
@@ -563,9 +563,6 @@ Game.menu = (function(music, input, model, player){
 	
 	//This function renders the menu
 	that.render = function(renderer){
-		// Draw a border around the unit world
-		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
-
 		for(var i = 0; i < menus.length; i++){
 			if(menus[i].display){
 				//Draw the correct menu
@@ -586,4 +583,4 @@ Game.menu = (function(music, input, model, player){
 
 	return that;
 
-}(Game.music, Game.input, Game.model, Game.components.Player));
+}(Game.music, Game.input, Game.model));
