@@ -1,15 +1,16 @@
 //The basic renderer for entities
-Game.components.Entity = (function(spec){
+Game.renderer.Entity = (function(core){
 	'use strict';
 	var that = {};
 
-	function renderEntity(spec){
+	function renderEntity(){
 		
 	}
 	
 	that.render = function(){
-		renderEntity(spec);
+		renderEntity();
 	}
 
 	return that;
-}());
+	
+}(Game.renderer.core));
