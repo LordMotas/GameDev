@@ -1,8 +1,27 @@
 
 
+
+//------------------------------------------------------------------
+//
+// Defines a player character.  'spec' is defined as:
+//	{
+//		center: {x, y},
+//		direction:  {x, y},
+//		radius: ,
+//		img: Texture,
+//		moveRate:
+//	}
+//
+//------------------------------------------------------------------
 Game.components.Player = function(spec){
 	//Inherits character info
-	var that = Game.components.Character(spec);
+	var entity = Game.components.Entity(spec);
+
+	//Use later
+	//var pattern = Game.components.PlayerBulletPattern(spec);
+
+
+	var that = {};
 
 	//Movement patterns for main player
 	that.moveLeft = function(){
@@ -20,6 +39,12 @@ Game.components.Player = function(spec){
 	that.moveDown = function(){
 		spec.center.y += spec.moveRate * (elapsedTime / 1000);
 	};
+
+	that.update = function(elapsedTime){
+		entity.update(elapsedTime);
+
+		//Eventually include update to bullet stuff
+	}
 
 	return that;
 }
