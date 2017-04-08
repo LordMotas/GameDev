@@ -1,5 +1,5 @@
 // This namespace holds the Game main menu
-Game.menu = (function(components, music, input, model){
+Game.menu = (function(music, input, model, player){
 	'use strict';
 	
 	var currentMenu,
@@ -91,22 +91,46 @@ Game.menu = (function(components, music, input, model){
 			text : 'Shot',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 0.025, y : 0.70 },
+			pos : { x : 0.025, y : 0.50 },
 		},
 		keyConfigBomb = {
 			text : 'Bomb',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 0.025, y : 0.75 },
+			pos : { x : 0.025, y : 0.55 },
 		},
 		keyConfigFocus = {
 			text : 'Focus',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 0.025, y : 0.80 },
+			pos : { x : 0.025, y : 0.60 },
 		},
 		keyConfigPause = {
 			text : 'Pause',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.025, y : 0.65 },
+		},
+		keyConfigLeft = {
+			text : 'Left',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.025, y : 0.70 },
+		},
+		keyConfigRight = {
+			text : 'Right',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.025, y : 0.75 },
+		},
+		keyConfigUp = {
+			text : 'Up',
+			font : '30px Arial, sans-serif',
+			fill : 'rgba(136, 136, 136, 1)',
+			pos : { x : 0.025, y : 0.80 },
+		},
+		keyConfigDown = {
+			text : 'Down',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.025, y : 0.85 },
@@ -152,6 +176,10 @@ Game.menu = (function(components, music, input, model){
 		bombKey,
 		focusKey,
 		pauseKey,
+		downKey,
+		upKey,
+		rightKey,
+		leftKey,
 		that = {};
 
 	//Changes the text color in order to show the user 
@@ -170,12 +198,18 @@ Game.menu = (function(components, music, input, model){
 		bombKey = input.KeyEvent.DOM_VK_X;
 		focusKey = input.KeyEvent.DOM_VK_SHIFT;
 		pauseKey = input.KeyEvent.DOM_VK_ESCAPE;
-		keyConfigShot.text = "Shot " + String.fromCharCode(shotKey);
-		keyConfigBomb.text = "Bomb " + String.fromCharCode(bombKey);
-		var focusText = (focusKey === 16) ? "SHIFT" : String.fromCharCode(focusKey);
-		keyConfigFocus.text = "Focus " + focusText;
-		var pauseText = (pauseKey === 27) ? "ESCAPE" : String.fromCharCode(pauseKey);
-		keyConfigPause.text = "Pause " + pauseText;
+		leftKey = input.KeyEvent.DOM_VK_LEFT;
+		rightKey = input.KeyEvent.DOM_VK_RIGHT;
+		upKey = input.KeyEvent.DOM_VK_UP;
+		downKey = input.KeyEvent.DOM_VK_DOWN;
+		keyConfigShot.text = "Shot Z";
+		keyConfigBomb.text = "Bomb X";
+		keyConfigFocus.text = "Focus Shift";
+		keyConfigPause.text = "Pause Escape";	
+		keyConfigLeft.text = "Left LeftArr";
+		keyConfigRight.text = "Right RightArr";
+		keyConfigUp.text = "Up UpArr";
+		keyConfigDown.text = "Down DownArr";
 		
 		//Initialize each menu
 		mainMenu.push({text : textStart, select : 1});
@@ -196,10 +230,14 @@ Game.menu = (function(components, music, input, model){
 		resultMenu.push({text : testResult, back : 0});
 		
 		//Craft the keyConfigMenu
-		keyConfigMenu.push({text : keyConfigShot, back : 0, func : function(){that.changeShotKeyBinding();}});
-		keyConfigMenu.push({text : keyConfigBomb, back : 0, func : function(){that.changeBombKeyBinding();}});
-		keyConfigMenu.push({text : keyConfigFocus, back : 0, func : function(){that.changeFocusKeyBinding();}});
-		keyConfigMenu.push({text : keyConfigPause, back : 0, func : function(){that.changePauseKeyBinding();}});
+		keyConfigMenu.push({text : keyConfigShot, back : 0, func : function(){that.changeKeyBinding(shotKey);}});
+		keyConfigMenu.push({text : keyConfigBomb, back : 0, func : function(){that.changeKeyBinding(bombKey);}});
+		keyConfigMenu.push({text : keyConfigFocus, back : 0, func : function(){that.changeKeyBinding(focusKey);}});
+		keyConfigMenu.push({text : keyConfigPause, back : 0, func : function(){that.changeKeyBinding(pauseKey);}});
+		keyConfigMenu.push({text : keyConfigLeft, back : 0, func : function(){that.changeKeyBinding(leftKey);}});
+		keyConfigMenu.push({text : keyConfigRight, back : 0, func : function(){that.changeKeyBinding(rightKey);}});
+		keyConfigMenu.push({text : keyConfigUp, back : 0, func : function(){that.changeKeyBinding(upKey);}});
+		keyConfigMenu.push({text : keyConfigDown, back : 0, func : function(){that.changeKeyBinding(downKey);}});
 		keyConfigMenu.push({text : keyConfigReset, back : 0, func : function(){that.resetKeyBindings();}});
 		
 		//Craft the creditsMenu
@@ -214,11 +252,21 @@ Game.menu = (function(components, music, input, model){
 			menuItem : mainMenu,
 			display : true,
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.selectMenu();}, function(){that.cancelButton();}, function(){that.cancelButton();}, function(){that.selectMenu();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, shotKey, bombKey, input.KeyEvent.DOM_VK_ESCAPE, input.KeyEvent.DOM_VK_RETURN],
+				handlers : [function(){that.toggleMenuDown();}, 
+							function(){that.toggleMenuUp();}, 
+							function(){that.selectMenu();}, 
+							function(){that.cancelButton();}, 
+							function(){that.cancelButton();}, 
+							function(){that.selectMenu();}],
+				keys : [input.KeyEvent.DOM_VK_DOWN, 
+						input.KeyEvent.DOM_VK_UP, 
+						input.KeyEvent.DOM_VK_Z, 
+						input.KeyEvent.DOM_VK_X, 
+						input.KeyEvent.DOM_VK_ESCAPE, 
+						input.KeyEvent.DOM_VK_RETURN],
 				ids: [],
 			},
-			func : function(){for(var i = 0; i < 5; i++){menus[i].display = false;}menus[0].display = true;}
+			func : function(){for(var i = 0; i < menus.length; i++){menus[i].display = false;}menus[0].display = true;}
 		});
 		
 		//index 1
@@ -232,10 +280,19 @@ Game.menu = (function(components, music, input, model){
 				pos : { x : 1.025, y : 0.7 },
 			},
 			reg : {
-				handlers : [function(){model.pauseGame(); that.selectMenu(false);}],
-				keys : [pauseKey],
+				handlers : [function(){model.pauseGame(); that.selectMenu(false);}, 
+							function(){player.moveLeft();}, 
+							function(){player.moveRight();}, 
+							function(){player.moveUp();}, 
+							function(){player.moveDown();}],
+				keys : [pauseKey, 
+						leftKey,
+						rightKey,
+						upKey,
+						downKey],
 				ids: [],
 			},
+			func : function(){model.initialize();}
 		});
 		
 		//index 2
@@ -249,8 +306,10 @@ Game.menu = (function(components, music, input, model){
 				pos : { x : 0.015, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.cancelButton();}, function(){that.cancelButton();}],
-				keys : [bombKey, input.KeyEvent.DOM_VK_ESCAPE],
+				handlers : [function(){that.cancelButton();}, 
+							function(){that.cancelButton();}],
+				keys : [input.KeyEvent.DOM_VK_X, 
+						input.KeyEvent.DOM_VK_ESCAPE],
 				ids: [],
 			},
 		});
@@ -267,8 +326,18 @@ Game.menu = (function(components, music, input, model){
 			},
 			message : keyConfigMessage,
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.executeFunction();}, function(){that.cancelButton();}, function(){that.cancelButton();}, function(){that.executeFunction();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, shotKey, bombKey, input.KeyEvent.DOM_VK_ESCAPE, input.KeyEvent.DOM_VK_RETURN],
+				handlers : [function(){that.toggleMenuDown();}, 
+							function(){that.toggleMenuUp();}, 
+							function(){that.executeFunction();}, 
+							function(){that.cancelButton();}, 
+							function(){that.cancelButton();}, 
+							function(){that.executeFunction();}],
+				keys : [input.KeyEvent.DOM_VK_DOWN, 
+						input.KeyEvent.DOM_VK_UP, 
+						input.KeyEvent.DOM_VK_Z, 
+						input.KeyEvent.DOM_VK_X, 
+						input.KeyEvent.DOM_VK_ESCAPE, 
+						input.KeyEvent.DOM_VK_RETURN],
 				ids: [],
 			},
 		});
@@ -284,8 +353,16 @@ Game.menu = (function(components, music, input, model){
 				pos : { x : 0.25, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, function(){that.toggleMenuUp();}, function(){that.selectMenu();}, function(){that.cancelButton();}, function(){that.selectMenu();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, input.KeyEvent.DOM_VK_UP, shotKey, bombKey, input.KeyEvent.DOM_VK_RETURN],
+				handlers : [function(){that.toggleMenuDown();}, 
+							function(){that.toggleMenuUp();}, 
+							function(){that.selectMenu();}, 
+							function(){that.cancelButton();}, 
+							function(){that.selectMenu();}],
+				keys : [input.KeyEvent.DOM_VK_DOWN, 
+						input.KeyEvent.DOM_VK_UP, 
+						input.KeyEvent.DOM_VK_Z, 
+						input.KeyEvent.DOM_VK_X, 
+						input.KeyEvent.DOM_VK_RETURN],
 				ids: [],
 			},
 			func : function(){menus[1].display = true;}
@@ -302,8 +379,10 @@ Game.menu = (function(components, music, input, model){
 				pos : { x : 0.4, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.cancelButton();}, function(){that.cancelButton();}],
-				keys : [bombKey, input.KeyEvent.DOM_VK_ESCAPE],
+				handlers : [function(){that.cancelButton();}, 
+							function(){that.cancelButton();}],
+				keys : [input.KeyEvent.DOM_VK_X, 
+						input.KeyEvent.DOM_VK_ESCAPE],
 				ids: [],
 			},
 		});
@@ -339,129 +418,80 @@ Game.menu = (function(components, music, input, model){
 	};
 	
 	that.executeFunction = function(){
-		console.log("executing function");
 		if(menus[currentMenu].menuItem[menuSelection].hasOwnProperty('func')){
 			menus[currentMenu].menuItem[menuSelection].func();
 		}
 	};
 	
-	function adjustMenus(previousKey, newKey){
-		var i, j, k;
-		for(i = 0; i < menus.length; i++){
-			for(j = 0; j < menus[i].reg.keys.length; j++){
-				if(menus[i].reg.keys[j] === previousKey){
-					menus[i].reg.keys[j] = newKey;
-				}
-			}
-		}
-		myKeyboard.unregisterAll();
-		for(k = 0; k < menus[currentMenu].reg.keys.length; k++){
-			myKeyboard.registerHandler(menus[currentMenu].reg.handlers[k], menus[currentMenu].reg.keys[k], false);
-		}
-	}
-	
-	that.changeShotKeyBinding = function(){
+	that.changeKeyBinding = function(oldKey){
 		music.playSound('Audio/se_ok');
 		keyConfigMessage.text = "Press a key to change the key binding";
 		window.addEventListener('keydown', function test(event) {
 			window.removeEventListener('keydown', test, false);
-			changeShotKey();
-			keyConfigShot.text = "Shot " + String.fromCharCode(shotKey);
+			changeKey(oldKey);
 		}, false);
-	};
-	
-	function changeShotKey(){
-		keyConfigMessage.text = "Shot Key changed from " + shotKey + " to " + event.keyCode;
-		var previousKey = shotKey;
-		shotKey = event.keyCode;
-		//For debouncing
-		setTimeout(function(){adjustMenus(previousKey, shotKey);}, 2000);
 	}
 	
-	that.changeBombKeyBinding = function(){
-		music.playSound('Audio/se_ok');
-		keyConfigMessage.text = "Press a key to change the key binding";
-		window.addEventListener('keydown', function test(event) {
-			window.removeEventListener('keydown', test, false);
-			changeBombKey();
-			keyConfigBomb.text = "Bomb " + String.fromCharCode(bombKey);
-		}, false);
-	};
-	
-	function changeBombKey(){
-		keyConfigMessage.text = "Bomb Key changed from " + bombKey + " to " + event.keyCode;
-		var previousKey = bombKey;
-		bombKey = event.keyCode;
-		//For debouncing
-		setTimeout(function(){adjustMenus(previousKey, bombKey);}, 2000);
+	function changeKey(oldKey){
+		keyConfigMessage.text = "Key changed from " + oldKey + " to " + event.keyCode;
+		var previousKey = oldKey;
+		oldKey = event.keyCode;
+		if(previousKey === shotKey)
+			shotKey = oldKey;
+		if(previousKey === bombKey)
+			bombKey = oldKey;
+		if(previousKey === focusKey)
+			focusKey = oldKey;
+		if(previousKey === pauseKey)
+			pauseKey = oldKey;
+		if(previousKey === leftKey)
+			leftKey = oldKey;
+		if(previousKey === rightKey)
+			rightKey = oldKey;
+		if(previousKey === downKey)
+			downKey = oldKey;
+		if(previousKey === upKey)
+			upKey = oldKey;
+		setTimeout(updateKeyConfigTexts(), 500);
 	}
-	
-	that.changeFocusKeyBinding = function(){
-		music.playSound('Audio/se_ok');
-		keyConfigMessage.text = "Press a key to change the key binding";
-		window.addEventListener('keydown', function test(event) {
-			window.removeEventListener('keydown', test, false);
-			changeFocusKey();
-			var focusText = (focusKey === 16) ? "SHIFT" : String.fromCharCode(focusKey);
-			keyConfigFocus.text = "Focus " + focusText;
-		}, false);
-	};
-	
-	function changeFocusKey(){
-		keyConfigMessage.text = "Focus Key changed from " + focusKey + " to " + event.keyCode;
-		var previousKey = focusKey;
-		focusKey = event.keyCode;
-		//For debouncing
-		setTimeout(function(){adjustMenus(previousKey, focusKey);}, 2000);
-	}
-	
-	that.changePauseKeyBinding = function(){
-		music.playSound('Audio/se_ok');
-		keyConfigMessage.text = "Press a key to change the key binding";
-		window.addEventListener('keydown', function test(event) {
-			window.removeEventListener('keydown', test, false);
-			changePauseKey();
-			var pauseText = (pauseKey === 27) ? "ESCAPE" : String.fromCharCode(pauseKey);
-			keyConfigPause.text = "Pause " + pauseText;
-		}, false);
-	};
-	
-	function changePauseKey(){
-		keyConfigMessage.text = "Pause Key changed from " + pauseKey + " to " + event.keyCode;
-		var previousKey = pauseKey;
-		pauseKey = event.keyCode;
-		//For debouncing
-		setTimeout(function(){adjustMenus(previousKey, pauseKey);}, 2000);
+
+	function updateKeyConfigTexts(){
+		keyConfigShot.text = "Shot " + String.fromCharCode(shotKey);
+		keyConfigBomb.text = "Bomb " + String.fromCharCode(bombKey);
+		var focusText = (focusKey === 16) ? "Shift" : String.fromCharCode(focusKey);
+		keyConfigFocus.text = "Focus " + focusText;
+		var pauseText = (pauseKey === 27) ? "Escape" : String.fromCharCode(pauseKey);
+		keyConfigPause.text = "Pause " + pauseText;	
+		var leftText = (leftKey === 37) ? "LeftArr" : String.fromCharCode(leftKey);
+		keyConfigLeft.text = "Left " + leftText;
+		var rightText = (rightKey === 39) ? "RightArr" : String.fromCharCode(rightKey);
+		keyConfigRight.text = "Right " + rightText;
+		var upText = (upKey === 38) ? "UpArr" : String.fromCharCode(upKey);
+		keyConfigUp.text = "Up " + upText;
+		var downText = (downKey === 40) ? "DownArr" : String.fromCharCode(downKey);
+		keyConfigDown.text = "Down " + downText;
 	}
 	
 	that.resetKeyBindings = function(){
 		music.playSound('Audio/se_ok');
-		var previousShot = shotKey,
-			previousBomb = bombKey,
-			previousFocus = focusKey,
-			previousPause = pauseKey;
 		shotKey = input.KeyEvent.DOM_VK_Z;
 		bombKey = input.KeyEvent.DOM_VK_X;
 		focusKey = input.KeyEvent.DOM_VK_SHIFT;
 		pauseKey = input.KeyEvent.DOM_VK_ESCAPE;
-		keyConfigShot.text = "Shot " + String.fromCharCode(shotKey);
-		keyConfigBomb.text = "Bomb " + String.fromCharCode(bombKey);
-		var focusText = (focusKey === 16) ? "SHIFT" : String.fromCharCode(focusKey);
-		keyConfigFocus.text = "Focus " + focusText;
-		var pauseText = (pauseKey === 27) ? "ESCAPE" : String.fromCharCode(pauseKey);
-		keyConfigPause.text = "Pause " + pauseText;	
-		//Unregister all commands
-		myKeyboard.unregisterAll();
-		resetMenus([previousShot, previousBomb, previousFocus, previousPause], [shotKey, bombKey, focusKey, pauseKey]);
+		leftKey = input.KeyEvent.DOM_VK_LEFT;
+		rightKey = input.KeyEvent.DOM_VK_RIGHT;
+		upKey = input.KeyEvent.DOM_VK_UP;
+		downKey = input.KeyEvent.DOM_VK_DOWN;
+		keyConfigShot.text = "Shot Z";
+		keyConfigBomb.text = "Bomb X";
+		keyConfigFocus.text = "Focus Shift";
+		keyConfigPause.text = "Pause Escape";	
+		keyConfigLeft.text = "Left LeftArr";
+		keyConfigRight.text = "Right RightArr";
+		keyConfigUp.text = "Up UpArr";
+		keyConfigDown.text = "Down DownArr";
 	};
-	
-	function resetMenus(previousKeys, newKeys){
-		var i;
-		for(i = 0; i < previousKeys.length; i++){
-			adjustMenus(previousKeys[i], newKeys[i]);
-		}
-	}
-	
+		
 	//Selects the option currently highlighted
 	that.selectMenu = function(playMusic = true){
 		//Audio sound for selecting the menu option
@@ -531,7 +561,7 @@ Game.menu = (function(components, music, input, model){
 		}
 	}
 	
-	//This function renders the Game model
+	//This function renders the menu
 	that.render = function(renderer){
 		// Draw a border around the unit world
 		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
@@ -556,4 +586,4 @@ Game.menu = (function(components, music, input, model){
 
 	return that;
 
-}(Game.components, Game.music, Game.input, Game.model));
+}(Game.music, Game.input, Game.model, Game.components.Player));

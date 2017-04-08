@@ -3,7 +3,6 @@ Game.main = (function(renderer, input, model, menu){
 	'use strict';
 	var lastTimeStamp = performance.now(),
 	frameTimes = [],
-	cancelNextRequest = false,
 	textFPS = {
 		text : 'FPS',
 		font : '30px Arial, sans-serif',
@@ -18,7 +17,8 @@ Game.main = (function(renderer, input, model, menu){
 
 	//Update the simulation
 	function update(elapsedTime){
-		//model.update(elapsedTime);
+		if(modelInitialized)
+			model.update(elapsedTime);
 		menu.update(elapsedTime);
 	}
 
@@ -41,6 +41,7 @@ Game.main = (function(renderer, input, model, menu){
 		}
 		
 		menu.render(Game.renderer);
+		model.render();
 	}
 
 	//The gameloop

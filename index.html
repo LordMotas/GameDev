@@ -5,40 +5,8 @@
 	<title>Touhou Fan Game</title>
 	<link rel="stylesheet" type="text/css" href="styles/canvas.css">
 </head>
-<body onload="Game.main.initialize();">
+<body>
 	<canvas id="canvas-main"></canvas>
-	<script>
-		var Game = {
-			input: {},
-			components: {},
-			renderer: {},
-			utilities: {}
-		},
-		myKeyboard;
-	</script>
-	<script src="scripts/Utilities/Random.js"></script>
-	<script src="scripts/Components/Circle.js"></script>
-	<script src="scripts/Components/Graphics.js"></script>
-	<script src="scripts/Components/Entity.js"></script>
-	<script src="scripts/Components/Bullet.js"></script>
-	<script src="scripts/Components/Player.js"></script>
-	<script src="scripts/Components/Enemy.js"></script>
-	<script src="scripts/Components/Patterns/PlayerBulletPattern.js"></script>
-	<script src="scripts/Components/Patterns/EnemyBulletPattern.js"></script>
-	<script src="scripts/Components/Patterns/EnemyMovePattern.js"></script>
-	<script src="scripts/Components/QuadTree.js"></script>
-	<!-- <script src="scripts/Rendering/QuadTree.js"></script> -->
-	<script src="scripts/Utilities/Math.js"></script>
-	<script src="scripts/model.js"></script>
-	<script src="scripts/Music/music.js"></script>
-	<script src="scripts/Input/Keyboard.js"></script>
-	<script>
-		var myKeyboard = Game.input.Keyboard();
-		var cancelNextRequest = false;
-	</script>
-	<script src="scripts/Rendering/core.js"></script>
-	<script src="scripts/model.js"></script>
-	<script src="scripts/menu.js"></script>
-	<script src="scripts/main.js"></script>
-</body>
+<script> data-main="scripts/loader" src="scripts/require.js"</script>
+	</body>
 </html>

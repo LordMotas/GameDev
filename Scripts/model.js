@@ -4,25 +4,27 @@ Game.model = (function(music){
 
 	//Variables for the game model go here
 	var that = {};
-	//Why do I need to initialize player up here for it
-	//to work right?
 	var player = null;
 	var enemyQueue = [];
 	var enemyActive = [];
 	var enemyBullets = [];
 	var playerBullets = [];
-	//var canvas = document.getElementById('canvas-main');
 
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
 		//Initializes the player info
 		player = Game.components.Player({
-			center: {x:100, y:100},
-			direction:  {x:0, y:0},
+			center: {x: 100, y: 100},
+			direction:  {x: 0, y: 0},
 			radius: 15,
-			//img: //add a Texture here
+			img: {}//add a Texture here
 		});
+		enemyActive = [];
+		enemyQueue = [];
+		enemyBullets = [];
+		playerBullets = [];
+
 
 		//Generates the 2D array of enemies to pull from
 		//during the game
@@ -59,8 +61,8 @@ Game.model = (function(music){
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		player.update(elapsedTime);
-		for(enemy in enemyActive){
-			enemy.update(elapsedTime);
+		for(var enemy in enemyActive){
+			enemyActive[enemy].update(elapsedTime);
 		}
 	};
 
