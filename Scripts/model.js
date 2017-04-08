@@ -4,24 +4,29 @@ Game.model = (function(music){
 
 	//Variables for the game model go here
 	var that = {};
-	var player;
-	var enemyQueue[];
-	var enemyActive[];
-	var enemyBullets[];
-	var playerBullets[];
-	//var canvas = document.getElementById('canvas-main');
+	var player,
+		playerRenderer,
+		enemyQueue,
+		enemyActive,
+		enemyBullets,
+		playerBullets;
 
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
 		//Initializes the player info
 		player = Game.components.Player({
-			center: {100, 100},
-			direction:  {0, 0},
+			center: {x: 100, y: 100},
+			direction:  {x: 0, y: 0},
 			radius: 15,
-			img: //add a Texture here
+			img: {}//add a Texture here
 		});
-
+		enemyActive = [];
+		enemyQueue = [];
+		enemyBullets = [];
+		playerBullets = [];
+		
+		
 		//Generates the 2D array of enemies to pull from
 		//during the game
 		// for(var i = 0; i < 5; i++){
@@ -43,8 +48,8 @@ Game.model = (function(music){
 		// }
 		for(var i = 0; i < 5; i++){
 			enemyActive[i] = Game.components.Enemy({
-				center: {i*15, 10},
-				direction: {0,5},
+				center: {x: i*15, y: 10},
+				direction: {x: 0, y: 5},
 				radius: 20,
 				patternType: 1
 			});
@@ -57,14 +62,14 @@ Game.model = (function(music){
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		player.update(elapsedTime);
-		for(enemy in enemyActive){
-			enemy.update(elapsedTime);
+		for(var enemy in enemyActive){
+			enemyActive[enemy].update(elapsedTime);
 		}
 	};
 
 	//This function renders the Game model
 	that.render = function(renderer){
-
+		
 	};
 
 	that.pauseGame = function(){

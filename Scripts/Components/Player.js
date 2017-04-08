@@ -19,8 +19,7 @@ Game.components.Player = function(spec){
 
 	//Use later
 	//var pattern = Game.components.PlayerBulletPattern(spec);
-
-
+	
 	var that = {};
 
 	//Movement patterns for main player
