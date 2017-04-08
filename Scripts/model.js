@@ -70,6 +70,7 @@ Game.model = (function(music){
 	that.pauseGame = function(){
 		//Audio sound for pausing the game
 		music.playSound('Audio/se_pause');
+		cancelNextRequest = true;
 	}
 
 	return that;

@@ -3,7 +3,7 @@ Game.main = (function(renderer, input, model, menu){
 	'use strict';
 	var lastTimeStamp = performance.now(),
 	frameTimes = [],
-	//Score and things will have an x > 1.0
+	cancelNextRequest = false,
 	textFPS = {
 		text : 'FPS',
 		font : '30px Arial, sans-serif',
@@ -51,8 +51,9 @@ Game.main = (function(renderer, input, model, menu){
 		processInput(elapsedTime);
 		update(elapsedTime);
 		render(elapsedTime);
-
-		requestAnimationFrame(gameLoop);
+		if(!cancelNextRequest){
+			requestAnimationFrame(gameLoop);
+		}
 	}
 
 	//The initialization of the game
@@ -72,14 +73,24 @@ Game.main = (function(renderer, input, model, menu){
 			input.KeyEvent.DOM_VK_UP, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.selectMenu(myKeyboard);
+				menu.selectMenu();
 			},
 			input.KeyEvent.DOM_VK_Z, false
 		);
 		myKeyboard.registerHandler(function(){
-				menu.cancelButton(myKeyboard);
+				menu.cancelButton();
 			},
 			input.KeyEvent.DOM_VK_X, false
+		);
+		myKeyboard.registerHandler(function(){
+				menu.selectMenu();
+			},
+			input.KeyEvent.DOM_VK_RETURN, false
+		);
+		myKeyboard.registerHandler(function(){
+				menu.cancelButton();
+			},
+			input.KeyEvent.DOM_VK_ESCAPE, false
 		);
 
 		//Get the gameloop started
