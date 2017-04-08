@@ -21,10 +21,12 @@ Game.components.Entity = function(spec){
 		configurable: true
 	});
 
-	//Gives image info to each entity
-	that.img = Game.components.Graphics.Texture(spec);
-	
-	
+	//Gives image info to each entity, though needs to use core.js,
+	//not Graphics.js
+	//that.img = Game.components.Graphics.Texture(spec);
+
+
+
 	//------------------------------------------------------------------
 	//
 	// Move the entity based upon its current direction, elapsed time and
