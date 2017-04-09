@@ -14,8 +14,8 @@ Game.components.PlayerBulletPattern = function(spec){
 			case 1:
 				for(var i = 0; i < 5; i++){
 					bullets[i] = Game.components.Bullet({
-						center: {spec.center.x + i*5, spec.center.y + spec.radius},
-						direction: {spec.direction.x, spec.direction.y},
+						center: {x:spec.center.x + i*5, x:spec.center.y + spec.radius},
+						direction: {x:spec.direction.x, y:spec.direction.y},
 						//more stuff later...
 					});
 				}

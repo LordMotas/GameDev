@@ -36,7 +36,6 @@ Game.components.Graphics = (function(){
 					spec.width,spec.height);
 
 					context.restore();
-				)
 			};
 			return that;
 		}
@@ -45,6 +44,6 @@ Game.components.Graphics = (function(){
 			clear:clear,
 			Texture:Texture
 		};
-	}());
+	};
 
-})
+}());

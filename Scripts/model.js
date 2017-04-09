@@ -4,11 +4,13 @@ Game.model = (function(music){
 
 	//Variables for the game model go here
 	var that = {};
-	var player;
-	var enemyQueue[];
-	var enemyActive[];
-	var enemyBullets[];
-	var playerBullets[];
+	//Why do I need to initialize player up here for it
+	//to work right?
+	var player = null;
+	var enemyQueue = [];
+	var enemyActive = [];
+	var enemyBullets = [];
+	var playerBullets = [];
 	//var canvas = document.getElementById('canvas-main');
 
 	//This function initializes the Game model
@@ -16,10 +18,10 @@ Game.model = (function(music){
 		console.log("Now initializing the game model...");
 		//Initializes the player info
 		player = Game.components.Player({
-			center: {100, 100},
-			direction:  {0, 0},
+			center: {x:100, y:100},
+			direction:  {x:0, y:0},
 			radius: 15,
-			img: //add a Texture here
+			//img: //add a Texture here
 		});
 
 		//Generates the 2D array of enemies to pull from
@@ -43,8 +45,8 @@ Game.model = (function(music){
 		// }
 		for(var i = 0; i < 5; i++){
 			enemyActive[i] = Game.components.Enemy({
-				center: {i*15, 10},
-				direction: {0,5},
+				center: {x:i*15, y:10},
+				direction: {x:0, y:5},
 				radius: 20,
 				patternType: 1
 			});
