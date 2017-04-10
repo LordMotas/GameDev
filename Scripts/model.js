@@ -13,20 +13,20 @@ Game.model = (function(music, components){
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
-		
+
 		//Initializes the player info
 		player = components.Player({
 			size: {width: 0.1, height: 0.1},
 			center: {x: 0.5, y: 0.95},
-			moveRate: 150 / 1000, //World units per second
+			moveRate: 550 / 1000, //World units per second
 		});
-		
+
 		enemyActive = [];
 		enemyQueue = [];
 		enemyBullets = [];
 		playerBullets = [];
-		
-		
+
+
 		//Generates the 2D array of enemies to pull from
 		//during the game
 		// for(var i = 0; i < 5; i++){
@@ -55,7 +55,7 @@ Game.model = (function(music, components){
 			});
 
 		}
-		
+
 		//Allow the main program to render and update the model
 		modelInitialized = true;
 	};
@@ -69,26 +69,34 @@ Game.model = (function(music, components){
 	};
 
 	//This function renders the Game model
-	that.render = function(renderer){		
+	that.render = function(renderer){
 		renderer.Player.render(player);
 	};
 
 	that.moveLeft = function(elapsedTime){
 		player.moveLeft(elapsedTime);
 	}
-	
+
 	that.moveRight = function(elapsedTime){
 		player.moveRight(elapsedTime);
 	}
-	
+
 	that.moveUp = function(elapsedTime){
 		player.moveUp(elapsedTime);
 	}
-	
+
 	that.moveDown = function(elapsedTime){
 		player.moveDown(elapsedTime);
 	}
-	
+
+	that.playerFire = function(elapsedTime){
+		player.playerFire(elapsedTime);
+	}
+
+	that.playerBomb = function(elapsedTime){
+		player.playerBomb(elapsedTime);
+	}
+
 	that.pauseGame = function(){
 		//Audio sound for pausing the game
 		music.playSound('Audio/se_pause');

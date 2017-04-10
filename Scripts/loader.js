@@ -8,7 +8,7 @@ myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
 elapsedTime;
-		
+
 //------------------------------------------------------------------
 //
 // Purpose of this code is to bootstrap (maybe I should use that as the name)
@@ -59,11 +59,24 @@ Game.loader = (function() {
 			scripts: ['main'],
 			message: 'Main loaded',
 			onComplete: null
-		}],  	
+		}],
 		assetOrder = [{
+			key: 'animated-nue-standard',
+			source: '/Images/Nue_standard.png'
+		},
+		{
+			key: 'animated-nue-left',
+			source: '/Images/Nue_left.png'
+		},
+		{
+			key: 'animated-nue-right',
+			source: '/Images/Nue_right.png'
+		},
+		{
 			key: 'animated-nue',
-			source: '/Images/Nue_spritesheet1.png'
-		}];
+			source: '/Images/Nue.png'
+		}
+		];
 
 	//------------------------------------------------------------------
 	//

@@ -289,14 +289,18 @@ Game.menu = (function(music, input, model){
 					function(){model.moveLeft(elapsedTime);},
 					function(){model.moveRight(elapsedTime);},
 					function(){model.moveUp(elapsedTime);},
-					function(){model.moveDown(elapsedTime);}
+					function(){model.moveDown(elapsedTime);},
+					function(){model.playerFire(elapsedTime);},
+					function(){model.playerBomb(elapsedTime);},
 				],
 				keys : [
 					pauseKey,
 					leftKey,
 					rightKey,
 					upKey,
-					downKey
+					downKey,
+					shotKey,
+					bombKey,
 				],
 				ids: [],
 			},
@@ -539,12 +543,21 @@ Game.menu = (function(music, input, model){
 			myKeyboard.unregisterAll();
 			//Register commands in the list
 			if(menus[currentMenu].hasOwnProperty('reg')){
+				var canRepeat;
 				menus[currentMenu].reg.ids = [];
 				for(var i = 0; i < menus[currentMenu].reg.handlers.length; i++){
+					if(currentMenu === 1){
+						canRepeat = true;
+					} else {
+						canRepeat = false;
+					}
+					if(menus[currentMenu].reg.keys[i] === bombKey){
+						canRepeat = false;
+					}
 					var handlerID = myKeyboard.registerHandler(
 										menus[currentMenu].reg.handlers[i],
 										menus[currentMenu].reg.keys[i],
-										false
+										canRepeat
 									);
 					menus[currentMenu].reg.ids.push(handlerID);
 				}
