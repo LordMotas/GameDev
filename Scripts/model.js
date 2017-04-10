@@ -4,56 +4,27 @@ Game.model = (function(music, components){
 
 	//Variables for the game model go here
 	var that = {};
-<<<<<<< HEAD
-<<<<<<< HEAD
 	var player = null;
-	var enemyQueue = [];
-	var enemyActive = [];
-	var enemyBullets = [];
-	var playerBullets = [];
-=======
-=======
->>>>>>> 3d94e645e9bee597d3f1eb9381b788d0f83e69f1
-	var player = null,
-		enemyQueue,
-		enemyActive,
-		enemyBullets,
-		playerBullets;
-<<<<<<< HEAD
->>>>>>> Key configurations and rendering works
-=======
->>>>>>> 3d94e645e9bee597d3f1eb9381b788d0f83e69f1
+	var enemyQueue;
+	var enemyActive;
+	var enemyBullets;
+	var playerBullets;
 
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 3d94e645e9bee597d3f1eb9381b788d0f83e69f1
 		//Initializes the player info
 		player = components.Player({
 			size: {width: 0.1, height: 0.1},
 			center: {x: 0.5, y: 0.95},
 			moveRate: 150 / 1000, //World units per second
 		});
-<<<<<<< HEAD
-
-=======
-
->>>>>>> 3d94e645e9bee597d3f1eb9381b788d0f83e69f1
 		enemyActive = [];
 		enemyQueue = [];
 		enemyBullets = [];
 		playerBullets = [];
-<<<<<<< HEAD
 
-
-=======
-
-
->>>>>>> 3d94e645e9bee597d3f1eb9381b788d0f83e69f1
 		//Generates the 2D array of enemies to pull from
 		//during the game
 		// for(var i = 0; i < 5; i++){
