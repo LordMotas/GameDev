@@ -1,7 +1,7 @@
 // This namespace holds the Game main menu
 Game.menu = (function(music, input, model){
 	'use strict';
-	
+
 	var currentMenu,
 		menus = [],
 		mainMenu = [],
@@ -182,17 +182,17 @@ Game.menu = (function(music, input, model){
 		leftKey,
 		that = {};
 
-	//Changes the text color in order to show the user 
+	//Changes the text color in order to show the user
 	function changeSelectionVisual(currentMenu, oldID, newID){
 		for(var i = 0; i < menus[currentMenu].menuItem.length; i++){
 			menus[currentMenu].menuItem[i].text.fill = 'rgba(136, 136, 136, 1)';
 		}
 		menus[currentMenu].menuItem[newID].text.fill = 'rgba(255, 255, 255, 1)';
 	}
-	
+
 	that.initialize = function(){
 		currentMenu = 0;
-		
+
 		//Initialize the default values for commands
 		shotKey = input.KeyEvent.DOM_VK_Z;
 		bombKey = input.KeyEvent.DOM_VK_X;
@@ -205,18 +205,18 @@ Game.menu = (function(music, input, model){
 		keyConfigShot.text = "Shot Z";
 		keyConfigBomb.text = "Bomb X";
 		keyConfigFocus.text = "Focus Shift";
-		keyConfigPause.text = "Pause Escape";	
+		keyConfigPause.text = "Pause Escape";
 		keyConfigLeft.text = "Left LeftArr";
 		keyConfigRight.text = "Right RightArr";
 		keyConfigUp.text = "Up UpArr";
 		keyConfigDown.text = "Down DownArr";
-		
+
 		//Initialize each menu
 		mainMenu.push({text : textStart, select : 1});
 		mainMenu.push({text : textResult, select : 2});
 		mainMenu.push({text : textKeyConfig, select : 3});
 		mainMenu.push({text : textCredits, select : 5});
-		
+
 		//Craft the gamePlayMenu
 		gamePlayMenu.push({text : gamePlayHIScore, select : 4});
 		gamePlayMenu.push({text : gamePlayScore});
@@ -225,10 +225,10 @@ Game.menu = (function(music, input, model){
 		gamePlayMenu.push({text : gamePlayPower});
 		gamePlayMenu.push({text : gamePlayGraze});
 		gamePlayMenu.push({text : gamePlayPoint});
-		
+
 		//Craft the resultMenu
 		resultMenu.push({text : testResult, back : 0});
-		
+
 		//Craft the keyConfigMenu
 		keyConfigMenu.push({text : keyConfigShot, back : 0, func : function(){that.changeKeyBinding(shotKey);}});
 		keyConfigMenu.push({text : keyConfigBomb, back : 0, func : function(){that.changeKeyBinding(bombKey);}});
@@ -239,36 +239,40 @@ Game.menu = (function(music, input, model){
 		keyConfigMenu.push({text : keyConfigUp, back : 0, func : function(){that.changeKeyBinding(upKey);}});
 		keyConfigMenu.push({text : keyConfigDown, back : 0, func : function(){that.changeKeyBinding(downKey);}});
 		keyConfigMenu.push({text : keyConfigReset, back : 0, func : function(){that.resetKeyBindings();}});
-		
+
 		//Craft the creditsMenu
 		creditsMenu.push({text : creditsText, back : 0});
-		
+
 		//Craft the pauseMenu
 		pauseMenu.push({text : pauseGameResume, select : 1, func : function(){cancelNextRequest = false}});
 		pauseMenu.push({text : pauseGameQuit, select : 0});
-		
+
 		//index 0
 		menus.push({
 			menuItem : mainMenu,
 			display : true,
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, 
-							function(){that.toggleMenuUp();}, 
-							function(){that.selectMenu();}, 
-							function(){that.cancelButton();}, 
-							function(){that.cancelButton();}, 
-							function(){that.selectMenu();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, 
-						input.KeyEvent.DOM_VK_UP, 
-						input.KeyEvent.DOM_VK_Z, 
-						input.KeyEvent.DOM_VK_X, 
-						input.KeyEvent.DOM_VK_ESCAPE, 
-						input.KeyEvent.DOM_VK_RETURN],
+				handlers : [
+					function(){that.toggleMenuDown();},
+					function(){that.toggleMenuUp();},
+					function(){that.selectMenu();},
+					function(){that.cancelButton();},
+					function(){that.cancelButton();},
+					function(){that.selectMenu();}
+				],
+				keys : [
+					input.KeyEvent.DOM_VK_DOWN,
+					input.KeyEvent.DOM_VK_UP,
+					input.KeyEvent.DOM_VK_Z,
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_ESCAPE,
+					input.KeyEvent.DOM_VK_RETURN
+				],
 				ids: [],
 			},
 			func : function(){for(var i = 0; i < menus.length; i++){menus[i].display = false;}menus[0].display = true;}
 		});
-		
+
 		//index 1
 		menus.push({
 			menuItem : gamePlayMenu,
@@ -280,21 +284,25 @@ Game.menu = (function(music, input, model){
 				pos : { x : 1.025, y : 0.7 },
 			},
 			reg : {
-				handlers : [function(){model.pauseGame(); that.selectMenu(false);}, 
-							function(){model.moveLeft(elapsedTime);}, 
-							function(){model.moveRight(elapsedTime);}, 
-							function(){model.moveUp(elapsedTime);}, 
-							function(){model.moveDown(elapsedTime);}],
-				keys : [pauseKey, 
-						leftKey,
-						rightKey,
-						upKey,
-						downKey],
+				handlers : [
+					function(){model.pauseGame(); that.selectMenu(false);},
+					function(){model.moveLeft(elapsedTime);},
+					function(){model.moveRight(elapsedTime);},
+					function(){model.moveUp(elapsedTime);},
+					function(){model.moveDown(elapsedTime);}
+				],
+				keys : [
+					pauseKey,
+					leftKey,
+					rightKey,
+					upKey,
+					downKey
+				],
 				ids: [],
 			},
 			func : function(){if(!modelInitialized){model.initialize();} else {cancelNextRequest = false;}}
 		});
-		
+
 		//index 2
 		menus.push({
 			menuItem : resultMenu,
@@ -306,14 +314,18 @@ Game.menu = (function(music, input, model){
 				pos : { x : 0.015, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.cancelButton();}, 
-							function(){that.cancelButton();}],
-				keys : [input.KeyEvent.DOM_VK_X, 
-						input.KeyEvent.DOM_VK_ESCAPE],
+				handlers : [
+					function(){that.cancelButton();},
+					function(){that.cancelButton();}
+				],
+				keys : [
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_ESCAPE
+				],
 				ids: [],
 			},
 		});
-		
+
 		//index 3
 		menus.push({
 			menuItem : keyConfigMenu,
@@ -326,22 +338,26 @@ Game.menu = (function(music, input, model){
 			},
 			message : keyConfigMessage,
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, 
-							function(){that.toggleMenuUp();}, 
-							function(){that.executeFunction();}, 
-							function(){that.cancelButton();}, 
-							function(){that.cancelButton();}, 
-							function(){that.executeFunction();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, 
-						input.KeyEvent.DOM_VK_UP, 
-						input.KeyEvent.DOM_VK_Z, 
-						input.KeyEvent.DOM_VK_X, 
-						input.KeyEvent.DOM_VK_ESCAPE, 
-						input.KeyEvent.DOM_VK_RETURN],
+				handlers : [
+					function(){that.toggleMenuDown();},
+					function(){that.toggleMenuUp();},
+					function(){that.executeFunction();},
+					function(){that.cancelButton();},
+					function(){that.cancelButton();},
+					function(){that.executeFunction();}
+				],
+				keys : [
+					input.KeyEvent.DOM_VK_DOWN,
+					input.KeyEvent.DOM_VK_UP,
+					input.KeyEvent.DOM_VK_Z,
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_ESCAPE,
+					input.KeyEvent.DOM_VK_RETURN
+				],
 				ids: [],
 			},
 		});
-		
+
 		//index 4
 		menus.push({
 			menuItem : pauseMenu,
@@ -353,21 +369,25 @@ Game.menu = (function(music, input, model){
 				pos : { x : 0.25, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.toggleMenuDown();}, 
-							function(){that.toggleMenuUp();}, 
-							function(){that.selectMenu();}, 
-							function(){that.cancelButton();}, 
-							function(){that.selectMenu();}],
-				keys : [input.KeyEvent.DOM_VK_DOWN, 
-						input.KeyEvent.DOM_VK_UP, 
-						input.KeyEvent.DOM_VK_Z, 
-						input.KeyEvent.DOM_VK_X, 
-						input.KeyEvent.DOM_VK_RETURN],
+				handlers : [
+					function(){that.toggleMenuDown();},
+					function(){that.toggleMenuUp();},
+					function(){that.selectMenu();},
+					function(){that.cancelButton();},
+					function(){that.selectMenu();}
+				],
+				keys : [
+					input.KeyEvent.DOM_VK_DOWN,
+					input.KeyEvent.DOM_VK_UP,
+					input.KeyEvent.DOM_VK_Z,
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_RETURN
+				],
 				ids: [],
 			},
 			func : function(){menus[1].display = true;}
 		});
-		
+
 		//index 5
 		menus.push({
 			menuItem : creditsMenu,
@@ -379,15 +399,19 @@ Game.menu = (function(music, input, model){
 				pos : { x : 0.4, y : 0.025 },
 			},
 			reg : {
-				handlers : [function(){that.cancelButton();}, 
-							function(){that.cancelButton();}],
-				keys : [input.KeyEvent.DOM_VK_X, 
-						input.KeyEvent.DOM_VK_ESCAPE],
+				handlers : [
+					function(){that.cancelButton();},
+					function(){that.cancelButton();}
+				],
+				keys : [
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_ESCAPE
+				],
 				ids: [],
 			},
 		});
 	};
-	
+
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		//Update the menu item that is being hovered
@@ -406,7 +430,7 @@ Game.menu = (function(music, input, model){
 			menuSelection++;
 		}
 	};
-	
+
 	that.toggleMenuUp = function(){
 		//Move the menu selection up one
 		if(menuSelection != 0){
@@ -416,13 +440,12 @@ Game.menu = (function(music, input, model){
 			menuSelection--;
 		}
 	};
-	
+
 	that.executeFunction = function(){
 		if(menus[currentMenu].menuItem[menuSelection].hasOwnProperty('func')){
 			menus[currentMenu].menuItem[menuSelection].func();
 		}
 	};
-	
 	that.changeKeyBinding = function(oldKey){
 		music.playSound('Audio/se_ok');
 		keyConfigMessage.text = "Press a key to change the key binding";
@@ -431,7 +454,7 @@ Game.menu = (function(music, input, model){
 			changeKey(oldKey);
 		}, false);
 	}
-	
+
 	function changeKey(oldKey){
 		keyConfigMessage.text = "Key changed from " + oldKey + " to " + event.keyCode;
 		var previousKey = oldKey;
@@ -461,7 +484,7 @@ Game.menu = (function(music, input, model){
 		var focusText = (focusKey === 16) ? "Shift" : String.fromCharCode(focusKey);
 		keyConfigFocus.text = "Focus " + focusText;
 		var pauseText = (pauseKey === 27) ? "Escape" : String.fromCharCode(pauseKey);
-		keyConfigPause.text = "Pause " + pauseText;	
+		keyConfigPause.text = "Pause " + pauseText;
 		var leftText = (leftKey === 37) ? "LeftArr" : String.fromCharCode(leftKey);
 		keyConfigLeft.text = "Left " + leftText;
 		var rightText = (rightKey === 39) ? "RightArr" : String.fromCharCode(rightKey);
@@ -471,7 +494,7 @@ Game.menu = (function(music, input, model){
 		var downText = (downKey === 40) ? "DownArr" : String.fromCharCode(downKey);
 		keyConfigDown.text = "Down " + downText;
 	}
-	
+
 	that.resetKeyBindings = function(){
 		music.playSound('Audio/se_ok');
 		shotKey = input.KeyEvent.DOM_VK_Z;
@@ -485,19 +508,19 @@ Game.menu = (function(music, input, model){
 		keyConfigShot.text = "Shot Z";
 		keyConfigBomb.text = "Bomb X";
 		keyConfigFocus.text = "Focus Shift";
-		keyConfigPause.text = "Pause Escape";	
+		keyConfigPause.text = "Pause Escape";
 		keyConfigLeft.text = "Left LeftArr";
 		keyConfigRight.text = "Right RightArr";
 		keyConfigUp.text = "Up UpArr";
 		keyConfigDown.text = "Down DownArr";
 	};
-		
+
 	//Selects the option currently highlighted
 	that.selectMenu = function(playMusic = true){
 		//Audio sound for selecting the menu option
 		if(playMusic)
 			music.playSound('Audio/se_ok');
-		
+
 		if(menus[currentMenu].menuItem[menuSelection].hasOwnProperty('select')){
 			//Change the previous text color back to grey
 			if(currentMenu == 0) //Only works on the main menu
@@ -515,11 +538,11 @@ Game.menu = (function(music, input, model){
 			myKeyboard.unregisterAll();
 			//Register commands in the list
 			if(menus[currentMenu].hasOwnProperty('reg')){
-				menus[currentMenu].reg.ids = [];	
+				menus[currentMenu].reg.ids = [];
 				for(var i = 0; i < menus[currentMenu].reg.handlers.length; i++){
 					var handlerID = myKeyboard.registerHandler(
 										menus[currentMenu].reg.handlers[i],
-										menus[currentMenu].reg.keys[i], 
+										menus[currentMenu].reg.keys[i],
 										false
 									);
 					menus[currentMenu].reg.ids.push(handlerID);
@@ -527,12 +550,12 @@ Game.menu = (function(music, input, model){
 			}
 		}
 	};
-	
+
 	that.cancelButton = function(){
 		//Cancel out of whatever menu we happen to be in
 		//Audio sound for cancelling an action
 		music.playSound('Audio/se_cancel');
-		
+
 		//Cancel out of whatever menu we happen to be in
 		if(menus[currentMenu].menuItem[menuSelection].hasOwnProperty('back')){
 			if(currentMenu == 0)
@@ -548,19 +571,19 @@ Game.menu = (function(music, input, model){
 			myKeyboard.unregisterAll();
 			//Register commands in the list
 			if(menus[currentMenu].hasOwnProperty('reg')){
-				menus[currentMenu].reg.ids = [];	
+				menus[currentMenu].reg.ids = [];
 				for(var i = 0; i < menus[currentMenu].reg.handlers.length; i++){
 					var handlerID = myKeyboard.registerHandler(
 										menus[currentMenu].reg.handlers[i],
-										menus[currentMenu].reg.keys[i], 
+										menus[currentMenu].reg.keys[i],
 										false
 									);
-					menus[currentMenu].reg.ids.push(handlerID);				
+					menus[currentMenu].reg.ids.push(handlerID);
 				}
 			}
 		}
 	}
-	
+
 	//This function renders the menu
 	that.render = function(renderer){
 		for(var i = 0; i < menus.length; i++){
