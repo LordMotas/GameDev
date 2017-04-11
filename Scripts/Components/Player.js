@@ -18,6 +18,7 @@ Game.components.Player = function(spec){
 	var sprite = null,
 			focus1 = null,
 			focus2 = null,
+			bulletArray = [],
 			that = {
 				get center() { return sprite.center; },
 				get sprite() { return sprite; },
@@ -35,7 +36,7 @@ Game.components.Player = function(spec){
 			sprite.spriteSheet = Game.assets['animated-byakuren-left'];
 		}
 
-		if((spec.center.x - spec.moveRate * (elapsedTime / 1000)) - 0.05 > 0.0){
+		if((spec.center.x - spec.moveRate * (elapsedTime / 1000)) - 0.045 > 0.0){
 			spec.center.x -= spec.moveRate * (elapsedTime / 1000);
 		}
 	};
@@ -44,24 +45,28 @@ Game.components.Player = function(spec){
 		if(sprite.spriteSheet !== Game.assets['animated-byakuren-right']){
 			sprite.spriteSheet = Game.assets['animated-byakuren-right'];
 		}
-		if((spec.center.x + spec.moveRate * (elapsedTime / 1000)) + 0.05 < 1.0){
+		if((spec.center.x + spec.moveRate * (elapsedTime / 1000)) + 0.045 < 1.0){
 			spec.center.x += spec.moveRate * (elapsedTime / 1000);
 		}
 	};
 
 	that.moveUp = function(elapsedTime) {
-		if((spec.center.y - spec.moveRate * (elapsedTime / 1000)) - 0.05 > 0.0){
+		if((spec.center.y - spec.moveRate * (elapsedTime / 1000)) - 0.03 > 0.0){
 			spec.center.y -= spec.moveRate * (elapsedTime / 1000);
 		}
 	};
 
 	that.moveDown = function(elapsedTime) {
-		if((spec.center.y + spec.moveRate * (elapsedTime / 1000)) + 0.05 < 1.0){
+		if((spec.center.y + spec.moveRate * (elapsedTime / 1000)) + 0.045 < 1.0){
 		spec.center.y += spec.moveRate * (elapsedTime / 1000);
 		}
 	};
 
 	that.playerFire = function(elapsedTime){
+		//bulletArray.push(Game.components.Bullet({
+			//img:{},
+
+		//}));
 		console.log("Fire bullets from the player");
 	}
 
@@ -87,7 +92,6 @@ Game.components.Player = function(spec){
 				previousY = spec.center.y;
 		sprite.update(elapsedTime, true);
 		focus1.update(elapsedTime, true);
-		focus2.update(elapsedTime, true);
 		if(previousX === spec.center.x && previousY === spec.center.y){
 			if(sprite.spriteSheet !== Game.assets['animated-byakuren-standard']){
 				sprite.spriteSheet = Game.assets['animated-byakuren-standard'];

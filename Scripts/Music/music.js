@@ -14,21 +14,40 @@ Game.music = (function(){
 		Game.sounds['Audio/se_cancel'] = loadSound('Audio/se_cancel00.wav');
 		Game.sounds['Audio/se_ok'] = loadSound('Audio/se_ok00.wav');
 		Game.sounds['Audio/se_pause'] = loadSound('Audio/se_pause.wav');
+		Game.bgm = {};
+		Game.bgm['Audio/menuRemix'] = loadSound('Audio/menuRemix.mp3');
+		Game.bgm['Audio/mainBGM'] = loadSound('Audio/mainBGM.mp3');
 	}
 
 	function playSound(soundToPlay){
 		Game.sounds[soundToPlay].play();
 	}
-	
+
+	function playMusic(musicToPlay){
+		Game.bgm[musicToPlay].play();
+	}
+
 	function resetSound(soundToPlay){
 		Game.sounds[soundToPlay].pause();
 		Game.sounds[soundToPlay].currentTime = 0;
 	}
-	
+
+	function resetMusic(musicToPlay){
+		Game.bgm[musicToPlay].pause();
+		Game.bgm[musicToPlay].currentTime = 0;
+	}
+
+	function pauseMusic(musicToPlay){
+		Game.bgm[musicToPlay].pause();
+	}
+
 	loadAudio();
-	
+
 	return {
 		playSound : playSound,
 		resetSound : resetSound,
+		playMusic : playMusic,
+		resetMusic : resetMusic,
+		pauseMusic : pauseMusic,
 	}
 }());
