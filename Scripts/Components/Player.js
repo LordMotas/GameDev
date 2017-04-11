@@ -16,16 +16,23 @@ Game.components.Player = function(spec){
 	//var pattern = Game.components.PlayerBulletPattern(spec);
 
 	var sprite = null,
+			focus1 = null,
+			focus2 = null,
 			that = {
 				get center() { return sprite.center; },
 				get sprite() { return sprite; },
 				get rotation() { return spec.rotation; },
+				get isFocused() { return spec.isFocused; },
+				get style() { return spec.style; },
+				get radius() { return spec.radius; },
+				get focus1() { return focus1; },
+				get focus2() { return focus2; },
 			};
 
 	//Movement patterns for main player
 	that.moveLeft = function(elapsedTime) {
-		if(sprite.spriteSheet !== Game.assets['animated-nue-left']){
-			sprite.spriteSheet = Game.assets['animated-nue-left'];
+		if(sprite.spriteSheet !== Game.assets['animated-byakuren-left']){
+			sprite.spriteSheet = Game.assets['animated-byakuren-left'];
 		}
 
 		if((spec.center.x - spec.moveRate * (elapsedTime / 1000)) - 0.05 > 0.0){
@@ -34,8 +41,8 @@ Game.components.Player = function(spec){
 	};
 
 	that.moveRight = function(elapsedTime) {
-		if(sprite.spriteSheet !== Game.assets['animated-nue-right']){
-			sprite.spriteSheet = Game.assets['animated-nue-right'];
+		if(sprite.spriteSheet !== Game.assets['animated-byakuren-right']){
+			sprite.spriteSheet = Game.assets['animated-byakuren-right'];
 		}
 		if((spec.center.x + spec.moveRate * (elapsedTime / 1000)) + 0.05 < 1.0){
 			spec.center.x += spec.moveRate * (elapsedTime / 1000);
@@ -62,14 +69,28 @@ Game.components.Player = function(spec){
 		console.log("Activate a bomb from the player");
 	}
 
+	that.playerFocus = function(elapsedTime, focusKey){
+		spec.isFocused = true;
+		spec.moveRate = 275 / 1000;
+		window.addEventListener('keyup', function focus(event) {
+			window.removeEventListener('keyup', focus, false);
+			if(event.keyCode === focusKey){
+				spec.moveRate = 550 / 1000;
+				spec.isFocused = false;
+			}
+		}, false);
+	}
+
 	that.update = function(elapsedTime){
 		//entity.update(elapsedTime);
 		var previousX = spec.center.x,
 				previousY = spec.center.y;
 		sprite.update(elapsedTime, true);
+		focus1.update(elapsedTime, true);
+		focus2.update(elapsedTime, true);
 		if(previousX === spec.center.x && previousY === spec.center.y){
-			if(sprite.spriteSheet !== Game.assets['animated-nue-standard']){
-				sprite.spriteSheet = Game.assets['animated-nue-standard'];
+			if(sprite.spriteSheet !== Game.assets['animated-byakuren-standard']){
+				sprite.spriteSheet = Game.assets['animated-byakuren-standard'];
 			}
 		}
 
@@ -77,9 +98,18 @@ Game.components.Player = function(spec){
 	}
 
 	sprite = Game.components.AnimatedSprite({
-		spriteSheet: Game.assets['animated-nue-standard'],
+		spriteSheet: Game.assets['animated-byakuren-standard'],
 		spriteCount: 8,
-		spriteTime: [150, 150, 150, 150, 150, 150, 150, 150],
+		spriteTime: [125, 125, 125, 125, 125, 125, 125, 125],
+		animationScale: spec.animationScale,
+		spriteSize: spec.size,			// Maintain the size on the sprite
+		spriteCenter: spec.center		// Maintain the center on the sprite
+	});
+
+	focus1 = Game.components.AnimatedSprite({
+		spriteSheet: Game.assets['focus1'],
+		spriteCount: 8,
+		spriteTime: [125, 125, 125, 125, 125, 125, 125, 125],
 		animationScale: spec.animationScale,
 		spriteSize: spec.size,			// Maintain the size on the sprite
 		spriteCenter: spec.center		// Maintain the center on the sprite

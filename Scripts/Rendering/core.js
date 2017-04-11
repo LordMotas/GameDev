@@ -111,7 +111,7 @@ Game.renderer.core = (function(){
 	}
 
 	//Draw a circle
-	function drawCircle(style, center, radius){
+	function drawCircle(style, fillStyle, center, radius){
 		//0.5, 0.5 is to ensure an actual 1 pixel line is drawn.
 		context.strokeStyle = style;
 		context.beginPath();
@@ -120,6 +120,8 @@ Game.renderer.core = (function(){
 			0.5 + world.top + (center.y * world.size),
 			radius * world.size,
 			0, 2 * Math.PI);
+		context.fillStyle = fillStyle;
+		context.fill();
 		context.stroke();
 	}
 
@@ -133,20 +135,9 @@ Game.renderer.core = (function(){
 			width * world.size,
 			height * world.size);
 	}
-	
+
 	//Draws an image
 	function drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
-		
-		/* console.log(image, " image");
-		console.log(sx, " sx");
-		console.log(sy, " sy");
-		console.log(sWidth, " sWidth");
-		console.log(sHeight, " sHeight");
-		console.log(dx, " dx");
-		console.log(dy, " dy");
-		console.log(dWidth, " dWidth");
-		console.log(dHeight, " dHeight"); */
-		
 		//Convert from pixel to world coordinates on a few items
 		context.drawImage(
 			image,
@@ -155,7 +146,7 @@ Game.renderer.core = (function(){
 			dx * world.size + world.left, dy * world.size + world.top,
 			dWidth * world.size, dHeight * world.size);
 	}
-	
+
 	return {
 		initialize: initialize,
 		clearCanvas: clearCanvas,

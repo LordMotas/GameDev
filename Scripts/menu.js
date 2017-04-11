@@ -292,6 +292,7 @@ Game.menu = (function(music, input, model){
 					function(){model.moveDown(elapsedTime);},
 					function(){model.playerFire(elapsedTime);},
 					function(){model.playerBomb(elapsedTime);},
+					function(){model.playerFocus(elapsedTime, focusKey);},
 				],
 				keys : [
 					pauseKey,
@@ -301,6 +302,7 @@ Game.menu = (function(music, input, model){
 					downKey,
 					shotKey,
 					bombKey,
+					focusKey,
 				],
 				ids: [],
 			},

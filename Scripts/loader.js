@@ -61,20 +61,20 @@ Game.loader = (function() {
 			onComplete: null
 		}],
 		assetOrder = [{
-			key: 'animated-nue-standard',
-			source: '/Images/Nue_standard.png'
+			key: 'animated-byakuren-standard',
+			source: '/Images/Byakuren_standard.png'
 		},
 		{
-			key: 'animated-nue-left',
-			source: '/Images/Nue_left.png'
+			key: 'animated-byakuren-left',
+			source: '/Images/Byakuren_left.png'
 		},
 		{
-			key: 'animated-nue-right',
-			source: '/Images/Nue_right.png'
+			key: 'animated-byakuren-right',
+			source: '/Images/Byakuren_right.png'
 		},
 		{
-			key: 'animated-nue',
-			source: '/Images/Nue.png'
+			key: 'focus1',
+			source: '/Images/Focus1.png'
 		}
 		];
 
@@ -97,7 +97,7 @@ Game.loader = (function() {
 		if (scripts.length > 0) {
 			entry = scripts[0];
 			require(entry.scripts, function() {
-				console.log(entry.message);
+				//console.log(entry.message);
 				if (entry.onComplete) {
 					entry.onComplete();
 				}
@@ -193,7 +193,7 @@ Game.loader = (function() {
 	//
 	//------------------------------------------------------------------
 	function mainComplete() {
-		console.log('it is all loaded up');
+		console.log('Loading Complete');
 		Game.main.initialize();
 	}
 

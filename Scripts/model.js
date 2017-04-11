@@ -19,6 +19,10 @@ Game.model = (function(music, components){
 			size: {width: 0.1, height: 0.1},
 			center: {x: 0.5, y: 0.95},
 			moveRate: 550 / 1000, //World units per second
+			isFocused: false,
+			radius: 0.008,
+			style: "#000000",
+			fillStyle: 'white',
 		});
 
 		enemyActive = [];
@@ -95,6 +99,10 @@ Game.model = (function(music, components){
 
 	that.playerBomb = function(elapsedTime){
 		player.playerBomb(elapsedTime);
+	}
+
+	that.playerFocus = function(elapsedTime, focusKey){
+		player.playerFocus(elapsedTime, focusKey);
 	}
 
 	that.pauseGame = function(){
