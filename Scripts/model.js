@@ -45,8 +45,9 @@ Game.model = (function(music, components){
 		// 	}
 		// }
 		for(var i = 0; i < 5; i++){
-			enemyActive[i] = Game.components.Enemy({
-				center: {x:i*15, y:10},
+			enemyActive[i] = components.Enemy({
+				center: {x:0.2*i, y:0.1},
+				size: {w:0.1, h:0.1}
 				direction: {x:0, y:5},
 				radius: 20,
 				patternType: 1
