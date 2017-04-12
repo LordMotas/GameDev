@@ -141,11 +141,11 @@ Game.menu = (function(music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 0.025, y : 0.90 },
 		},
-		keyConfigMessage = {
-			text : 'Test Message',
+		creditsMessage = {
+			text : 'ZUN and Team Shanghai Alice for sprites',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(255, 255, 255, 1)',
-			pos : { x : 0.35, y : 0.50 },
+			pos : { x : 0.07, y : 0.80 },
 		},
 		//Text for the paused screen
 		pauseGameResume = {
@@ -270,7 +270,13 @@ Game.menu = (function(music, input, model){
 				],
 				ids: [],
 			},
-			func : function(){for(var i = 0; i < menus.length; i++){menus[i].display = false;}menus[0].display = true;}
+			func : function(){
+							for(var i = 0; i < menus.length; i++){
+								menus[i].display = false;
+							}
+							menus[0].display = true;
+							//music.playMusic('Audio/menuRemix');
+						}
 		});
 
 		//index 1
@@ -289,18 +295,42 @@ Game.menu = (function(music, input, model){
 					function(){model.moveLeft(elapsedTime);},
 					function(){model.moveRight(elapsedTime);},
 					function(){model.moveUp(elapsedTime);},
-					function(){model.moveDown(elapsedTime);}
+					function(){model.moveDown(elapsedTime);},
+					function(){model.playerFire(elapsedTime);},
+					function(){model.playerBomb(elapsedTime);},
+					function(){model.playerFocus(elapsedTime, focusKey);},
 				],
 				keys : [
 					pauseKey,
 					leftKey,
 					rightKey,
 					upKey,
-					downKey
+					downKey,
+					shotKey,
+					bombKey,
+					focusKey,
+				],
+				defaults : [
+					input.KeyEvent.DOM_VK_ESCAPE,
+					input.KeyEvent.DOM_VK_LEFT,
+					input.KeyEvent.DOM_VK_RIGHT,
+					input.KeyEvent.DOM_VK_UP,
+					input.KeyEvent.DOM_VK_DOWN,
+					input.KeyEvent.DOM_VK_Z,
+					input.KeyEvent.DOM_VK_X,
+					input.KeyEvent.DOM_VK_SHIFT,
 				],
 				ids: [],
 			},
-			func : function(){if(!modelInitialized){model.initialize();} else {cancelNextRequest = false;}}
+			func : function(){
+							music.resetMusic('Audio/menuRemix');
+							//music.playMusic('Audio/mainBGM');
+							if(!modelInitialized){
+								model.initialize();
+							} else {
+								cancelNextRequest = false;
+							}
+						}
 		});
 
 		//index 2
@@ -336,7 +366,6 @@ Game.menu = (function(music, input, model){
 				fill : 'rgba(255, 255, 255, 1)',
 				pos : { x : 0.25, y : 0.025 },
 			},
-			message : keyConfigMessage,
 			reg : {
 				handlers : [
 					function(){that.toggleMenuDown();},
@@ -385,7 +414,7 @@ Game.menu = (function(music, input, model){
 				],
 				ids: [],
 			},
-			func : function(){menus[1].display = true;}
+			func : function(){menus[1].display = true; music.pauseMusic('Audio/mainBGM');}
 		});
 
 		//index 5
@@ -398,6 +427,7 @@ Game.menu = (function(music, input, model){
 				fill : 'rgba(255, 255, 255, 1)',
 				pos : { x : 0.4, y : 0.025 },
 			},
+			message : creditsMessage,
 			reg : {
 				handlers : [
 					function(){that.cancelButton();},
@@ -410,6 +440,9 @@ Game.menu = (function(music, input, model){
 				ids: [],
 			},
 		});
+
+		//music.playMusic('Audio/menuRemix');
+
 	};
 
 	//This function is used to update the state of the Game model
@@ -448,7 +481,6 @@ Game.menu = (function(music, input, model){
 	};
 	that.changeKeyBinding = function(oldKey){
 		music.playSound('Audio/se_ok');
-		keyConfigMessage.text = "Press a key to change the key binding";
 		window.addEventListener('keydown', function test(event) {
 			window.removeEventListener('keydown', test, false);
 			changeKey(oldKey);
@@ -456,7 +488,6 @@ Game.menu = (function(music, input, model){
 	}
 
 	function changeKey(oldKey){
-		keyConfigMessage.text = "Key changed from " + oldKey + " to " + event.keyCode;
 		var previousKey = oldKey;
 		oldKey = event.keyCode;
 		if(previousKey === shotKey)
@@ -476,6 +507,17 @@ Game.menu = (function(music, input, model){
 		if(previousKey === upKey)
 			upKey = oldKey;
 		setTimeout(updateKeyConfigTexts(), 500);
+		setTimeout(updateGameKeyConfig(previousKey, oldKey), 500);
+	}
+
+	function updateGameKeyConfig(oldKey, newKey){
+		for(var i = 0; i < menus[1].reg.keys.length; i++){
+			if(menus[1].reg.keys[i] === oldKey){
+				console.log("Updated ", oldKey, " to ", newKey);
+				menus[1].reg.keys[i] = newKey;
+				break;
+			}
+		}
 	}
 
 	function updateKeyConfigTexts(){
@@ -513,7 +555,14 @@ Game.menu = (function(music, input, model){
 		keyConfigRight.text = "Right RightArr";
 		keyConfigUp.text = "Up UpArr";
 		keyConfigDown.text = "Down DownArr";
+		setTimeout(resetGameKeyConfig(), 500);
 	};
+
+	function resetGameKeyConfig(){
+		for(var i = 0; i < menus[1].reg.keys.length; i++){
+			menus[1].reg.keys[i] = menus[1].reg.defaults[i];
+		}
+	}
 
 	//Selects the option currently highlighted
 	that.selectMenu = function(playMusic = true){
@@ -538,12 +587,21 @@ Game.menu = (function(music, input, model){
 			myKeyboard.unregisterAll();
 			//Register commands in the list
 			if(menus[currentMenu].hasOwnProperty('reg')){
+				var canRepeat;
 				menus[currentMenu].reg.ids = [];
 				for(var i = 0; i < menus[currentMenu].reg.handlers.length; i++){
+					if(currentMenu === 1){
+						canRepeat = true;
+					} else {
+						canRepeat = false;
+					}
+					if(menus[currentMenu].reg.keys[i] === bombKey){
+						canRepeat = false;
+					}
 					var handlerID = myKeyboard.registerHandler(
 										menus[currentMenu].reg.handlers[i],
 										menus[currentMenu].reg.keys[i],
-										false
+										canRepeat
 									);
 					menus[currentMenu].reg.ids.push(handlerID);
 				}

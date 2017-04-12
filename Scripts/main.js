@@ -9,7 +9,7 @@ Game.main = (function(renderer, input, model, menu){
 		fill : 'rgba(255, 255, 255, 1)',
 		pos : { x : 1.025, y : 1.00 }
 	};
-	
+
 	//Process any captured input
 	function processInput(elapsedTime){
 		myKeyboard.update(elapsedTime);
@@ -24,20 +24,20 @@ Game.main = (function(renderer, input, model, menu){
 	}
 
 	//Render the game
-	function render(elapsedTime){		
+	function render(elapsedTime){
 		var averageTime = 0,
 		fps = 0;
-		
+
 		renderer.core.clearCanvas();
 		if(modelInitialized && !cancelNextRequest){
-			console.log("Rendering");
 			model.render(Game.renderer);
 		}
-		menu.render(Game.renderer);
 		
+		menu.render(Game.renderer);
+
 		//Draw the border around the world
 		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
-		
+
 		//Show FPS over last several frames
 		frameTimes.push(elapsedTime);
 		if(frameTimes.length > 50){

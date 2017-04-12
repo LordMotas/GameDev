@@ -8,7 +8,7 @@ myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
 elapsedTime;
-		
+
 //------------------------------------------------------------------
 //
 // Purpose of this code is to bootstrap (maybe I should use that as the name)
@@ -59,11 +59,24 @@ Game.loader = (function() {
 			scripts: ['main'],
 			message: 'Main loaded',
 			onComplete: null
-		}],  	
+		}],
 		assetOrder = [{
-			key: 'animated-nue',
-			source: '/Images/Nue_spritesheet1.png'
-		}];
+			key: 'animated-byakuren-standard',
+			source: '/Images/Byakuren_standard.png'
+		},
+		{
+			key: 'animated-byakuren-left',
+			source: '/Images/Byakuren_left.png'
+		},
+		{
+			key: 'animated-byakuren-right',
+			source: '/Images/Byakuren_right.png'
+		},
+		{
+			key: 'focus1',
+			source: '/Images/Focus1.png'
+		}
+		];
 
 	//------------------------------------------------------------------
 	//
@@ -84,7 +97,7 @@ Game.loader = (function() {
 		if (scripts.length > 0) {
 			entry = scripts[0];
 			require(entry.scripts, function() {
-				console.log(entry.message);
+				//console.log(entry.message);
 				if (entry.onComplete) {
 					entry.onComplete();
 				}
@@ -180,7 +193,7 @@ Game.loader = (function() {
 	//
 	//------------------------------------------------------------------
 	function mainComplete() {
-		console.log('it is all loaded up');
+		console.log('Loading Complete');
 		Game.main.initialize();
 	}
 

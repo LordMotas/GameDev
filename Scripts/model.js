@@ -18,12 +18,18 @@ Game.model = (function(music, components){
 		player = components.Player({
 			size: {width: 0.1, height: 0.1},
 			center: {x: 0.5, y: 0.95},
-			moveRate: 150 / 1000, //World units per second
+			moveRate: 550 / 1000, //World units per second
+			isFocused: false,
+			radius: 0.008,
+			style: "#000000",
+			fillStyle: 'white',
 		});
+
 		enemyActive = [];
 		enemyQueue = [];
 		enemyBullets = [];
 		playerBullets = [];
+
 
 		//Generates the 2D array of enemies to pull from
 		//during the game
@@ -47,13 +53,14 @@ Game.model = (function(music, components){
 		for(var i = 0; i < 5; i++){
 			enemyActive[i] = components.Enemy({
 				center: {x:0.2*i, y:0.1},
-				size: {w:0.1, h:0.1}
+				size: {w:0.1, h:0.1},
 				direction: {x:0, y:5},
 				radius: 20,
 				patternType: 1
 			});
 
 		}
+
 		//Allow the main program to render and update the model
 		modelInitialized = true;
 	};
@@ -85,6 +92,18 @@ Game.model = (function(music, components){
 
 	that.moveDown = function(elapsedTime){
 		player.moveDown(elapsedTime);
+	}
+
+	that.playerFire = function(elapsedTime){
+		player.playerFire(elapsedTime);
+	}
+
+	that.playerBomb = function(elapsedTime){
+		player.playerBomb(elapsedTime);
+	}
+
+	that.playerFocus = function(elapsedTime, focusKey){
+		player.playerFocus(elapsedTime, focusKey);
 	}
 
 	that.pauseGame = function(){

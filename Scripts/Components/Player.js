@@ -1,13 +1,10 @@
-
-
-
 //------------------------------------------------------------------
 //
 // Defines a player character.  'spec' is defined as:
 //	{
 //		center: {x, y},
 //		img: Texture,
-//		moveRate: 
+//		moveRate:
 //	}
 //
 //------------------------------------------------------------------
@@ -17,65 +14,110 @@ Game.components.Player = function(spec){
 
 	//Use later
 	//var pattern = Game.components.PlayerBulletPattern(spec);
-	
+
 	var sprite = null,
-		that = {
-			get center() { return sprite.center; },
-			get sprite() { return sprite; },
-			get rotation() { return spec.rotation; }
-		};
-	
-	/*
-	// Don't allow the character to get outside of the unit world.
-	if (sprite.center.x > (1.0 - spec.size.width / 2)) {
-		sprite.center.x = 1.0 - spec.size.width / 2;
-	}
-	if (sprite.center.x < spec.size.width / 2) {
-		sprite.center.x = spec.size.width / 2;
-	}
-	if (sprite.center.y > (1.0 - spec.size.height / 2)) {
-		sprite.center.y = 1.0 - spec.size.height / 2;
-	}
-	if (sprite.center.y < spec.size.height / 2) {
-		sprite.center.y = spec.size.height / 2;
-	}
-	*/
+			focus1 = null,
+			focus2 = null,
+			bulletArray = [],
+			that = {
+				get center() { return sprite.center; },
+				get sprite() { return sprite; },
+				get rotation() { return spec.rotation; },
+				get isFocused() { return spec.isFocused; },
+				get style() { return spec.style; },
+				get radius() { return spec.radius; },
+				get focus1() { return focus1; },
+				get focus2() { return focus2; },
+			};
+
 	//Movement patterns for main player
 	that.moveLeft = function(elapsedTime) {
-		spec.center.x -= spec.moveRate * (elapsedTime / 1000);
-		console.log("x: ", spec.center.x,"y: ",spec.center.y );
+		if(sprite.spriteSheet !== Game.assets['animated-byakuren-left']){
+			sprite.spriteSheet = Game.assets['animated-byakuren-left'];
+		}
+
+		if((spec.center.x - spec.moveRate * (elapsedTime / 1000)) - 0.045 > 0.0){
+			spec.center.x -= spec.moveRate * (elapsedTime / 1000);
+		}
 	};
-	
+
 	that.moveRight = function(elapsedTime) {
-		spec.center.x += spec.moveRate * (elapsedTime / 1000);
-		console.log("x: ", spec.center.x,"y: ",spec.center.y );
+		if(sprite.spriteSheet !== Game.assets['animated-byakuren-right']){
+			sprite.spriteSheet = Game.assets['animated-byakuren-right'];
+		}
+		if((spec.center.x + spec.moveRate * (elapsedTime / 1000)) + 0.045 < 1.0){
+			spec.center.x += spec.moveRate * (elapsedTime / 1000);
+		}
 	};
-	
+
 	that.moveUp = function(elapsedTime) {
-		spec.center.y -= spec.moveRate * (elapsedTime / 1000);
-		console.log("x: ", spec.center.x,"y: ",spec.center.y );
+		if((spec.center.y - spec.moveRate * (elapsedTime / 1000)) - 0.03 > 0.0){
+			spec.center.y -= spec.moveRate * (elapsedTime / 1000);
+		}
 	};
-	
+
 	that.moveDown = function(elapsedTime) {
+		if((spec.center.y + spec.moveRate * (elapsedTime / 1000)) + 0.045 < 1.0){
 		spec.center.y += spec.moveRate * (elapsedTime / 1000);
-		console.log("x: ", spec.center.x,"y: ",spec.center.y );
+		}
 	};
+
+	that.playerFire = function(elapsedTime){
+		//bulletArray.push(Game.components.Bullet({
+			//img:{},
+
+		//}));
+		console.log("Fire bullets from the player");
+	}
+
+	that.playerBomb = function(elapsedTime){
+		console.log("Activate a bomb from the player");
+	}
+
+	that.playerFocus = function(elapsedTime, focusKey){
+		spec.isFocused = true;
+		spec.moveRate = 275 / 1000;
+		window.addEventListener('keyup', function focus(event) {
+			window.removeEventListener('keyup', focus, false);
+			if(event.keyCode === focusKey){
+				spec.moveRate = 550 / 1000;
+				spec.isFocused = false;
+			}
+		}, false);
+	}
 
 	that.update = function(elapsedTime){
 		//entity.update(elapsedTime);
+		var previousX = spec.center.x,
+				previousY = spec.center.y;
 		sprite.update(elapsedTime, true);
-		
+		focus1.update(elapsedTime, true);
+		if(previousX === spec.center.x && previousY === spec.center.y){
+			if(sprite.spriteSheet !== Game.assets['animated-byakuren-standard']){
+				sprite.spriteSheet = Game.assets['animated-byakuren-standard'];
+			}
+		}
+
 		//Eventually include update to bullet stuff
 	}
 
 	sprite = Game.components.AnimatedSprite({
-		spriteSheet: Game.assets['animated-nue'],
+		spriteSheet: Game.assets['animated-byakuren-standard'],
 		spriteCount: 8,
-		spriteTime: [150, 150, 150, 150, 150, 150, 150, 150],
+		spriteTime: [125, 125, 125, 125, 125, 125, 125, 125],
 		animationScale: spec.animationScale,
 		spriteSize: spec.size,			// Maintain the size on the sprite
 		spriteCenter: spec.center		// Maintain the center on the sprite
 	});
-	
+
+	focus1 = Game.components.AnimatedSprite({
+		spriteSheet: Game.assets['focus1'],
+		spriteCount: 8,
+		spriteTime: [125, 125, 125, 125, 125, 125, 125, 125],
+		animationScale: spec.animationScale,
+		spriteSize: spec.size,			// Maintain the size on the sprite
+		spriteCenter: spec.center		// Maintain the center on the sprite
+	});
+
 	return that;
 };
