@@ -3,14 +3,12 @@ Game.renderer.Entity = (function(core){
 	'use strict';
 	var that = {};
 
-	function renderEntity(){
-		
-	}
-	
-	that.render = function(){
-		renderEntity();
+	that.render = function(sprite){
+		if(sprite.isAnimated){
+			Game.renderer.AnimatedSprite.render(sprite.sprite);
+		}
 	}
 
 	return that;
-	
+
 }(Game.renderer.core));
