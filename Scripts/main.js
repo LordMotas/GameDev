@@ -32,7 +32,7 @@ Game.main = (function(renderer, input, model, menu){
 		if(modelInitialized && !cancelNextRequest){
 			model.render(Game.renderer);
 		}
-		
+
 		menu.render(Game.renderer);
 
 		//Draw the border around the world

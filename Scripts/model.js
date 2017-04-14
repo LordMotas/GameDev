@@ -20,9 +20,7 @@ Game.model = (function(music, components){
 			center: {x: 0.5, y: 0.95},
 			moveRate: 550 / 1000, //World units per second
 			isFocused: false,
-			radius: 0.008,
-			style: "#000000",
-			fillStyle: 'white',
+			direction: {x:0, y:0}
 		});
 
 		enemyActive = [];
@@ -70,11 +68,19 @@ Game.model = (function(music, components){
 		for(var enemy in enemyActive){
 			enemyActive[enemy].update(elapsedTime);
 		}
+		for(var bullet in player.bullets){
+			if(player.bullets[bullet].update(elapsedTime)){
+				player.bullets.splice(bullet, 1);
+			}
+		}
 	};
 
 	//This function renders the Game model
 	that.render = function(renderer){
 		renderer.Player.render(player);
+		for(var bullet in player.bullets){
+			renderer.Bullet.render(player.bullets[bullet]);
+		}
 	};
 
 	that.moveLeft = function(elapsedTime){

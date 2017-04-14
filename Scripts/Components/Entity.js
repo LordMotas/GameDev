@@ -36,28 +36,20 @@ Game.components.Entity = function(spec){
 	//
 	//------------------------------------------------------------------
 	that.update = function(elapsedTime){
-		//
 		// Divide by 1000 to convert elapsedTime from milliseconds to seconds
 		spec.center.x += (spec.direction.x * elapsedTime / 1000);
 		spec.center.y += (spec.direction.y * elapsedTime / 1000);
-		//
+
+		/*
+		This code is for bouncing off of walls if a circle hits the wall
 		// If the circle hits the world walls, reflect its direction.
 		if((spec.center.x < spec.radius) || (spec.center.x > (1.0 - spec.radius))){
 			spec.direction.x *= -1;
-			//
-			// Move the circle radius distance away from the edge so we don't
-			// get stuck on it.
-			spec.center.x = Math.max(spec.center.x, spec.radius);
-			spec.center.x = Math.min(spec.center.x, 1.0 - spec.radius);
 		}
 		if((spec.center.y < spec.radius) || (spec.center.y > (1.0 - spec.radius))){
 			spec.direction.y *= -1;
-			//
-			// Move the circle radius distance away from the edge so we don't
-			// get stuck on it.
-			spec.center.y = Math.max(spec.center.y, spec.radius);
-			spec.center.y = Math.min(spec.center.y, 1.0 - spec.radius);
 		}
+		*/
 	};
 
 	return that;

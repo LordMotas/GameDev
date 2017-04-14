@@ -5,6 +5,7 @@ Game.menu = (function(music, input, model){
 	var currentMenu,
 		menus = [],
 		mainMenu = [],
+		highScoreArray = [],
 		gamePlayMenu = [],
 		keyConfigMenu = [],
 		resultMenu = [],
@@ -61,7 +62,7 @@ Game.menu = (function(music, input, model){
 			pos : { x : 1.025, y : 0.2 },
 		},
 		gamePlayPower = {
-			text : 'Power',
+			text : 'Power 0.00/4.00',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 1.025, y : 0.3 },
@@ -78,13 +79,6 @@ Game.menu = (function(music, input, model){
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 1.025, y : 0.4 },
-		},
-		//Text for the high score page
-		testResult = {
-			text : 'TestResult',
-			font : '30px Arial, sans-serif',
-			fill : 'rgba(255, 255, 255, 1)',
-			pos : { x : 0.025, y : 0.5 },
 		},
 		//Text for the key configuration page
 		keyConfigShot = {
@@ -193,23 +187,57 @@ Game.menu = (function(music, input, model){
 	that.initialize = function(){
 		currentMenu = 0;
 
+		var storedHighScoreArray = JSON.parse(localStorage.getItem('highScores'));
+
+		//This is the command needed to make it happen
+		//localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+		if(storedHighScoreArray === null){
+			highScoreArray = [
+				{name: 'Motas', score: 5000000},
+				{name: 'Motas', score: 4000000},
+				{name: 'Motas', score: 3000000},
+				{name: 'Motas', score: 2000000},
+				{name: 'Motas', score: 1000000}
+			];
+		}else{
+			highScoreArray = storedHighScoreArray;
+		}
+
+		var highScoreText = [];
+
+		//Text for the high score page
+		for(var highScore in highScoreArray){
+			highScoreText.push({
+				text : highScoreArray[highScore].name + "          " + highScoreArray[highScore].score,
+				font : '30px Arial, sans-serif',
+				fill : 'rgba(255, 255, 255, 1)',
+				pos : { x : 0.25, y : (highScore * 0.05) + 0.55 },
+			});
+		}
+
 		//Initialize the default values for commands
-		shotKey = input.KeyEvent.DOM_VK_Z;
-		bombKey = input.KeyEvent.DOM_VK_X;
-		focusKey = input.KeyEvent.DOM_VK_SHIFT;
-		pauseKey = input.KeyEvent.DOM_VK_ESCAPE;
-		leftKey = input.KeyEvent.DOM_VK_LEFT;
-		rightKey = input.KeyEvent.DOM_VK_RIGHT;
-		upKey = input.KeyEvent.DOM_VK_UP;
-		downKey = input.KeyEvent.DOM_VK_DOWN;
-		keyConfigShot.text = "Shot Z";
-		keyConfigBomb.text = "Bomb X";
-		keyConfigFocus.text = "Focus Shift";
-		keyConfigPause.text = "Pause Escape";
-		keyConfigLeft.text = "Left LeftArr";
-		keyConfigRight.text = "Right RightArr";
-		keyConfigUp.text = "Up UpArr";
-		keyConfigDown.text = "Down DownArr";
+		var storedKeyConfigurations = JSON.parse(localStorage.getItem('keyConfig'));
+		if(storedKeyConfigurations === null){
+			shotKey = input.KeyEvent.DOM_VK_Z;
+			bombKey = input.KeyEvent.DOM_VK_X;
+			focusKey = input.KeyEvent.DOM_VK_SHIFT;
+			pauseKey = input.KeyEvent.DOM_VK_ESCAPE;
+			leftKey = input.KeyEvent.DOM_VK_LEFT;
+			rightKey = input.KeyEvent.DOM_VK_RIGHT;
+			upKey = input.KeyEvent.DOM_VK_UP;
+			downKey = input.KeyEvent.DOM_VK_DOWN;
+		}else{
+			shotKey = storedKeyConfigurations.shotKey;
+			bombKey = storedKeyConfigurations.bombKey;
+			focusKey = storedKeyConfigurations.focusKey;
+			pauseKey = storedKeyConfigurations.pauseKey;
+			leftKey = storedKeyConfigurations.leftKey;
+			rightKey = storedKeyConfigurations.rightKey;
+			upKey = storedKeyConfigurations.upKey;
+			downKey = storedKeyConfigurations.downKey;
+		}
+		updateKeyConfigTexts();
+
 
 		//Initialize each menu
 		mainMenu.push({text : textStart, select : 1});
@@ -227,7 +255,9 @@ Game.menu = (function(music, input, model){
 		gamePlayMenu.push({text : gamePlayPoint});
 
 		//Craft the resultMenu
-		resultMenu.push({text : testResult, back : 0});
+		for(var option in highScoreText){
+			resultMenu.push({text : highScoreText[option], back : 0});
+		}
 
 		//Craft the keyConfigMenu
 		keyConfigMenu.push({text : keyConfigShot, back : 0, func : function(){that.changeKeyBinding(shotKey);}});
@@ -275,7 +305,7 @@ Game.menu = (function(music, input, model){
 								menus[i].display = false;
 							}
 							menus[0].display = true;
-							//music.playMusic('Audio/menuRemix');
+							music.playMusic('Audio/menuRemix');
 						}
 		});
 
@@ -324,7 +354,7 @@ Game.menu = (function(music, input, model){
 			},
 			func : function(){
 							music.resetMusic('Audio/menuRemix');
-							//music.playMusic('Audio/mainBGM');
+							music.playMusic('Audio/mainBGM');
 							if(!modelInitialized){
 								model.initialize();
 							} else {
@@ -338,10 +368,10 @@ Game.menu = (function(music, input, model){
 			menuItem : resultMenu,
 			display : false,
 			subtitle : {
-				text : 'History of Score and Spell Cards',
+				text : 'High Scores',
 				font : '42px Arial, sans-serif',
 				fill : 'rgba(255, 255, 255, 1)',
-				pos : { x : 0.015, y : 0.025 },
+				pos : { x : 0.35, y : 0.025 },
 			},
 			reg : {
 				handlers : [
@@ -441,7 +471,7 @@ Game.menu = (function(music, input, model){
 			},
 		});
 
-		//music.playMusic('Audio/menuRemix');
+		music.playMusic('Audio/menuRemix');
 
 	};
 
@@ -450,8 +480,10 @@ Game.menu = (function(music, input, model){
 		//Update the menu item that is being hovered
 		if(currentMenu != 1 && currentMenu != 2)
 			changeSelectionVisual(currentMenu, previousSelection, menuSelection);
-		if(currentMenu == 1)
+		if(currentMenu == 1){
 			model.update(elapsedTime);
+			menus[currentMenu].menuItem[4].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
+		}
 	};
 
 	that.toggleMenuDown = function(){
@@ -490,6 +522,7 @@ Game.menu = (function(music, input, model){
 
 	function changeKey(oldKey){
 		var previousKey = oldKey;
+		var keyConfigurations = {};
 		oldKey = event.keyCode;
 		if(previousKey === shotKey)
 			shotKey = oldKey;
@@ -507,6 +540,15 @@ Game.menu = (function(music, input, model){
 			downKey = oldKey;
 		if(previousKey === upKey)
 			upKey = oldKey;
+		keyConfigurations.shotKey = shotKey;
+		keyConfigurations.bombKey = bombKey;
+		keyConfigurations.focusKey = focusKey;
+		keyConfigurations.pauseKey = pauseKey;
+		keyConfigurations.leftKey = leftKey;
+		keyConfigurations.rightKey = rightKey;
+		keyConfigurations.downKey = downKey;
+		keyConfigurations.upKey = upKey;
+		localStorage.setItem("keyConfig", JSON.stringify(keyConfigurations));
 		setTimeout(updateKeyConfigTexts(), 500);
 		setTimeout(updateGameKeyConfig(previousKey, oldKey), 500);
 	}
@@ -539,6 +581,7 @@ Game.menu = (function(music, input, model){
 	}
 
 	that.resetKeyBindings = function(){
+		var keyConfigurations = {};
 		music.playSound('Audio/se_ok');
 		shotKey = input.KeyEvent.DOM_VK_Z;
 		bombKey = input.KeyEvent.DOM_VK_X;
@@ -557,6 +600,15 @@ Game.menu = (function(music, input, model){
 		keyConfigUp.text = "Up UpArr";
 		keyConfigDown.text = "Down DownArr";
 		setTimeout(resetGameKeyConfig(), 500);
+		keyConfigurations.shotKey = shotKey;
+		keyConfigurations.bombKey = bombKey;
+		keyConfigurations.focusKey = focusKey;
+		keyConfigurations.pauseKey = pauseKey;
+		keyConfigurations.leftKey = leftKey;
+		keyConfigurations.rightKey = rightKey;
+		keyConfigurations.downKey = downKey;
+		keyConfigurations.upKey = upKey;
+		localStorage.setItem("keyConfig", JSON.stringify(keyConfigurations));
 	};
 
 	function resetGameKeyConfig(){
@@ -588,7 +640,7 @@ Game.menu = (function(music, input, model){
 			myKeyboard.unregisterAll();
 			//Register commands in the list
 			if(menus[currentMenu].hasOwnProperty('reg')){
-				var canRepeat;
+				var canRepeat, rate;
 				menus[currentMenu].reg.ids = [];
 				for(var i = 0; i < menus[currentMenu].reg.handlers.length; i++){
 					if(currentMenu === 1){
@@ -599,10 +651,16 @@ Game.menu = (function(music, input, model){
 					if(menus[currentMenu].reg.keys[i] === bombKey){
 						canRepeat = false;
 					}
+					if(menus[currentMenu].reg.keys[i] === shotKey){
+						rate = 100;
+					} else {
+						rate = undefined;
+					}
 					var handlerID = myKeyboard.registerHandler(
 										menus[currentMenu].reg.handlers[i],
 										menus[currentMenu].reg.keys[i],
-										canRepeat
+										canRepeat,
+										rate
 									);
 					menus[currentMenu].reg.ids.push(handlerID);
 				}

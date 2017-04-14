@@ -7,7 +7,8 @@ var Game = {
 myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
-elapsedTime;
+elapsedTime,
+powerLevel;
 
 //------------------------------------------------------------------
 //
@@ -44,7 +45,7 @@ Game.loader = (function() {
 			message: 'Animated Sprite loaded',
 			onComplete: null
 		}, {
-			scripts: ['Rendering/Entity', 'Rendering/Player'],
+			scripts: ['Rendering/Entity', 'Rendering/Player', 'Rendering/Bullet'],
 			message: 'Rendering loaded',
 			onComplete: null
 		},  {
@@ -75,6 +76,10 @@ Game.loader = (function() {
 		{
 			key: 'focus1',
 			source: '/Images/Focus1.png'
+		},
+		{
+			key: 'animated-player-bullet',
+			source: '/Images/bullets.png'
 		}
 		];
 
