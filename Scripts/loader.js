@@ -80,6 +80,10 @@ Game.loader = (function() {
 		{
 			key: 'animated-player-bullet',
 			source: '/Images/bullets.png'
+		},
+		{
+			key: 'animated-enemy1',
+			source: '/Images/Enemy1.png'
 		}
 		];
 
