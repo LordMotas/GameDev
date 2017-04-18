@@ -511,7 +511,6 @@ Game.menu = (function(music, input, model){
 			menus[currentMenu].menuItem[menuSelection].func();
 		}
 	};
-
 	that.changeKeyBinding = function(oldKey){
 		music.playSound('Audio/se_ok');
 		window.addEventListener('keydown', function test(event) {
