@@ -1,5 +1,5 @@
 
-
+//Likely not needed
 
 Game.components.PlayerBulletPattern = function(spec){
 	var that = {};

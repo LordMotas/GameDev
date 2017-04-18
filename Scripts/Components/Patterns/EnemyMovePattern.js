@@ -9,13 +9,15 @@ Game.components.EnemyMovePattern = function(spec){
 	switch(spec.patternType){
 		//Enemy comes from top of screen and then moves off left
 		case 1:
-			that.update = function(elapsedTime, entity){
+			
+			that.update = function(elapsedTime){
 				if(time - elapsedTime > 5000){
 					//Change direction
-					entity.direction.x = -(entity.direction.y);
-					entity.direction.y = 0;
+					spec.direction.x = -(spec.direction.y);
+					spec.direction.y = 0;
 				}
 			}
+
 			break;
 		//Enemy bounces down the screen between the wall and an
 		//invisible boundary on screen
