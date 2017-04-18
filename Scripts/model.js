@@ -57,16 +57,6 @@ Game.model = (function(music, components){
 				patternType: 1,
 				health: 1
 			});
-				// direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
-				// center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
-				// sprite: Game.components.AnimatedSprite({
-				// 	spriteSheet: Game.assets['animated-player-bullet'],
-				// 	spriteCount: 12,
-				// 	spriteTime: [125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125],
-				// 	animationScale: spec.animationScale,
-				// 	spriteSize: {width: 0.05, height: 0.05},			// Maintain the size on the sprite
-				// 	spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
-				// 	})
 		}
 
 		//Allow the main program to render and update the model

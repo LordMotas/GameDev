@@ -33,9 +33,6 @@ Game.components.Enemy = function(spec){
 
 	//Inherits entity info
 	var entity = Game.components.Entity(spec);
-	
-	//Temporary, adds a single bullet (I believe)
-	//var bullet = Game.components.Bullet(spec);
 
 	/*Here I want to try to generate a pattern for the bullets (and enemies) to follow
 	* but the question is, do I make an object for it like this?
