@@ -4,7 +4,7 @@ Game.renderer.Entity = (function(core){
 	var that = {};
 
 	that.render = function(sprite){
-		if(sprite.isAnimated){
+		if(sprite.sprite.isAnimated){
 			Game.renderer.AnimatedSprite.render(sprite.sprite);
 		}
 	}

@@ -50,11 +50,12 @@ Game.model = (function(music, components){
 		// }
 		for(var i = 0; i < 5; i++){
 			enemyActive[i] = components.Enemy({
-				center: {x:0.2*i, y:0.1},
-				size: {w:0.1, h:0.1},
-				direction: {x:0, y:5},
+				center: {x:0.2*i + .1, y:0.1},
+				size: {width:0.075, height:0.075},
+				direction: {x:0, y:0.02*i + .02},
 				radius: 20,
-				patternType: 1
+				patternType: 1,
+				health: 1
 			});
 				// direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 				// center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
@@ -75,8 +76,20 @@ Game.model = (function(music, components){
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		player.update(elapsedTime);
+		//Updates enemy state and their bullets (hopefully will change this soon
+		//so that it uses a more broad array for all the enemy bullets)
+		//Also, continues if enemy is spliced out so it doesn't look for a null enemy
 		for(var enemy in enemyActive){
-			enemyActive[enemy].update(elapsedTime);
+			if(enemyActive[enemy].update(elapsedTime)){
+				enemyActive.splice(enemy, 1);
+				continue;
+			}
+			//Checks each enemy bullet for going off screen
+			for(var bullet in enemyActive[enemy].bullets){
+				if(enemyActive[enemy].bullets[bullet].update(elapsedTime)){
+					enemyActive[enemy].bullets.splice(bullet, 1);
+				}
+			}
 		}
 		for(var bullet in player.bullets){
 			if(player.bullets[bullet].update(elapsedTime)){
@@ -90,6 +103,12 @@ Game.model = (function(music, components){
 		renderer.Player.render(player);
 		for(var bullet in player.bullets){
 			renderer.Bullet.render(player.bullets[bullet]);
+		}
+		for(var enemy in enemyActive){
+			renderer.Entity.render(enemyActive[enemy]);
+			for(var bullet in enemyActive[enemy].bullets){
+				renderer.Bullet.render(enemyActive[enemy].bullets[bullet]);
+			}
 		}
 	};
 

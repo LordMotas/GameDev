@@ -21,7 +21,7 @@ Game.components.Bullet = function(spec){
 		entity.update(elapsedTime);
 		spec.sprite.center.y = entity.center.y;
 		spec.sprite.center.x = entity.center.x;
-		if(spec.center.y < 0.02 || spec.center.x > 1.0 || spec.center.x < 0.0){
+		if(spec.center.y < 0.02 || spec.center.x > 1.0 || spec.center.x < 0.0 || spec.center.y > 1.0){
 			return true;
 		} else {
 			return false;
