@@ -63,23 +63,27 @@ Game.loader = (function() {
 		}],
 		assetOrder = [{
 			key: 'animated-byakuren-standard',
-			source: '/Images/Byakuren_standard.png'
+			source: '/Images/Player/Byakuren_standard.png'
 		},
 		{
 			key: 'animated-byakuren-left',
-			source: '/Images/Byakuren_left.png'
+			source: '/Images/Player/Byakuren_left.png'
 		},
 		{
 			key: 'animated-byakuren-right',
-			source: '/Images/Byakuren_right.png'
+			source: '/Images/Player/Byakuren_right.png'
 		},
 		{
 			key: 'focus1',
-			source: '/Images/Focus1.png'
+			source: '/Images/Player/Focus1.png'
 		},
 		{
 			key: 'animated-player-bullet',
-			source: '/Images/bullets.png'
+			source: '/Images/Player/bullets.png'
+		},
+		{
+			key: 'animated-enemy1',
+			source: '/Images/Enemies/Enemy1.png'
 		}
 		];
 
