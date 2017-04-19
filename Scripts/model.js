@@ -55,8 +55,23 @@ Game.model = (function(music, components){
 				direction: {x:0, y:0.02*i + .02},
 				radius: 20,
 				patternType: 1,
-				health: 1
+				health: 1,
+				timeStamp: performance.now(),
+				interval: 250
 			});
+		}
+
+		for(var i = 0; i < 4; i++){
+			enemyActive.push(components.Enemy({
+				center: {x:0.1*i + .1, y:0.2},
+				size: {width:0.075, height:0.075},
+				direction: {x:0, y:0.01*i + .01},
+				radius: 20,
+				patternType: 2,
+				health: 1,
+				timeStamp: performance.now(),
+				interval: 500
+			}));
 		}
 
 		//Allow the main program to render and update the model
