@@ -13,8 +13,8 @@
 //			center: {x, y},
 //			(add more later)
 //		}
-//		patternType: (1,2,3, or 4),
-//		pattern: EnemyBulletPattern,
+//		bulletPatternType: (1,2,3, or 4),
+//		movePatternType: (1,2,3, or 4),
 //		health: (higher value),
 //		timeStamp: performance.now(),
 //		interval: interval
@@ -36,7 +36,8 @@ Game.components.Enemy = function(spec){
 
 	//Inherits entity info
 	var entity = Game.components.Entity(spec);
-	var pattern = Game.components.EnemyBulletPattern(spec);
+	var bulletPattern = Game.components.EnemyBulletPattern(spec);
+	var movePattern = Game.components.EnemyMovePattern(spec);
 	/*Here I want to try to generate a pattern for the bullets (and enemies) to follow
 	* but the question is, do I make an object for it like this?
 	* What about making several pattern objects and then using the fire()
@@ -48,7 +49,7 @@ Game.components.Enemy = function(spec){
 
 	//This is the filler enemy spray of bullets. Scary if we want to keep this one...
 	that.fire = function(elapsedTime){
-		pattern.makeBullets(bulletArray);
+		bulletPattern.makeBullets(bulletArray);
 	}
 
 
@@ -66,6 +67,7 @@ Game.components.Enemy = function(spec){
 	// }
 
 	that.update = function(elapsedTime){
+		movePattern.update(elapsedTime);
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
 		spec.timeStamp += elapsedTime;

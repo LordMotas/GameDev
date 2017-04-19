@@ -54,7 +54,8 @@ Game.model = (function(music, components){
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.02*i + .02},
 				radius: 20,
-				patternType: 1,
+				bulletPatternType: 1,
+				movePatternType: 1,
 				health: 1,
 				timeStamp: performance.now(),
 				interval: 250
@@ -67,7 +68,8 @@ Game.model = (function(music, components){
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.01*i + .01},
 				radius: 20,
-				patternType: 2,
+				bulletPatternType: 2,
+				movePatternType: 1,
 				health: 1,
 				timeStamp: performance.now(),
 				interval: 500
