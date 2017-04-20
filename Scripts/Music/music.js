@@ -18,6 +18,7 @@ Game.music = (function(){
 		Game.bgm = {};
 		Game.bgm['Audio/menuRemix'] = loadSound('Audio/menuRemix.mp3');
 		Game.bgm['Audio/mainBGM'] = loadSound('Audio/mainBGM.mp3');
+		Game.bgm['Audio/bossBGM'] = loadSound('Audio/bossBGM.mp3');
 	}
 
 	function playSound(soundToPlay){

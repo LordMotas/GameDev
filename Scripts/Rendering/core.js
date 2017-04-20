@@ -126,14 +126,23 @@ Game.renderer.core = (function(){
 	}
 
 	//Draws a rectangle
-	function drawRectangle(style, left, top, width, height){
+	function drawRectangle(style, left, top, width, height, fillStyle){
 		//0.5, 0.5 is to ensure an actual 1 pixel line is drawn.
 		context.strokeStyle = style;
+		if(fillStyle !== undefined){
+			context.fillStyle = fillStyle;
+			context.fillRect(
+				0.5 + world.left + (left * world.size),
+				0.5 + world.top + (top * world.size),
+				width * world.size,
+				height * world.size);
+		} else {
 		context.strokeRect(
 			0.5 + world.left + (left * world.size),
 			0.5 + world.top + (top * world.size),
 			width * world.size,
 			height * world.size);
+		}
 	}
 
 	//Draws an image

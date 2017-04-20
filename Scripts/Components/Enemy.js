@@ -22,7 +22,7 @@
 //
 //------------------------------------------------------------------
 Game.components.Enemy = function(spec){
-	
+
 	var sprite = null,
 		bulletArray = [],
 		that = {

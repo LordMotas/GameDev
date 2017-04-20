@@ -14,7 +14,7 @@ Game.components.Player = function(spec){
 
 	var sprite = null,
 			focus1 = null,
-			bulletArray = [],
+			bulletArray = [];
 			that = {
 				get center() { return entity.sprite.center; },
 				get sprite() { return entity.sprite; },
@@ -23,8 +23,9 @@ Game.components.Player = function(spec){
 				get focus1() { return focus1; },
 				get bullets() { return bulletArray; },
 			};
-	powerLevel = 0.0;
-	
+	powerLevel = 4.0;
+	playerLives = 3;
+
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
 
@@ -195,9 +196,13 @@ Game.components.Player = function(spec){
 	}
 
 	that.playerBomb = function(elapsedTime){
-		console.log("Activate a bomb from the player");
-		powerLevel += 1.0;
-		console.log(powerLevel);
+		if(powerLevel >= 1.0){
+			console.log("Activate a bomb from the player");
+			powerLevel -= 1.0;
+			//Create the bomb here and begin doing the rendering
+		} else {
+			console.log("Player doesn't have enough power to do so");
+		}
 	}
 
 	that.playerFocus = function(elapsedTime, focusKey){
@@ -219,6 +224,9 @@ Game.components.Player = function(spec){
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
 		focus1.update(elapsedTime, true);
+		if(spec.bombActive){
+			spec.bomb.updateBomb(elapsedTime);
+		}
 		if(previousX === spec.center.x && previousY === spec.center.y){
 			if(entity.sprite.spriteSheet !== Game.assets['animated-byakuren-standard']){
 				entity.sprite.spriteSheet = Game.assets['animated-byakuren-standard'];
