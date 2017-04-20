@@ -51,29 +51,29 @@ Game.model = (function(music, components){
 		// 	}
 		// }
 
-		for(var i = 0; i < 5; i++){
+		for(var i = 0; i < 8; i++){
 			enemyActive[i] = components.Enemy({
-				center: {x:0.2*i + .1, y:0.1},
+				center: {x: i/8 + .1, y:0.1},
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.02*i + .02},
 				radius: .01,
 				bulletPatternType: 1,
 				movePatternType: 1,
-				health: 1,
+				health: 10,
 				timeStamp: performance.now(),
 				interval: 250
 			});
 		}
 
-		for(var i = 0; i < 1; i++){
+		for(var i = 0; i < 5; i++){
 			enemyActive.push(components.Enemy({
-				center: {x:0.1*i + .1, y:0.2},
+				center: {x: .01*i + .1, y: i/6 - 1},
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.01*i + .01},
 				radius: .01,
 				bulletPatternType: 2,
 				movePatternType: 2,
-				health: 1,
+				health: 10,
 				timeStamp: performance.now(),
 				interval: 500
 			}));
@@ -95,7 +95,7 @@ Game.model = (function(music, components){
 				continue;
 			}
 			if(enemyActive[enemy].intersects(player)){
-				console.log("player hit an enemy");
+				//console.log("player hit an enemy");
 			}
 			//Checks each enemy bullet for going off screen
 			for(var bullet in enemyActive[enemy].bullets){
@@ -104,7 +104,7 @@ Game.model = (function(music, components){
 					continue;
 				}
 				if(enemyActive[enemy].bullets[bullet].intersects(player)){
-					console.log("bullet hit player");
+					//console.log("bullet hit player");
 				}
 			}
 		}
@@ -115,7 +115,9 @@ Game.model = (function(music, components){
 			}
 			for(var enemy in enemyActive){
 				if(player.bullets[bullet].intersects(enemyActive[enemy])){
-					console.log("bullet hit enemy");
+					//console.log("bullet hit enemy");
+					enemyActive[enemy].hit();
+					console.log(enemy, enemyActive[enemy].health);
 				}
 			}
 		}

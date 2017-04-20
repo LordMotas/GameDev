@@ -46,6 +46,10 @@ Game.components.Enemy = function(spec){
 		bulletPattern.makeBullets(bulletArray);
 	}
 
+	that.hit = function(){
+		spec.health--;
+	}
+
 	//The intersect function for an enemy colliding with a player bullet
 	that.intersects = function(other){
 		return(entity.intersects(other));
