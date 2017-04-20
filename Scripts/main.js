@@ -29,14 +29,22 @@ Game.main = (function(renderer, input, model, menu){
 		fps = 0;
 
 		renderer.core.clearCanvas();
+
+		//Draw the border around the world
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1, "#000000");
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
+
 		if(modelInitialized && !cancelNextRequest){
 			model.render(Game.renderer);
 		}
 
-		menu.render(Game.renderer);
+		//Draw the background in segments
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', -1.0, -0.5, 3.5, 0.5, "#0A0729");
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', -1.0, -0.5, 1.0, 2.5, "#0A0729");
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', -1.0, 1.0, 3.5, 0.5, "#0A0729");
+		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 1.0, -0.5, 3.5, 2.5, "#0A0729");
 
-		//Draw the border around the world
-		renderer.core.drawRectangle('rgba(255, 255, 255, 1)', 0, 0, 1, 1);
+		menu.render(Game.renderer);
 
 		//Show FPS over last several frames
 		frameTimes.push(elapsedTime);

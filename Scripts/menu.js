@@ -44,7 +44,7 @@ Game.menu = (function(music, input, model){
 			pos : { x : 1.025, y : 0.0 },
 		},
 		gamePlayScore = {
-			text : 'Score',
+			text : "Score      " + String("000000" + 0).slice(-7),
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 1.025, y : 0.05 },
@@ -55,30 +55,24 @@ Game.menu = (function(music, input, model){
 			fill : 'rgba(136, 136, 136, 1)',
 			pos : { x : 1.025, y : 0.15 },
 		},
-		gamePlayBomb = {
-			text : 'Bomb',
-			font : '30px Arial, sans-serif',
-			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 1.025, y : 0.2 },
-		},
 		gamePlayPower = {
 			text : 'Power 0.00/4.00',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 1.025, y : 0.3 },
+			pos : { x : 1.025, y : 0.25 },
 		},
 		gamePlayGraze = {
-			text : 'Graze',
+			text : 'Graze 0',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 1.025, y : 0.35 },
+			pos : { x : 1.025, y : 0.3 },
 		},
 		//50, 125, 250, 300, 450
 		gamePlayPoint = {
 			text : 'Point 0/50',
 			font : '30px Arial, sans-serif',
 			fill : 'rgba(136, 136, 136, 1)',
-			pos : { x : 1.025, y : 0.4 },
+			pos : { x : 1.025, y : 0.35 },
 		},
 		//Text for the key configuration page
 		keyConfigShot = {
@@ -203,6 +197,8 @@ Game.menu = (function(music, input, model){
 			highScoreArray = storedHighScoreArray;
 		}
 
+		gamePlayHIScore.text = "HIScore  " + highScoreArray[0].score;
+
 		var highScoreText = [];
 
 		//Text for the high score page
@@ -238,7 +234,6 @@ Game.menu = (function(music, input, model){
 		}
 		updateKeyConfigTexts();
 
-
 		//Initialize each menu
 		mainMenu.push({text : textStart, select : 1});
 		mainMenu.push({text : textResult, select : 2});
@@ -249,7 +244,6 @@ Game.menu = (function(music, input, model){
 		gamePlayMenu.push({text : gamePlayHIScore, select : 4});
 		gamePlayMenu.push({text : gamePlayScore});
 		gamePlayMenu.push({text : gamePlayPlayer});
-		gamePlayMenu.push({text : gamePlayBomb});
 		gamePlayMenu.push({text : gamePlayPower});
 		gamePlayMenu.push({text : gamePlayGraze});
 		gamePlayMenu.push({text : gamePlayPoint});
@@ -305,7 +299,7 @@ Game.menu = (function(music, input, model){
 								menus[i].display = false;
 							}
 							menus[0].display = true;
-							music.playMusic('Audio/menuRemix');
+							//music.playMusic('Audio/menuRemix');
 						}
 		});
 
@@ -354,7 +348,7 @@ Game.menu = (function(music, input, model){
 			},
 			func : function(){
 							music.resetMusic('Audio/menuRemix');
-							music.playMusic('Audio/mainBGM');
+							//music.playMusic('Audio/mainBGM');
 							if(!modelInitialized){
 								model.initialize();
 							} else {
@@ -471,7 +465,7 @@ Game.menu = (function(music, input, model){
 			},
 		});
 
-		music.playMusic('Audio/menuRemix');
+		//music.playMusic('Audio/menuRemix');
 
 	};
 
@@ -482,7 +476,7 @@ Game.menu = (function(music, input, model){
 			changeSelectionVisual(currentMenu, previousSelection, menuSelection);
 		if(currentMenu == 1){
 			model.update(elapsedTime);
-			menus[currentMenu].menuItem[4].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
+			menus[currentMenu].menuItem[3].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
 		}
 	};
 
@@ -714,6 +708,19 @@ Game.menu = (function(music, input, model){
 					//Draw the message if applicable
 					if(menus[i].hasOwnProperty('message')){
 						renderer.core.drawText(menus[i].message);
+					}
+				}
+				if(currentMenu === 1){
+					//Draw the player lives remaining as well as remaining bombs
+					if(playerLives > 0){
+						for(var i = 0; i < playerLives; i++){
+							renderer.core.drawImage(
+								Game.assets['player-star'], //The spritesheet to use
+								0, 0, //Which sprite to choose
+								16, 16, //Sprite width and sprite height on the spritesheet
+								gamePlayPlayer.pos.x + (renderer.core.measureTextWidth(gamePlayPlayer.text) / 2) + (i * 0.05), gamePlayPlayer.pos.y, //Where to draw the sprite
+								0.05, 0.05); //Width and height of the sprite
+						}
 					}
 				}
 			}

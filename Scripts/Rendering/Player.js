@@ -8,6 +8,10 @@ Game.renderer.Player = (function(core){
 		if(sprite.isFocused){
 			Game.renderer.AnimatedSprite.render(sprite.focus1);
 		}
+		if(sprite.bombActive){
+			console.log(sprite.bomb);
+			Game.renderer.core.drawCircle(sprite.bomb);
+		}
 	}
 
 	return that;

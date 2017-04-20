@@ -8,7 +8,8 @@ myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
 elapsedTime,
-powerLevel;
+powerLevel,
+playerLives;
 
 //------------------------------------------------------------------
 //
@@ -84,6 +85,30 @@ Game.loader = (function() {
 		{
 			key: 'animated-enemy1',
 			source: '/Images/Enemies/Enemy1.png'
+		},
+		{
+			key: 'enemy-bullet-red-small',
+			source: '/Images/Bullets/SmallCircles/RedCircleSmall.png'
+		},
+		{
+			key: 'enemy-bullet-red',
+			source: '/Images/Bullets/Circles/RedCircle.png'
+		},
+		{
+			key: 'enemy-bullet-red-large',
+			source: '/Images/Bullets/LargeCircles/RedCircleLarge.png'
+		},
+		{
+			key: 'animated-mokou',
+			source: '/Images/Enemies/MokouIdle.png'
+		},
+		{
+			key: 'animated-mokou-phoenix',
+			source: '/Images/Enemies/MokouPhoenix.png'
+		},
+		{
+			key: 'player-star',
+			source: '/Images/Items/Star.png'
 		}
 		];
 

@@ -21,6 +21,7 @@ Game.model = (function(music, components){
 			moveRate: 550 / 1000, //World units per second
 			isFocused: false,
 			direction: {x:0, y:0},
+			bombActive: false,
 			radius: 0.005
 		});
 
