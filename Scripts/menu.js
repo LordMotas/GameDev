@@ -476,6 +476,7 @@ Game.menu = (function(music, input, model){
 			changeSelectionVisual(currentMenu, previousSelection, menuSelection);
 		if(currentMenu == 1){
 			model.update(elapsedTime);
+			menus[currentMenu].menuItem[1].text.text = 'Score      ' + String('000000' + model.score()).slice(-7)
 			menus[currentMenu].menuItem[3].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
 		}
 	};

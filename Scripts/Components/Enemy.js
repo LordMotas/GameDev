@@ -30,7 +30,8 @@ Game.components.Enemy = function(spec){
 			get sprite() { return entity.sprite; },
 			get radius() { return spec.radius; },
 			get bullets() { return bulletArray; },
-			get health() { return spec.health; }
+			get health() { return spec.health; },
+			get points() { return spec.points; }
 	};
 
 	//Inherits entity info

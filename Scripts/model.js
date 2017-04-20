@@ -9,6 +9,7 @@ Game.model = (function(music, components){
 	var enemyActive;
 	var enemyBullets;
 	var playerBullets;
+	var score;
 
 	//This function initializes the Game model
 	that.initialize = function(){
@@ -29,7 +30,7 @@ Game.model = (function(music, components){
 		enemyQueue = [];
 		enemyBullets = [];
 		playerBullets = [];
-
+		score = 0;
 
 		//Generates the 2D array of enemies to pull from
 		//during the game
@@ -60,6 +61,7 @@ Game.model = (function(music, components){
 				bulletPatternType: 1,
 				movePatternType: 1,
 				health: 10,
+				points: 500,
 				timeStamp: performance.now(),
 				interval: 250
 			});
@@ -74,6 +76,7 @@ Game.model = (function(music, components){
 				bulletPatternType: 2,
 				movePatternType: 2,
 				health: 10,
+				points: 500,
 				timeStamp: performance.now(),
 				interval: 500
 			}));
@@ -83,6 +86,10 @@ Game.model = (function(music, components){
 		modelInitialized = true;
 	};
 
+	that.score = function(){
+		return score;
+	}
+
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		player.update(elapsedTime);
@@ -91,6 +98,10 @@ Game.model = (function(music, components){
 		//Also, continues if enemy is spliced out so it doesn't look for a null enemy
 		for(var enemy in enemyActive){
 			if(enemyActive[enemy].update(elapsedTime)){
+				if(enemyActive[enemy].health === 0){
+					score += enemyActive[enemy].points;
+					console.log(score);
+				}
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
@@ -117,7 +128,8 @@ Game.model = (function(music, components){
 				if(player.bullets[bullet].intersects(enemyActive[enemy])){
 					//console.log("bullet hit enemy");
 					enemyActive[enemy].hit();
-					console.log(enemy, enemyActive[enemy].health);
+					score += 50;
+					//console.log(enemy, enemyActive[enemy].health);
 				}
 			}
 		}
