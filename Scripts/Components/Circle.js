@@ -26,8 +26,8 @@ Game.components.Circle = function(spec){
 	//------------------------------------------------------------------
 	that.intersects = function(other){
 		var distance = Math.pow((spec.center.x - other.center.x), 2) + Math.pow((spec.center.y - other.center.y), 2);
-
-		return (distance < Math.pow(spec.radius + other.radius, 2));
+		var rad = Math.pow(spec.radius + other.radius, 2);
+		return (distance < rad);
 	};
 
 	return that;

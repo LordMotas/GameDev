@@ -28,6 +28,10 @@ Game.components.Player = function(spec){
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
 
+	that.intersects = function(other){
+		return(entity.intersects(other))
+	}
+
 	//Use later
 	//var pattern = Game.components.PlayerBulletPattern(spec);
 
@@ -72,102 +76,102 @@ Game.components.Player = function(spec){
 			if(powerLevel >= 0.0){
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 1.0){
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 2.0){
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 3.0){
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 4.0){
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
 				});
 			}
 		} else {
 			if(powerLevel >= 0.0){
 				bulletSet.push({
 					direction : {x : 0, y : -0.75},
-					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : 0, y : -0.75},
-					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 1.0){
 				bulletSet.push({
 					direction : {x : 0.05, y : -0.75},
-					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : -0.05, y : -0.75},
-					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 2.0){
 				bulletSet.push({
 					direction : {x : 0.10, y : -0.75},
-					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : -0.10, y : -0.75},
-					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 3.0){
 				bulletSet.push({
 					direction : {x : 0.15, y : -0.75},
-					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : -0.15, y : -0.75},
-					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
 				});
 			}
 			if(powerLevel >= 4.0){
 				bulletSet.push({
 					direction : {x : 0.20, y : -0.75},
-					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05},
+					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
 				});
 				bulletSet.push({
 					direction : {x : -0.20, y : -0.75},
-					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05},
+					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
 				});
 			}
 		}
@@ -175,6 +179,7 @@ Game.components.Player = function(spec){
 			bullet = Game.components.Bullet({
 				direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 				center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
+				radius: .005,
 				sprite: Game.components.AnimatedSprite({
 					spriteSheet: Game.assets['animated-player-bullet'],
 					spriteCount: 12,
