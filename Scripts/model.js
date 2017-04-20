@@ -20,7 +20,8 @@ Game.model = (function(music, components){
 			center: {x: 0.5, y: 0.95},
 			moveRate: 550 / 1000, //World units per second
 			isFocused: false,
-			direction: {x:0, y:0}
+			direction: {x:0, y:0},
+			radius: 0.005
 		});
 
 		enemyActive = [];
@@ -48,12 +49,13 @@ Game.model = (function(music, components){
 		// 		});
 		// 	}
 		// }
+
 		for(var i = 0; i < 5; i++){
 			enemyActive[i] = components.Enemy({
 				center: {x:0.2*i + .1, y:0.1},
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.02*i + .02},
-				radius: 20,
+				radius: .01,
 				bulletPatternType: 1,
 				movePatternType: 1,
 				health: 1,
@@ -62,14 +64,14 @@ Game.model = (function(music, components){
 			});
 		}
 
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < 1; i++){
 			enemyActive.push(components.Enemy({
 				center: {x:0.1*i + .1, y:0.2},
 				size: {width:0.075, height:0.075},
 				direction: {x:0, y:0.01*i + .01},
-				radius: 20,
+				radius: .01,
 				bulletPatternType: 2,
-				movePatternType: 1,
+				movePatternType: 2,
 				health: 1,
 				timeStamp: performance.now(),
 				interval: 500
@@ -91,16 +93,29 @@ Game.model = (function(music, components){
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
+			if(enemyActive[enemy].intersects(player)){
+				console.log("player hit an enemy");
+			}
 			//Checks each enemy bullet for going off screen
 			for(var bullet in enemyActive[enemy].bullets){
 				if(enemyActive[enemy].bullets[bullet].update(elapsedTime)){
 					enemyActive[enemy].bullets.splice(bullet, 1);
+					continue;
+				}
+				if(enemyActive[enemy].bullets[bullet].intersects(player)){
+					console.log("bullet hit player");
 				}
 			}
 		}
 		for(var bullet in player.bullets){
 			if(player.bullets[bullet].update(elapsedTime)){
 				player.bullets.splice(bullet, 1);
+				continue;
+			}
+			for(var enemy in enemyActive){
+				if(player.bullets[bullet].intersects(enemyActive[enemy])){
+					console.log("bullet hit enemy");
+				}
 			}
 		}
 	};

@@ -16,6 +16,10 @@ Game.components.Bullet = function(spec){
 		set direction(value) {spec.direction = value; }
 	};
 
+	that.intersects = function(other){
+		return(entity.intersects(other));
+	}
+
 	that.update = function(elapsedTime){
 		spec.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
@@ -27,6 +31,7 @@ Game.components.Bullet = function(spec){
 			return false;
 		}
 	}
+
 
 	return that;
 }

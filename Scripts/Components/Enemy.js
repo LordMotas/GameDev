@@ -25,7 +25,6 @@ Game.components.Enemy = function(spec){
 	
 	var sprite = null,
 		bulletArray = [],
-		//movePattern = components.EnemyMovePattern(spec.patternType),
 		that = {
 			get center() { return entity.sprite.center; },
 			get sprite() { return entity.sprite; },
@@ -36,15 +35,10 @@ Game.components.Enemy = function(spec){
 
 	//Inherits entity info
 	var entity = Game.components.Entity(spec);
+
+	//Generates the basic move and bullet patterns for each enemy
 	var bulletPattern = Game.components.EnemyBulletPattern(spec);
 	var movePattern = Game.components.EnemyMovePattern(spec);
-	/*Here I want to try to generate a pattern for the bullets (and enemies) to follow
-	* but the question is, do I make an object for it like this?
-	* What about making several pattern objects and then using the fire()
-	* to just add that sequenced pattern to the array of enemy bullets?
-	*/
-	//var bulletPattern = Game.components.EnemyBulletPattern(spec);
-	//var movePattern = Game.components.EnemyMovePattern(spec);
 
 
 	//This is the filler enemy spray of bullets. Scary if we want to keep this one...
@@ -52,26 +46,18 @@ Game.components.Enemy = function(spec){
 		bulletPattern.makeBullets(bulletArray);
 	}
 
+	//The intersect function for an enemy colliding with a player bullet
+	that.intersects = function(other){
+		return(entity.intersects(other));
+	}
 
-	// that.update = function(elapsedTime){
-	// 	//Needs to use the pattern to update how the entity moves, like:
-	// 	/*
-	// 	movePattern.update(elapsedTime, entity);
-	// 	*/
-	// 	entity.update(elapsedTime);
-	// 	entity.sprite.update(elapsedTime);
-	// 	//movePattern.update(elapsedTime);
-
-	// 	//Add bullet generation stuff using pattern if possible
-
-	// }
-
+	//Updates the movement of the enemy, whether they fire, and the sprite animation
+	//Also returns if the enemy dies from hitting zero health or going off screen
 	that.update = function(elapsedTime){
 		movePattern.update(elapsedTime);
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
 		spec.timeStamp += elapsedTime;
-		//entity.sprite.spriteSheet = Game.assets['animated-enemy1'];
 		if(spec.timeStamp > spec.interval){
 			spec.timeStamp = 0;
 			that.fire(elapsedTime);
@@ -83,9 +69,9 @@ Game.components.Enemy = function(spec){
 		} else {
 			return false;
 		}
-		//Eventually include update to bullet stuff
 	}
 
+	//Generates the enemy sprite animation
 	entity.sprite = Game.components.AnimatedSprite({
 		spriteSheet: Game.assets['animated-enemy1'],
 		spriteCount: 4,
@@ -96,8 +82,6 @@ Game.components.Enemy = function(spec){
 	});
 
 	entity.sprite.isAnimated = true;
-
-
 
 	return that;
 

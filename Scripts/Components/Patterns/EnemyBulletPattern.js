@@ -15,44 +15,45 @@ Game.components.EnemyBulletPattern = function(spec){
 						});
 						bulletSet.push({
 							direction : {x : 0, y : 0.75},
-							center : {x : spec.center.x - 0.01, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.01, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : 0.05, y : 0.75},
-							center : {x : spec.center.x + 0.02, y : spec.center.y + 0.05},
+							center : {x : spec.center.x + 0.02, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : -0.05, y : 0.75},
-							center : {x : spec.center.x - 0.02, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.02, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : 0.10, y : 0.75},
-							center : {x : spec.center.x + 0.03, y : spec.center.y + 0.05},
+							center : {x : spec.center.x + 0.03, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : -0.10, y : 0.75},
-							center : {x : spec.center.x - 0.03, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.03, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : 0.15, y : 0.75},
-							center : {x : spec.center.x + 0.04, y : spec.center.y + 0.05},
+							center : {x : spec.center.x + 0.04, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : -0.15, y : 0.75},
-							center : {x : spec.center.x - 0.04, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.04, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : 0.20, y : 0.75},
-							center : {x : spec.center.x + 0.05, y : spec.center.y + 0.05},
+							center : {x : spec.center.x + 0.05, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : -0.20, y : 0.75},
-							center : {x : spec.center.x - 0.05, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.05, y : spec.center.y + 0.05}
 						});
 				for(var index in bulletSet){
 					bullet = Game.components.Bullet({
 						direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 						center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
+						radius: .01,
 						sprite: Game.components.AnimatedSprite({
 							spriteSheet: Game.assets['animated-player-bullet'],
 							spriteCount: 12,
@@ -73,16 +74,17 @@ Game.components.EnemyBulletPattern = function(spec){
 				var bulletSet = [];
 						bulletSet.push({
 							direction : {x : 0, y : 0.75},
-							center : {x : spec.center.x + 0.01, y : spec.center.y + 0.05},
+							center : {x : spec.center.x + 0.01, y : spec.center.y + 0.05}
 						});
 						bulletSet.push({
 							direction : {x : 0, y : 0.75},
-							center : {x : spec.center.x - 0.01, y : spec.center.y + 0.05},
+							center : {x : spec.center.x - 0.01, y : spec.center.y + 0.05}
 						});
 				for(var index in bulletSet){
 					bullet = Game.components.Bullet({
 						direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 						center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
+						radius: .005,
 						sprite: Game.components.AnimatedSprite({
 							spriteSheet: Game.assets['animated-player-bullet'],
 							spriteCount: 12,

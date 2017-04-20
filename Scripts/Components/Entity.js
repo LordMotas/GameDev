@@ -52,5 +52,7 @@ Game.components.Entity = function(spec){
 		*/
 	};
 
+	
+
 	return that;
 };
