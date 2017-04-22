@@ -14,11 +14,11 @@ Game.components.EnemyBulletPattern = function(spec){
 
 				for(var i = 0; i < 4; i++){
 					bulletSet.push({
-						direction : {x : 0.1*i, y : 0.1},
+						direction : {x : 0.1*i + .05, y : 0.1},
 						center : {x : spec.center.x + 0.01*i + 0.01, y : spec.center.y + 0.05*i},
 					});
 					bulletSet.push({
-						direction : {x : -0.1*i, y : 0.1},
+						direction : {x : -0.1*i + .05, y : 0.1},
 						center : {x : spec.center.x - 0.01*i -0.01, y : spec.center.y + 0.05*i}
 					});
 				}

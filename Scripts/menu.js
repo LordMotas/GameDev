@@ -480,6 +480,7 @@ Game.menu = (function(music, input, model){
 			model.update(elapsedTime);
 			menus[currentMenu].menuItem[1].text.text = 'Score      ' + String('000000' + model.score()).slice(-7)
 			menus[currentMenu].menuItem[3].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
+			menus[currentMenu].menuItem[4].text.text = 'Graze ' + String(model.grazeScore()).slice(-7);
 		}
 	};
 

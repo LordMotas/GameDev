@@ -21,6 +21,7 @@ Game.components.Entity = function(spec){
 		configurable: true
 	});
 
+	spec.isGraze = true;
 	//Gives image info to each entity, though needs to use core.js,
 	//not Graphics.js
 	//that.img = Game.components.Graphics.Texture(spec);

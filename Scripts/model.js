@@ -12,6 +12,7 @@ Game.model = (function(music, components){
 	var enemyBullets;
 	var playerBullets;
 	var score;
+	var grazeScore;
 
 	//This function initializes the Game model
 	that.initialize = function(){
@@ -35,6 +36,7 @@ Game.model = (function(music, components){
 		enemyBullets = [];
 		playerBullets = [];
 		score = 0;
+		grazeScore = 0;
 
 		// Generates the 2D array of enemies to pull from
 		// during the game
@@ -113,6 +115,10 @@ Game.model = (function(music, components){
 	that.score = function(){
 		return score;
 	}
+	
+	that.grazeScore = function(){
+		return grazeScore;
+	}
 
 	function gameOver(){
 		return (playerLives === 0);
@@ -145,8 +151,7 @@ Game.model = (function(music, components){
 			enemyQueue.splice(0,1);
 		}
 
-		//Updates enemy state and their bullets (hopefully will change this soon
-		//so that it uses a more broad array for all the enemy bullets)
+		//Updates enemy states
 		//Also, continues if enemy is spliced out so it doesn't look for a null enemy
 		for(var enemy = 0; enemy < enemyActive.length; enemy++){
 			if(enemyActive[enemy].update(elapsedTime)){
@@ -172,10 +177,12 @@ Game.model = (function(music, components){
 					enemyActive[enemy].bullets.splice(bullet,1)
 					continue;
 				}
-				if(enemyActive[enemy].bullets[bullet].intersects(player) && !player.isInvulnerable){
+			}
+			for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
+				if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
 					console.log("bullet hit player");
 					//Player death sound
-					enemyActive[enemy].bullets.splice(bullet, 1);
+					enemyBullets.splice(bullet, 1);
 					playerLives--;
 					player.isInvulnerable = true;
 					//Run death animation here
@@ -188,13 +195,14 @@ Game.model = (function(music, components){
 					}
 					continue;
 				}
-				/*if(enemyActive[enemy].bullets[bullet].intersects(player.graze)){
-					console.log("Grazing");
+				if(enemyBullets[bullet].isGraze && enemyBullets[bullet].intersects(player.graze)){
+					enemyBullets[bullet].isGraze = false;
 					grazeScore++;
-				}*/
-				if(enemyActive[enemy].bullets[bullet].intersects(player.bomb)){
+					console.log("Grazing", grazeScore);
+				}
+				if(enemyBullets[bullet].intersects(player.bomb)){
 					//console.log("bomb hits bullets");
-					enemyActive[enemy].bullets.splice(bullet, 1);
+					enemyBullets.splice(bullet, 1);
 					continue;
 				}
 			}

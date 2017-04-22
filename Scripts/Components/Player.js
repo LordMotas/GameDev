@@ -13,6 +13,7 @@
 Game.components.Player = function(spec){
 
 	var sprite = null,
+			graze = null,
 			focus1 = null,
 			death = null,
 			bulletArray = [],
@@ -22,6 +23,7 @@ Game.components.Player = function(spec){
 			that = {
 				get center() { return entity.sprite.center; },
 				get sprite() { return entity.sprite; },
+				get graze() { return graze; },
 				get isFocused() { return spec.isFocused; },
 				get radius() { return spec.radius; },
 				get focus1() { return focus1; },
@@ -36,12 +38,27 @@ Game.components.Player = function(spec){
 
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
+	var graze = Game.components.Entity({
+		center: { 
+			x: spec.center.x,
+			y: spec.center.y
+		},
+		direction: {
+			x: spec.direction.x,
+			y: spec.direction.y
+		},
+		radius: .03
+	});
 
 	that.intersects = function(other){
-		return(entity.intersects(other))
+		return(entity.intersects(other));
 	}
 
-	//Use later
+	that.graze = function(other){
+		return(graze.intersects(other));
+	}
+
+	//Use later...maybe
 	//var pattern = Game.components.PlayerBulletPattern(spec);
 
 	//Movement patterns for main player
@@ -238,6 +255,7 @@ Game.components.Player = function(spec){
 				previousY = spec.center.y;
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
+		graze.center = spec.center;
 		focus1.update(elapsedTime, true);
 		if(bombActive){
 			bomb.updateBomb(elapsedTime);
