@@ -109,8 +109,13 @@ Game.model = (function(music, components){
 		modelInitialized = true;
 	};
 
+
 	that.score = function(){
 		return score;
+	}
+
+	function gameOver(){
+		return (playerLives === 0);
 	}
 
 	//This function is used to update the state of the Game model
@@ -133,7 +138,7 @@ Game.model = (function(music, components){
 				enemyQueueInterval = 10000;
 			}
 			*/
-			
+
 			for(var i = 0; i < enemyQueue[0].length; i++){
 				enemyActive.push(enemyQueue[0][i]);
 			}
@@ -152,14 +157,44 @@ Game.model = (function(music, components){
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
-			if(enemyActive[enemy].intersects(player)){
-				//console.log("player hit an enemy");
+			if(enemyActive[enemy].intersects(player) && !player.isInvulnerable){
+				console.log("player hit an enemy");
+				//Player death sound
+				playerLives--;
+			}
+			if(enemyActive[enemy].intersects(player.bomb)){
+				enemyActive[enemy].hit();
 			}
 			//Passes all the enemy bullets for each enemy into one array of enemy bullets
 			for(var bullet = enemyActive[enemy].bullets.length - 1; bullet >= 0; bullet--){
 				if(enemyActive[enemy].bullets){
 					enemyBullets.push(enemyActive[enemy].bullets[bullet]);
 					enemyActive[enemy].bullets.splice(bullet,1)
+					continue;
+				}
+				if(enemyActive[enemy].bullets[bullet].intersects(player) && !player.isInvulnerable){
+					console.log("bullet hit player");
+					//Player death sound
+					enemyActive[enemy].bullets.splice(bullet, 1);
+					playerLives--;
+					player.isInvulnerable = true;
+					//Run death animation here
+					//Respawn the player here
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
+					if(gameOver()){
+						console.log("GAME OVER");
+						//alert("GAME OVER!!!");
+						//Do a function here that alerts to the game over
+					}
+					continue;
+				}
+				/*if(enemyActive[enemy].bullets[bullet].intersects(player.graze)){
+					console.log("Grazing");
+					grazeScore++;
+				}*/
+				if(enemyActive[enemy].bullets[bullet].intersects(player.bomb)){
+					//console.log("bomb hits bullets");
+					enemyActive[enemy].bullets.splice(bullet, 1);
 					continue;
 				}
 			}
@@ -189,6 +224,7 @@ Game.model = (function(music, components){
 				if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
 					//bullet is no longer defined and so it doesn't read its intersect function
 					//console.log("bullet hit enemy");
+					player.bullets.splice(bullet, 1);
 					enemyActive[enemy].hit();
 					score += 50;
 					playerBullets.splice(bullet, 1);

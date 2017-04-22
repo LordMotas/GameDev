@@ -187,11 +187,11 @@ Game.menu = (function(music, input, model){
 		//localStorage.setItem("highScores", JSON.stringify(highScoreArray));
 		if(storedHighScoreArray === null){
 			highScoreArray = [
-				{name: 'Motas', score: 5000000},
-				{name: 'Motas', score: 4000000},
-				{name: 'Motas', score: 3000000},
-				{name: 'Motas', score: 2000000},
-				{name: 'Motas', score: 1000000}
+				{name: 'Motas-----', score: 5000000},
+				{name: 'Motas-----', score: 4000000},
+				{name: 'Motas-----', score: 3000000},
+				{name: 'Motas-----', score: 2000000},
+				{name: 'Motas-----', score: 1000000}
 			];
 		}else{
 			highScoreArray = storedHighScoreArray;
@@ -204,7 +204,7 @@ Game.menu = (function(music, input, model){
 		//Text for the high score page
 		for(var highScore in highScoreArray){
 			highScoreText.push({
-				text : highScoreArray[highScore].name + "          " + highScoreArray[highScore].score,
+				text : highScoreArray[highScore].name + highScoreArray[highScore].score,
 				font : '30px Arial, sans-serif',
 				fill : 'rgba(255, 255, 255, 1)',
 				pos : { x : 0.25, y : (highScore * 0.05) + 0.55 },
@@ -250,7 +250,7 @@ Game.menu = (function(music, input, model){
 
 		//Craft the resultMenu
 		for(var option in highScoreText){
-			resultMenu.push({text : highScoreText[option], back : 0});
+			resultMenu.push({text : highScoreText[option], back : 0, func : function(){enterHighScore();}});
 		}
 
 		//Craft the keyConfigMenu
@@ -370,11 +370,13 @@ Game.menu = (function(music, input, model){
 			reg : {
 				handlers : [
 					function(){that.cancelButton();},
-					function(){that.cancelButton();}
+					function(){that.cancelButton();},
+					function(){that.executeFunction();}
 				],
 				keys : [
 					input.KeyEvent.DOM_VK_X,
-					input.KeyEvent.DOM_VK_ESCAPE
+					input.KeyEvent.DOM_VK_ESCAPE,
+					input.KeyEvent.DOM_VK_Z
 				],
 				ids: [],
 			},
@@ -608,6 +610,24 @@ Game.menu = (function(music, input, model){
 	function resetGameKeyConfig(){
 		for(var i = 0; i < menus[1].reg.keys.length; i++){
 			menus[1].reg.keys[i] = menus[1].reg.defaults[i];
+		}
+	}
+
+	function enterHighScore(){
+		var playerName = prompt("You had a great run! Enter your name (Up to 10 characters)");
+		var highScoreEntry = {name : String(playerName + "----------").slice(0,10), score : playerScore};
+		//Loop through and place it where it goes
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(highScoreEntry.score > highScoreArray[i].score){
+				var temp = highScoreArray[i];
+				highScoreArray[i] = highScoreEntry;
+				highScoreEntry = temp;
+			}
+		}
+		localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+		//Show the updated scores on the page
+		for(var highScore in menus[2].menuItem){
+			menus[2].menuItem[highScore].text.text = highScoreArray[highScore].name + highScoreArray[highScore].score;
 		}
 	}
 

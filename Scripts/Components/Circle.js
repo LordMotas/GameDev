@@ -14,7 +14,9 @@ Game.components.Circle = function(spec){
 	var radiusSq = spec.radius * spec.radius,	// This gets used by various mathematical operations to avoid a sqrt
 		that = {
 			get center(){ return spec.center; },
+			set center(value) { spec.center = value; },
 			get radius(){ return spec.radius; },
+			set radius(value){ spec.radius = value; radiusSq = spec.radius * spec.radius; },
 			get radiusSq(){ return radiusSq; }
 		};
 

@@ -15,7 +15,10 @@ Game.components.Player = function(spec){
 	var sprite = null,
 			focus1 = null,
 			death = null,
-			bulletArray = [];
+			bulletArray = [],
+			bombActive = false,
+			bomb = {},
+			isInvulnerable = false,
 			that = {
 				get center() { return entity.sprite.center; },
 				get sprite() { return entity.sprite; },
@@ -23,9 +26,13 @@ Game.components.Player = function(spec){
 				get radius() { return spec.radius; },
 				get focus1() { return focus1; },
 				get bullets() { return bulletArray; },
+				get bombActive() { return bombActive; },
+				get bomb() { return bomb; },
+				set bomb(value){ bomb = value; },
+				get isInvulnerable() { return isInvulnerable; },
+				set isInvulnerable(value) { isInvulnerable = value; },
+				get playerLives() { return playerLives; }
 			};
-	powerLevel = 4.0;
-	playerLives = 3;
 
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
@@ -197,12 +204,20 @@ Game.components.Player = function(spec){
 	}
 
 	that.playerBomb = function(elapsedTime){
-		if(powerLevel >= 1.0){
-			console.log("Activate a bomb from the player");
-			powerLevel -= 1.0;
-			//Create the bomb here and begin doing the rendering
-		} else {
-			console.log("Player doesn't have enough power to do so");
+		if(!bombActive){
+			if(powerLevel >= 1.0){
+				powerLevel -= 1.0;
+				bomb = Game.components.Entity(spec);
+				bomb.radius = 0.005;
+				bomb.center = spec.center;
+
+				focus1.isAnimated = true;
+				bombActive = true;
+				isInvulnerable = true;
+				setTimeout(function(){bombActive = false; isInvulnerable = false;}, 3000);
+			} else {
+				console.log("Player doesn't have enough power to do so");
+			}
 		}
 	}
 
@@ -219,14 +234,16 @@ Game.components.Player = function(spec){
 	}
 
 	that.update = function(elapsedTime){
-		//entity.update(elapsedTime);
 		var previousX = spec.center.x,
 				previousY = spec.center.y;
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
 		focus1.update(elapsedTime, true);
-		if(spec.bombActive){
-			spec.bomb.updateBomb(elapsedTime);
+		if(bombActive){
+			bomb.updateBomb(elapsedTime);
+		} else {
+			bomb = Game.components.Entity(spec);
+			bomb.resetBomb(elapsedTime);
 		}
 		if(previousX === spec.center.x && previousY === spec.center.y){
 			if(entity.sprite.spriteSheet !== Game.assets['animated-byakuren-standard']){

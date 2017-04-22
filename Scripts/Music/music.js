@@ -15,6 +15,7 @@ Game.music = (function(){
 		Game.sounds['Audio/se_ok'] = loadSound('Audio/se_ok00.wav');
 		Game.sounds['Audio/se_pause'] = loadSound('Audio/se_pause.wav');
 		Game.sounds['Audio/se_shot'] = loadSound('Audio/se_plst00.wav');
+		Game.sounds['Audio/se_tan0'] = loadSound('Audio/se_tan00.wav');
 		Game.bgm = {};
 		Game.bgm['Audio/menuRemix'] = loadSound('Audio/menuRemix.mp3');
 		Game.bgm['Audio/mainBGM'] = loadSound('Audio/mainBGM.mp3');

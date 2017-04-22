@@ -8,8 +8,8 @@ myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
 elapsedTime,
-powerLevel,
-playerLives;
+powerLevel = 0.0;
+playerLives = 3;
 
 //------------------------------------------------------------------
 //
