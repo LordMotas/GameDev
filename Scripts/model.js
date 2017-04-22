@@ -6,6 +6,8 @@ Game.model = (function(music, components){
 	var that = {};
 	var player = null;
 	var enemyQueue;
+	var enemyQueueInterval;
+	var enemyQueueTimeFrame;
 	var enemyActive;
 	var enemyBullets;
 	var playerBullets;
@@ -28,59 +30,80 @@ Game.model = (function(music, components){
 
 		enemyActive = [];
 		enemyQueue = [];
+		enemyQueueInterval = 12000;
+		enemyQueueTimeFrame = 9000;
 		enemyBullets = [];
 		playerBullets = [];
 		score = 0;
 
-		//Generates the 2D array of enemies to pull from
-		//during the game
-		// for(var i = 0; i < 5; i++){
-		// 	enemyQueue[i] = [];
-		// 	for(var j = 0; j < 5; j++){
-		// 		enemyQueue[i][j] = Game.components.Enemy({
-		// 			center: {j*15, 10},
-		// 			direction:  {0, 5},
-		// 			radius: 20,
-		// 			//img: add a Texture here
-		// 			// bullet: {
-		// 			// 	rotation: ,
-		// 			// 	center: {x, y},
-		// 			// 	(add more later)
-		// 			// },
-		// 			patternType: 1
-		// 		});
-		// 	}
+		// Generates the 2D array of enemies to pull from
+		// during the game
+		for(var i = 0; i < 4; i++){
+			enemyQueue[i] = [];
+			for(var j = 0; j < 5; j++){
+				if(i === 0 || i === 3){
+					enemyQueue[i].push(components.Enemy({
+						center: {x: j/10 + .1, y: -0.2},
+						size: {width:0.075, height:0.075},
+						direction: {x:0, y:0.02*j + .04},
+						radius: .01,
+						bulletPatternType: 1,
+						movePatternType: 1,
+						health: 10,
+						points: 500,
+						timeStamp: performance.now(),
+						interval: 750,
+						waitTime: 1000
+					}));
+				} else if(i === 1 || i === 2){
+					enemyQueue[i].push(components.Enemy({
+						center: {x: .01*j + .1, y: j/6 - 1},
+						size: {width:0.075, height:0.075},
+						direction: {x:0, y:0.01*i + .01},
+						radius: .01,
+						bulletPatternType: 2,
+						movePatternType: 2,
+						health: 10,
+						points: 500,
+						timeStamp: performance.now(),
+						interval: 750,
+						waitTime: 500
+					}));
+				}
+			}
+		}
+
+
+		/*Test setups for immediate enemies*/
+		// for(var i = 0; i < 8; i++){
+		// 	enemyActive[i] = components.Enemy({
+		// 		center: {x: i/8 + .1, y:0.1},
+		// 		size: {width:0.075, height:0.075},
+		// 		direction: {x:0, y:0.02*i + .02},
+		// 		radius: .01,
+		// 		bulletPatternType: 1,
+		// 		movePatternType: 1,
+		// 		health: 10,
+		// 		points: 500,
+		// 		timeStamp: performance.now(),
+		// 		interval: 750
+		// 	});
 		// }
 
-		for(var i = 0; i < 8; i++){
-			enemyActive[i] = components.Enemy({
-				center: {x: i/8 + .1, y:0.1},
-				size: {width:0.075, height:0.075},
-				direction: {x:0, y:0.02*i + .02},
-				radius: .01,
-				bulletPatternType: 1,
-				movePatternType: 1,
-				health: 10,
-				points: 500,
-				timeStamp: performance.now(),
-				interval: 250
-			});
-		}
-
-		for(var i = 0; i < 5; i++){
-			enemyActive.push(components.Enemy({
-				center: {x: .01*i + .1, y: i/6 - 1},
-				size: {width:0.075, height:0.075},
-				direction: {x:0, y:0.01*i + .01},
-				radius: .01,
-				bulletPatternType: 2,
-				movePatternType: 2,
-				health: 10,
-				points: 500,
-				timeStamp: performance.now(),
-				interval: 500
-			}));
-		}
+		// for(var i = 0; i < 5; i++){
+		// 	enemyActive.push(components.Enemy({
+		// 		center: {x: .01*i + .1, y: i/6 - 1},
+		// 		size: {width:0.075, height:0.075},
+		// 		direction: {x:0, y:0.01*i + .01},
+		// 		radius: .01,
+		// 		bulletPatternType: 2,
+		// 		movePatternType: 2,
+		// 		health: 10,
+		// 		points: 500,
+		// 		timeStamp: performance.now(),
+		// 		interval: 750
+		// 	}));
+		// }
 
 		//Allow the main program to render and update the model
 		modelInitialized = true;
@@ -93,10 +116,34 @@ Game.model = (function(music, components){
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
 		player.update(elapsedTime);
+		//Idea for looping backwards:
+		// http://stackoverflow.com/questions/9882284/looping-through-array-and-removing-items-without-breaking-for-loop
+		for(var bullet = player.bullets.length - 1; bullet >= 0; bullet--){
+			playerBullets.push(player.bullets[bullet]);
+			player.bullets.splice(bullet, 1);
+		}
+
+		//Checks the time frame vs the interval and if enough time has passed, the next round of enemies come in
+		enemyQueueTimeFrame += elapsedTime;
+		if(enemyQueueTimeFrame >= enemyQueueInterval && enemyQueue[0]){
+			enemyQueueTimeFrame = 0;
+			//if we wanted a variable timeFrame, we can add if statements like:
+			/*
+			if(enemyQueue.length < 3){
+				enemyQueueInterval = 10000;
+			}
+			*/
+			
+			for(var i = 0; i < enemyQueue[0].length; i++){
+				enemyActive.push(enemyQueue[0][i]);
+			}
+			enemyQueue.splice(0,1);
+		}
+
 		//Updates enemy state and their bullets (hopefully will change this soon
 		//so that it uses a more broad array for all the enemy bullets)
 		//Also, continues if enemy is spliced out so it doesn't look for a null enemy
-		for(var enemy in enemyActive){
+		for(var enemy = 0; enemy < enemyActive.length; enemy++){
 			if(enemyActive[enemy].update(elapsedTime)){
 				if(enemyActive[enemy].health === 0){
 					score += enemyActive[enemy].points;
@@ -108,27 +155,43 @@ Game.model = (function(music, components){
 			if(enemyActive[enemy].intersects(player)){
 				//console.log("player hit an enemy");
 			}
-			//Checks each enemy bullet for going off screen
-			for(var bullet in enemyActive[enemy].bullets){
-				if(enemyActive[enemy].bullets[bullet].update(elapsedTime)){
-					enemyActive[enemy].bullets.splice(bullet, 1);
+			//Passes all the enemy bullets for each enemy into one array of enemy bullets
+			for(var bullet = enemyActive[enemy].bullets.length - 1; bullet >= 0; bullet--){
+				if(enemyActive[enemy].bullets){
+					enemyBullets.push(enemyActive[enemy].bullets[bullet]);
+					enemyActive[enemy].bullets.splice(bullet,1)
 					continue;
-				}
-				if(enemyActive[enemy].bullets[bullet].intersects(player)){
-					//console.log("bullet hit player");
 				}
 			}
 		}
-		for(var bullet in player.bullets){
-			if(player.bullets[bullet].update(elapsedTime)){
-				player.bullets.splice(bullet, 1);
+		//Checks each enemy bullet for going off screen or colliding with player
+		for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
+			if(enemyBullets[bullet].update(elapsedTime)){
+				enemyBullets.splice(bullet, 1);
 				continue;
 			}
-			for(var enemy in enemyActive){
-				if(player.bullets[bullet].intersects(enemyActive[enemy])){
+			if(enemyBullets[bullet].intersects(player)){
+				//console.log("bullet hit player");
+				//Needs to do stuff with removing player and also
+				//one of player's lives
+				enemyBullets.splice(bullet, 1);
+				continue;
+			}
+		}
+
+		//Checks each player bullet for going off screen or colliding with an enemy
+		for(var bullet = playerBullets.length - 1; bullet >= 0; bullet--){
+			if(playerBullets[bullet].update(elapsedTime)){
+				playerBullets.splice(bullet, 1);
+				continue;
+			}
+			for(var enemy = enemyActive.length - 1; enemy >= 0; enemy--){
+				if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
+					//bullet is no longer defined and so it doesn't read its intersect function
 					//console.log("bullet hit enemy");
 					enemyActive[enemy].hit();
 					score += 50;
+					playerBullets.splice(bullet, 1);
 					//console.log(enemy, enemyActive[enemy].health);
 				}
 			}
@@ -138,14 +201,14 @@ Game.model = (function(music, components){
 	//This function renders the Game model
 	that.render = function(renderer){
 		renderer.Player.render(player);
-		for(var bullet in player.bullets){
-			renderer.Bullet.render(player.bullets[bullet]);
+		for(var bullet = 0; bullet < playerBullets.length; bullet++){
+			renderer.Bullet.render(playerBullets[bullet]);
 		}
-		for(var enemy in enemyActive){
+		for(var enemy = 0; enemy < enemyActive.length; enemy++){
 			renderer.Entity.render(enemyActive[enemy]);
-			for(var bullet in enemyActive[enemy].bullets){
-				renderer.Bullet.render(enemyActive[enemy].bullets[bullet]);
-			}
+		}
+		for(var bullet = 0; bullet < enemyBullets.length; bullet++){
+			renderer.Bullet.render(enemyBullets[bullet]);
 		}
 	};
 

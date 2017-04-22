@@ -69,7 +69,7 @@ Game.components.Enemy = function(spec){
 		}
 
 		//Checks if the enemy is off the screen or down to zero health
-		if(spec.center.y > 1.0 || spec.center.x > 1.0 || spec.center.x < 0.0 || spec.health <= 0){
+		if(spec.center.y > 1.01 || spec.center.x > 1.01 || spec.center.x < -0.01 || spec.health <= 0){
 			return true;
 		} else {
 			return false;

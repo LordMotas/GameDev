@@ -12,6 +12,9 @@ Game.renderer.Player = (function(core){
 			console.log(sprite.bomb);
 			Game.renderer.core.drawCircle(sprite.bomb);
 		}
+		//Attempt to do player particle effect for when they die,
+		//but I'm not sure if this is what is actually happening...at all
+		//Game.components.PlayerParticle(sprite.particle, core);
 	}
 
 	return that;
