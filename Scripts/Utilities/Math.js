@@ -37,5 +37,11 @@ Game.utilities.math = (function(){
 		return (cornerDistanceSq <= circle.radiusSq);
 	};
 
+	that.distance = function(pt1x, pt1y, pt2x, pt2y){
+		var distx = Math.abs(pt2x-pt1x);
+		var disty = Math.abs(pt2y-pt1y);
+		return Math.sqrt(distx*distx+disty*disty);
+	}
+
 	return that;
 }());

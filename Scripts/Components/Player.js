@@ -14,6 +14,7 @@ Game.components.Player = function(spec){
 
 	var sprite = null,
 			focus1 = null,
+			death = null,
 			bulletArray = [];
 			that = {
 				get center() { return entity.sprite.center; },
@@ -255,6 +256,13 @@ Game.components.Player = function(spec){
 		spriteSize: spec.size,			// Maintain the size on the sprite
 		spriteCenter: spec.center		// Maintain the center on the sprite
 	});
+
+	//Attempt to implement particle effect when player dies,
+	//but I think this would only make a single particle as a sprite
+	//in place of the player
+	death = Game.components.AnimatedSprite
+
+
 
 	focus1.isAnimated = true;
 

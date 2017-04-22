@@ -26,8 +26,12 @@ Game.loader = (function() {
 			message: 'Components loaded',
 			onComplete: null
 		}, {
-			scripts: ['Components/Patterns/PlayerBulletPattern', 'Components/Patterns/EnemyBulletPattern', 'Components/Patterns/EnemyMovePattern', ],
+			scripts: ['Components/Patterns/PlayerBulletPattern', 'Components/Patterns/EnemyBulletPattern', 'Components/Patterns/EnemyMovePattern'],
 			message: 'Patterns loaded',
+			onComplete: null
+		}, {
+			scripts: ['Components/Particles/BulletParticleDeath', 'Components/Particles/EnemyParticleDeath', 'Components/Particles/PlayerParticleDeath'],
+			message: 'Particles loaded',
 			onComplete: null
 		}, {
 			scripts: ['Input/Keyboard', ],
@@ -109,6 +113,14 @@ Game.loader = (function() {
 		{
 			key: 'player-star',
 			source: '/Images/Items/Star.png'
+		},
+		{
+			key: 'particle-fire',
+			source: '/Images/Particles/fire.png'
+		},
+		{
+			key: 'particle-smoke',
+			source: '/Images/Particles/smoke.png'
 		}
 		];
 

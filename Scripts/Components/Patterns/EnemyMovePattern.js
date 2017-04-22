@@ -14,13 +14,13 @@ Game.components.EnemyMovePattern = function(spec){
 			//Enemy comes from top of screen and then moves off left
 			case 1:
 				time += elapsedTime;
-				if(time > 5000 && event === 0){
+				if(spec.center.y >= .2 && event === 0){
 					//Stop in place for a time
 					temp1 = -(spec.direction.y);
 					spec.direction.x = 0;
 					spec.direction.y = 0;
 					event++;
-				} else if(time > 10000 && event === 1){
+				} else if(time > 12000 && event === 1){
 					//Move off screen to the left
 					spec.direction.x = temp1;
 					event++;
