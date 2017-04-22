@@ -4,12 +4,12 @@ Game.components.EnemyBulletPattern = function(spec){
 	//var math = Game.utilities.math;
 
 	that = {};
-	
+
 	that.makeBullets = function(bulletArray, player){
 		switch(spec.bulletPatternType){
 			case 1:
 				var bullet;
-				Game.music.playRepeatedSounds('Audio/se_shot');
+				Game.music.playRepeatedSounds('Audio/se_tan0');
 				var bulletSet = [];
 
 				for(var i = 0; i < 4; i++){

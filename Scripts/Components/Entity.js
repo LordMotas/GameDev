@@ -52,7 +52,18 @@ Game.components.Entity = function(spec){
 		*/
 	};
 
-	
+	that.updateBomb = function(elapsedTime){
+		spec.radius += 0.1 * (elapsedTime/1000);
+	}
+
+	that.resetBomb = function(elapsedTime){
+		spec.radius = 0.005;
+	}
+
+	that.setRadius = function(value){
+		spec.radius = value;
+	}
+
 
 	return that;
 };

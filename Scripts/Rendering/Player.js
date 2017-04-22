@@ -9,8 +9,8 @@ Game.renderer.Player = (function(core){
 			Game.renderer.AnimatedSprite.render(sprite.focus1);
 		}
 		if(sprite.bombActive){
-			console.log(sprite.bomb);
-			Game.renderer.core.drawCircle(sprite.bomb);
+			//style, fillStyle, center, radius
+			Game.renderer.core.drawCircle("#FFFFFF", sprite.bomb.center, sprite.bomb.radius);
 		}
 		//Attempt to do player particle effect for when they die,
 		//but I'm not sure if this is what is actually happening...at all

@@ -111,7 +111,7 @@ Game.renderer.core = (function(){
 	}
 
 	//Draw a circle
-	function drawCircle(style, fillStyle, center, radius){
+	function drawCircle(style, center, radius){
 		//0.5, 0.5 is to ensure an actual 1 pixel line is drawn.
 		context.strokeStyle = style;
 		context.beginPath();
@@ -120,8 +120,6 @@ Game.renderer.core = (function(){
 			0.5 + world.top + (center.y * world.size),
 			radius * world.size,
 			0, 2 * Math.PI);
-		context.fillStyle = fillStyle;
-		context.fill();
 		context.stroke();
 	}
 
