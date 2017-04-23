@@ -3,6 +3,7 @@ Game.renderer.core = (function(){
 	'use strict';
 	var canvas = null,
 		context = null,
+		totalSeconds = 0,
 		world = {
 			size: 0,
 			top: 0,
@@ -53,6 +54,17 @@ Game.renderer.core = (function(){
 
 		//Resize the canvas to be the correct size
 		resizeCanvas();
+	}
+
+	function drawBackground(background){
+		if(background.image.isReady){
+			background.y += background.speed;
+			context.drawImage(background.image, 240, background.y);
+			context.drawImage(background.image, 240, background.y + background.speed);
+			if(background.y >= -41){
+				background.y = -512;
+			}
+		}
 	}
 
 	//Renders the text based on the provided spec
@@ -163,7 +175,8 @@ Game.renderer.core = (function(){
 		drawLine: drawLine,
 		drawRectangle: drawRectangle,
 		drawCircle: drawCircle,
-		drawImage: drawImage
+		drawImage: drawImage,
+		drawBackground: drawBackground
 	};
 
 }());

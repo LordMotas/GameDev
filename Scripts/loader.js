@@ -22,7 +22,7 @@ playerLives = 3;
 Game.loader = (function() {
 	'use strict';
 	var scriptOrder = [{
-			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player'],
+			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player', 'Components/Item'],
 			message: 'Components loaded',
 			onComplete: null
 		}, {
@@ -121,6 +121,14 @@ Game.loader = (function() {
 		{
 			key: 'particle-smoke',
 			source: '/Images/Particles/smoke.png'
+		},
+		{
+			key: 'background',
+			source: '/Images/background.png'
+		},
+		{
+			key: 'item-small',
+			source: '/Images/Items/Item.png'
 		}
 		];
 

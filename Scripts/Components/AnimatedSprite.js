@@ -23,6 +23,7 @@ Game.components.AnimatedSprite = function(spec) {
 			get height() { return spec.spriteSize.height; },
 			set height(value) { spec.spriteSize.height = value },
 			get center() { return spec.spriteCenter; },
+			set center(value) {spec.spriteCenter = value; },
 			get sprite() { return spec.sprite; },
 			set spriteSheet(value) { spec.spriteSheet = value; }
 		};

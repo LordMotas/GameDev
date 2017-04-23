@@ -39,7 +39,7 @@ Game.components.Player = function(spec){
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
 	var graze = Game.components.Entity({
-		center: { 
+		center: {
 			x: spec.center.x,
 			y: spec.center.y
 		},
@@ -57,9 +57,6 @@ Game.components.Player = function(spec){
 	that.graze = function(other){
 		return(graze.intersects(other));
 	}
-
-	//Use later...maybe
-	//var pattern = Game.components.PlayerBulletPattern(spec);
 
 	//Movement patterns for main player
 	that.moveLeft = function(elapsedTime) {
@@ -254,9 +251,11 @@ Game.components.Player = function(spec){
 		var previousX = spec.center.x,
 				previousY = spec.center.y;
 		entity.sprite.update(elapsedTime, true);
+		entity.sprite.center = spec.center;
 		entity.update(elapsedTime);
 		graze.center = spec.center;
 		focus1.update(elapsedTime, true);
+		focus1.center = spec.center;
 		if(bombActive){
 			bomb.updateBomb(elapsedTime);
 		} else {
@@ -268,8 +267,21 @@ Game.components.Player = function(spec){
 				entity.sprite.spriteSheet = Game.assets['animated-byakuren-standard'];
 			}
 		}
+	}
 
-		//Eventually include update to bullet stuff
+	that.deathAnimation = function(){
+		//Sound effect here
+
+		//Play the animation particle thing
+
+		//Remove the player sprite from the board
+		entity.center = {x: 500, y: 500};
+		entity.sprite.center = {x: 500, y: 500};
+		setTimeout(function(){entity.center = {x: 0.5, y: 0.95};entity.sprite.center = {x: 0.5, y: 0.95};}, 1000);
+		//After one second, place the player back in the original position
+
+		//Do something to show that you're invincible for a few frames
+
 	}
 
 	entity.sprite = Game.components.AnimatedSprite({
