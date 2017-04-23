@@ -13,7 +13,9 @@ Game.components.Bullet = function(spec){
 		set spriteCenter(value) { spec.sprite.center = value; },
 		get radius() { return spec.radius; },
 		get direction() { return spec.direction; },
-		set direction(value) {spec.direction = value; }
+		set direction(value) {spec.direction = value; },
+		get isGraze() { return entity.isGraze; },
+		set isGraze(value) { entity.isGraze = value; }
 	};
 
 	that.intersects = function(other){

@@ -17,7 +17,9 @@ Game.components.Circle = function(spec){
 			set center(value) { spec.center = value; },
 			get radius(){ return spec.radius; },
 			set radius(value){ spec.radius = value; radiusSq = spec.radius * spec.radius; },
-			get radiusSq(){ return radiusSq; }
+			get radiusSq(){ return radiusSq; },
+			get isGraze() { return spec.isGraze; },
+			set isGraze(value) { spec.isGraze = value; }
 		};
 
 	//------------------------------------------------------------------
