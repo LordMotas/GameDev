@@ -1,5 +1,3 @@
-
-//Work on this...
 //------------------------------------------------------------------
 //
 // Defines an enemy.  'spec' is defined as:
@@ -32,7 +30,8 @@ Game.components.Enemy = function(spec){
 			get radius() { return spec.radius; },
 			get bullets() { return bulletArray; },
 			get health() { return spec.health; },
-			get points() { return spec.points; }
+			get points() { return spec.points; },
+			get itemType() { return spec.itemType; }
 	};
 
 	//Inherits entity info
@@ -45,10 +44,13 @@ Game.components.Enemy = function(spec){
 
 	//This is the filler enemy spray of bullets. Scary if we want to keep this one...
 	that.fire = function(elapsedTime){
-		bulletPattern.makeBullets(bulletArray);
+		if(spec.center.y > 0.0 && spec.center.x > 0.0){
+			bulletPattern.makeBullets(bulletArray);
+		}
 	}
 
 	that.hit = function(){
+		Game.music.playRepeatedSounds('Audio/se_damage01');
 		spec.health--;
 	}
 
@@ -74,29 +76,9 @@ Game.components.Enemy = function(spec){
 
 		//Checks if the enemy is off the screen or down to zero health
 		if(spec.center.y > 1.01 || spec.center.x > 1.01 || spec.center.x < -0.01 || spec.health <= 0){
-			/*if(spec.health <= 0){
-				//Drop the item
-				switch(spec.itemType){
-					case 1:
-						items.push(Game.components.Item({
-								center: {x: spec.center.x, y: spec.center.y},
-								direction:  {x: 0, y: -0.1},
-								radius: 0.03,
-								img: Game.assets['item-small']
-							}));
-						break;
-					case 2:
-						items.push(Game.components.Item({
-								center: {x: spec.center.x, y: spec.center.y},
-								direction:  {x: 0, y: -0.1},
-								radius: 0.03,
-								img: Game.assets['item-small']
-							}));
-						break;
-					default:
-						break;
-				}
-			}*/
+			if(spec.health <= 0){
+				Game.music.playSound('Audio/se_enep00');
+			}
 			return true;
 		} else {
 			return false;

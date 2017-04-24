@@ -2,8 +2,6 @@
 Game.model = (function(music, components){
 	'use strict';
 
-	//Variables for the game model go here
-	var that = {};
 	var player = null;
 	var background = {};
 	var enemyQueue;
@@ -15,10 +13,38 @@ Game.model = (function(music, components){
 	var items;
 	var score;
 	var grazeScore;
+	var highScoreArray;
+
+	//Variables for the game model go here
+	var that = {
+		get highScoreArray() { return highScoreArray; },
+	};
 
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
+
+		var storedHighScoreArray = JSON.parse(localStorage.getItem('highScores'));
+
+		if(storedHighScoreArray === null){
+			highScoreArray = [
+				{name: 'Motas-----', score: 5000000},
+				{name: 'Motas-----', score: 4000000},
+				{name: 'Motas-----', score: 3000000},
+				{name: 'Motas-----', score: 2000000},
+				{name: 'Motas-----', score: 1000000}
+			];
+		}else{
+			highScoreArray = storedHighScoreArray;
+		}
+
+		highScoreArray = [
+			{name: 'Motas-----', score: 5000000},
+			{name: 'Motas-----', score: 4000000},
+			{name: 'Motas-----', score: 3000000},
+			{name: 'Motas-----', score: 2000000},
+			{name: 'Motas-----', score: 1000000}
+		];
 
 		background.image = new Image();
 		background.image.isReady = false;
@@ -125,9 +151,12 @@ Game.model = (function(music, components){
 		modelInitialized = true;
 	};
 
-
 	that.score = function(){
 		return score;
+	}
+
+	that.setScore = function(value){
+		score = value;
 	}
 
 	that.grazeScore = function(){
@@ -169,17 +198,55 @@ Game.model = (function(music, components){
 		//Also, continues if enemy is spliced out so it doesn't look for a null enemy
 		for(var enemy = 0; enemy < enemyActive.length; enemy++){
 			if(enemyActive[enemy].update(elapsedTime)){
-				if(enemyActive[enemy].health === 0){
+				if(enemyActive[enemy].health <= 0){
 					score += enemyActive[enemy].points;
 					//console.log(score);
+					//Drop the item
+					console.log(enemyActive[enemy].itemType);
+					switch(enemyActive[enemy].itemType){
+						case 1:
+							items.push(Game.components.Item({
+									center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
+									size: {width:0.05, height:0.05},
+									value : 0.5,
+									direction:  {x: 0, y: -0.15},
+									radius: 0.03,
+									img: Game.assets['item-small']
+								}));
+							break;
+						case 2:
+							items.push(Game.components.Item({
+									center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
+									size: {width:0.05, height:0.05},
+									value : 0.5,
+									direction:  {x: 0, y: -0.15},
+									radius: 0.03,
+									img: Game.assets['item-small']
+								}));
+							break;
+						default:
+							break;
+					}
 				}
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
 			if(enemyActive[enemy].intersects(player) && !player.isInvulnerable){
 				//console.log("player hit an enemy");
-				//Player death sound
 				playerLives--;
+				player.isInvulnerable = true;
+				if(gameOver()){
+					console.log("GAME OVER");
+					//Do a function here that alerts to the game over
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
+					if(checkHighScore()){
+						enterHighScore();
+					}
+				} else {
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
+				}
 			}
 			if(enemyActive[enemy].intersects(player.bomb)){
 				enemyActive[enemy].hit();
@@ -195,20 +262,25 @@ Game.model = (function(music, components){
 			for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
 				if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
 					//console.log("bullet hit player");
-					//Player death sound
 					enemyBullets.splice(bullet, 1);
 					playerLives--;
 					player.isInvulnerable = true;
-					player.deathAnimation();
-					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 					if(gameOver()){
 						console.log("GAME OVER");
-						//Do a function here that alerts to the game over
+						player.deathAnimation();
+						setTimeout(function(){player.isInvulnerable = false;}, 4000);
+						if(checkHighScore()){
+							enterHighScore();
+						}
+					} else {
+						player.deathAnimation();
+						setTimeout(function(){player.isInvulnerable = false;}, 4000);
 					}
 					continue;
 				}
 				if(enemyBullets[bullet].isGraze && enemyBullets[bullet].intersects(player.graze)){
 					enemyBullets[bullet].isGraze = false;
+					music.playRepeatedSounds('Audio/se_graze');
 					grazeScore++;
 					//console.log("Grazing", grazeScore);
 				}
@@ -229,12 +301,17 @@ Game.model = (function(music, components){
 				console.log("bullet hit player");
 				playerLives--;
 				player.isInvulnerable = true;
-				player.deathAnimation();
 				enemyBullets.splice(bullet, 1);
-				setTimeout(function(){player.isInvulnerable = false;}, 4000);
 				if(gameOver()){
 					console.log("GAME OVER");
-					//Do something here that alerts about the game over
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
+					if(checkHighScore()){
+						enterHighScore();
+					}
+				} else {
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 				}
 				continue;
 			}
@@ -247,18 +324,60 @@ Game.model = (function(music, components){
 				continue;
 			}
 			for(var enemy = enemyActive.length - 1; enemy >= 0; enemy--){
-				if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
-					//bullet is no longer defined and so it doesn't read its intersect function
-					//console.log("bullet hit enemy");
-					player.bullets.splice(bullet, 1);
-					enemyActive[enemy].hit();
-					score += 50;
-					playerBullets.splice(bullet, 1);
-					//console.log(enemy, enemyActive[enemy].health);
+				if(playerBullets[bullet] !== undefined){
+					if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
+						//bullet is no longer defined and so it doesn't read its intersect function
+						//console.log("bullet hit enemy");
+						enemyActive[enemy].hit();
+						score += 50;
+						playerBullets.splice(bullet, 1);
+						//console.log(enemy, enemyActive[enemy].health);
+					}
 				}
 			}
 		}
+
+		//Update items array
+		for(var item = items.length - 1; item >= 0; item--){
+			if(items[item].intersects(player.graze)){
+				if(powerLevel < 4.0){
+					powerLevel += items[item].value;
+					music.playSound('Audio/se_item00');
+					if(powerLevel % 1.0 === 0){
+						music.playSound('Audio/se_powerup');
+					}
+					items.splice(item, 1);
+				}
+				continue;
+			}
+			if(items[item].update(elapsedTime)){
+				items.splice(item, 1);
+				continue;
+			}
+		}
 	};
+
+	function checkHighScore(){
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(score > highScoreArray[i].score)
+				return true;
+		}
+		return false;
+	}
+
+	function enterHighScore(){
+		var playerName = prompt("You had a great run! Enter your name (Up to 10 characters)");
+		var highScoreEntry = {name : String(playerName + "----------").slice(0,10), score : score};
+		//Loop through and place it where it goes
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(highScoreEntry.score > highScoreArray[i].score){
+				var temp = highScoreArray[i];
+				highScoreArray[i] = highScoreEntry;
+				highScoreEntry = temp;
+			}
+		}
+		localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+	}
 
 	//This function renders the Game model
 	that.render = function(renderer){
@@ -272,6 +391,9 @@ Game.model = (function(music, components){
 		}
 		for(var bullet = 0; bullet < enemyBullets.length; bullet++){
 			renderer.Bullet.render(enemyBullets[bullet]);
+		}
+		for(var item = 0; item < items.length; item++){
+			renderer.Entity.render(items[item]);
 		}
 	};
 

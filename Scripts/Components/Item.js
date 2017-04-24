@@ -16,6 +16,7 @@ Game.components.Item = function(spec){
 			get center() { return entity.sprite.center; },
 			get sprite() { return entity.sprite; },
 			get radius() { return spec.radius; },
+			get value() { return spec.value; }
 	};
 
 	//Inherits entity info
@@ -27,10 +28,11 @@ Game.components.Item = function(spec){
 	}
 
 	that.update = function(elapsedTime){
+		console.log("updating items");
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
-    if(direction.y <= 0.1){
-      direction.y += 0.01;
+    if(spec.direction.y <= 0.1){
+      spec.direction.y += 0.001;
     }
 		//Checks if the item is off the bottom of the screen
 		if(spec.center.y > 1.0){
