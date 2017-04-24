@@ -5,18 +5,29 @@ Game.model = (function(music, components){
 	//Variables for the game model go here
 	var that = {};
 	var player = null;
+	var background = {};
 	var enemyQueue;
 	var enemyQueueInterval;
 	var enemyQueueTimeFrame;
 	var enemyActive;
 	var enemyBullets;
 	var playerBullets;
+	var items;
 	var score;
 	var grazeScore;
 
 	//This function initializes the Game model
 	that.initialize = function(){
 		console.log("Now initializing the game model...");
+
+		background.image = new Image();
+		background.image.isReady = false;
+		background.image.src = '/Images/background.png';//Game.assets['background'];
+		background.image.onload = function(){
+			background.image.isReady = true;
+		};
+		background.y = -512;
+		background.speed = 1;
 
 		//Initializes the player info
 		player = components.Player({
@@ -35,41 +46,44 @@ Game.model = (function(music, components){
 		enemyQueueTimeFrame = 9000;
 		enemyBullets = [];
 		playerBullets = [];
+		items = [];
 		score = 0;
 		grazeScore = 0;
 
 		// Generates the 2D array of enemies to pull from
 		// during the game
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < 5; i++){
 			enemyQueue[i] = [];
-			for(var j = 0; j < 5; j++){
+			for(var j = 0; j < 4; j++){
 				if(i === 0 || i === 3){
 					enemyQueue[i].push(components.Enemy({
 						center: {x: j/10 + .1, y: -0.2},
 						size: {width:0.075, height:0.075},
 						direction: {x:0, y:0.02*j + .04},
-						radius: .01,
+						radius: .035,
 						bulletPatternType: 1,
 						movePatternType: 1,
 						health: 10,
 						points: 500,
 						timeStamp: performance.now(),
 						interval: 750,
-						waitTime: 1000
+						waitTime: 1000,
+						itemType: 1
 					}));
 				} else if(i === 1 || i === 2){
 					enemyQueue[i].push(components.Enemy({
 						center: {x: .01*j + .1, y: j/6 - 1},
 						size: {width:0.075, height:0.075},
 						direction: {x:0, y:0.01*i + .01},
-						radius: .01,
+						radius: .035,
 						bulletPatternType: 2,
 						movePatternType: 2,
 						health: 10,
 						points: 500,
 						timeStamp: performance.now(),
 						interval: 750,
-						waitTime: 500
+						waitTime: 500,
+						itemType: 2
 					}));
 				}
 			}
@@ -115,7 +129,7 @@ Game.model = (function(music, components){
 	that.score = function(){
 		return score;
 	}
-	
+
 	that.grazeScore = function(){
 		return grazeScore;
 	}
@@ -157,13 +171,13 @@ Game.model = (function(music, components){
 			if(enemyActive[enemy].update(elapsedTime)){
 				if(enemyActive[enemy].health === 0){
 					score += enemyActive[enemy].points;
-					console.log(score);
+					//console.log(score);
 				}
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
 			if(enemyActive[enemy].intersects(player) && !player.isInvulnerable){
-				console.log("player hit an enemy");
+				//console.log("player hit an enemy");
 				//Player death sound
 				playerLives--;
 			}
@@ -180,17 +194,15 @@ Game.model = (function(music, components){
 			}
 			for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
 				if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
-					console.log("bullet hit player");
+					//console.log("bullet hit player");
 					//Player death sound
 					enemyBullets.splice(bullet, 1);
 					playerLives--;
 					player.isInvulnerable = true;
-					//Run death animation here
-					//Respawn the player here
+					player.deathAnimation();
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 					if(gameOver()){
 						console.log("GAME OVER");
-						//alert("GAME OVER!!!");
 						//Do a function here that alerts to the game over
 					}
 					continue;
@@ -198,7 +210,7 @@ Game.model = (function(music, components){
 				if(enemyBullets[bullet].isGraze && enemyBullets[bullet].intersects(player.graze)){
 					enemyBullets[bullet].isGraze = false;
 					grazeScore++;
-					console.log("Grazing", grazeScore);
+					//console.log("Grazing", grazeScore);
 				}
 				if(enemyBullets[bullet].intersects(player.bomb)){
 					//console.log("bomb hits bullets");
@@ -213,11 +225,17 @@ Game.model = (function(music, components){
 				enemyBullets.splice(bullet, 1);
 				continue;
 			}
-			if(enemyBullets[bullet].intersects(player)){
-				//console.log("bullet hit player");
-				//Needs to do stuff with removing player and also
-				//one of player's lives
+			if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
+				console.log("bullet hit player");
+				playerLives--;
+				player.isInvulnerable = true;
+				player.deathAnimation();
 				enemyBullets.splice(bullet, 1);
+				setTimeout(function(){player.isInvulnerable = false;}, 4000);
+				if(gameOver()){
+					console.log("GAME OVER");
+					//Do something here that alerts about the game over
+				}
 				continue;
 			}
 		}
@@ -244,6 +262,7 @@ Game.model = (function(music, components){
 
 	//This function renders the Game model
 	that.render = function(renderer){
+		renderer.core.drawBackground(background);
 		renderer.Player.render(player);
 		for(var bullet = 0; bullet < playerBullets.length; bullet++){
 			renderer.Bullet.render(playerBullets[bullet]);

@@ -17,7 +17,8 @@
 //		movePatternType: (1,2,3, or 4),
 //		health: (higher value),
 //		timeStamp: performance.now(),
-//		interval: interval
+//		interval: interval,
+//		itemType: (1 or 2)
 //	}
 //
 //------------------------------------------------------------------
@@ -63,6 +64,9 @@ Game.components.Enemy = function(spec){
 		entity.sprite.update(elapsedTime, true);
 		entity.update(elapsedTime);
 		spec.timeStamp += elapsedTime;
+		//for(var item in items){
+			//items[item].update(elapsedTime);
+		//}
 		if(spec.timeStamp > spec.interval){
 			spec.timeStamp = 0;
 			that.fire(elapsedTime);
@@ -70,6 +74,29 @@ Game.components.Enemy = function(spec){
 
 		//Checks if the enemy is off the screen or down to zero health
 		if(spec.center.y > 1.01 || spec.center.x > 1.01 || spec.center.x < -0.01 || spec.health <= 0){
+			/*if(spec.health <= 0){
+				//Drop the item
+				switch(spec.itemType){
+					case 1:
+						items.push(Game.components.Item({
+								center: {x: spec.center.x, y: spec.center.y},
+								direction:  {x: 0, y: -0.1},
+								radius: 0.03,
+								img: Game.assets['item-small']
+							}));
+						break;
+					case 2:
+						items.push(Game.components.Item({
+								center: {x: spec.center.x, y: spec.center.y},
+								direction:  {x: 0, y: -0.1},
+								radius: 0.03,
+								img: Game.assets['item-small']
+							}));
+						break;
+					default:
+						break;
+				}
+			}*/
 			return true;
 		} else {
 			return false;
