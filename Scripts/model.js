@@ -18,6 +18,8 @@ Game.model = (function(music, components){
 	//Variables for the game model go here
 	var that = {
 		get highScoreArray() { return highScoreArray; },
+		get enemyQueueLength() { return enemyQueue.length; },
+		get enemyActiveLength() { return enemyActive.length; }
 	};
 
 	//This function initializes the Game model
@@ -48,7 +50,7 @@ Game.model = (function(music, components){
 
 		background.image = new Image();
 		background.image.isReady = false;
-		background.image.src = '/Images/background.png';//Game.assets['background'];
+		background.image.src = '/Images/background.png';
 		background.image.onload = function(){
 			background.image.isReady = true;
 		};
@@ -63,7 +65,7 @@ Game.model = (function(music, components){
 			isFocused: false,
 			direction: {x:0, y:0},
 			bombActive: false,
-			radius: 0.005
+			radius: 0.003,
 		});
 
 		enemyActive = [];
@@ -78,12 +80,13 @@ Game.model = (function(music, components){
 
 		// Generates the 2D array of enemies to pull from
 		// during the game
-		for(var i = 0; i < 5; i++){
+		for(var i = 0; i < 0; i++){
 			enemyQueue[i] = [];
-			for(var j = 0; j < 4; j++){
+			for(var j = 0; j < 0; j++){
 				if(i === 0 || i === 3){
 					enemyQueue[i].push(components.Enemy({
 						center: {x: j/10 + .1, y: -0.2},
+						img : Game.assets['animated-enemy-red'],
 						size: {width:0.075, height:0.075},
 						direction: {x:0, y:0.02*j + .04},
 						radius: .035,
@@ -94,11 +97,13 @@ Game.model = (function(music, components){
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 1000,
-						itemType: 1
+						itemType: Random.nextRange(1,3),
+						isBoss : false,
 					}));
 				} else if(i === 1 || i === 2){
 					enemyQueue[i].push(components.Enemy({
 						center: {x: .01*j + .1, y: j/6 - 1},
+						img : Game.assets['animated-enemy-blue'],
 						size: {width:0.075, height:0.075},
 						direction: {x:0, y:0.01*i + .01},
 						radius: .035,
@@ -109,11 +114,30 @@ Game.model = (function(music, components){
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 500,
-						itemType: 2
+						itemType: Random.nextRange(1,3),
+						isBoss : false,
 					}));
 				}
 			}
 		}
+		//Put the boss into the queue
+		enemyQueue[0] = [];
+		enemyQueue[0].push(components.Enemy({
+			center: {x: 0.5, y: -0.05},
+			img : Game.assets['animated-mokou'],
+			size: {width:0.1, height:0.1},
+			direction: {x:0, y:0.1},
+			radius: 0.05,
+			bulletPatternType: 4,
+			movePatternType: 3,
+			health: 20,
+			points: 100000,
+			timeStamp: performance.now(),
+			interval: 1000,
+			waitTime: 5000,
+			isBoss : true,
+			//func : function(){music.resetMusic('Audio/mainBGM'); music.playMusic('Audio/bossBGM')}
+		}));
 
 
 		/*Test setups for immediate enemies*/
@@ -147,6 +171,13 @@ Game.model = (function(music, components){
 		// 	}));
 		// }
 
+		powerLevel = 0.0;
+		pointLevel = 0;
+		setScore(0);
+		setGraze(0);
+		playerLives = 3;
+		extendArray = [50, 125, 250, 300, 450];
+		extendIterator = 0;
 		//Allow the main program to render and update the model
 		modelInitialized = true;
 	};
@@ -161,6 +192,18 @@ Game.model = (function(music, components){
 
 	that.grazeScore = function(){
 		return grazeScore;
+	}
+
+	that.setGraze = function(value){
+		grazeScore = value;
+	}
+
+	function setGraze(value){
+		grazeScore = value;
+	}
+
+	function setScore(value){
+		score = value;
 	}
 
 	function gameOver(){
@@ -190,6 +233,9 @@ Game.model = (function(music, components){
 
 			for(var i = 0; i < enemyQueue[0].length; i++){
 				enemyActive.push(enemyQueue[0][i]);
+				if(enemyQueue[0][i].hasOwnProperty('func') && enemyQueue[0][i].func !== undefined){
+					enemyQueue[0][i].func();
+				}
 			}
 			enemyQueue.splice(0,1);
 		}
@@ -202,28 +248,46 @@ Game.model = (function(music, components){
 					score += enemyActive[enemy].points;
 					//console.log(score);
 					//Drop the item
-					console.log(enemyActive[enemy].itemType);
 					switch(enemyActive[enemy].itemType){
 						case 1:
+						for(var i = 0; i < Random.nextRange(3,6); i++){
 							items.push(Game.components.Item({
-									center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
-									size: {width:0.05, height:0.05},
-									value : 0.5,
-									direction:  {x: 0, y: -0.15},
-									radius: 0.03,
-									img: Game.assets['item-small']
-								}));
+								center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
+								size: {width:0.035, height:0.035},
+								value : 0.05,
+								direction:  {x: Random.nextGaussian(0, 0.15), y: Random.nextGaussian(-0.07, 0.07)},
+								radius: 0.03,
+								img: Game.assets['power-small'],
+								itemType : 1,
+							}));
+						}
 							break;
 						case 2:
-							items.push(Game.components.Item({
+							for(var i = 0; i < Random.nextRange(3,6); i++){
+								items.push(Game.components.Item({
 									center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
-									size: {width:0.05, height:0.05},
-									value : 0.5,
-									direction:  {x: 0, y: -0.15},
+									size: {width:0.035, height:0.035},
+									value : 0.05,
+									direction:  {x: Random.nextGaussian(0, 0.15), y: Random.nextGaussian(-0.07, 0.07)},
 									radius: 0.03,
-									img: Game.assets['item-small']
+									img: Game.assets['point'],
+									itemType : 2,
 								}));
+							}
 							break;
+						case 3:
+						for(var i = 0; i < Random.nextRange(3,6); i++){
+							items.push(Game.components.Item({
+								center: {x: enemyActive[enemy].center.x, y: enemyActive[enemy].center.y},
+								size: {width:0.035, height:0.035},
+								value : 0.5,
+								direction:  {x: Random.nextGaussian(0, 0.15), y: Random.nextGaussian(-0.07, 0.07)},
+								radius: 0.03,
+								img: Game.assets['power-large'],
+								itemType : 3,
+							}));
+						}
+						break;
 						default:
 							break;
 					}
@@ -236,7 +300,6 @@ Game.model = (function(music, components){
 				playerLives--;
 				player.isInvulnerable = true;
 				if(gameOver()){
-					console.log("GAME OVER");
 					//Do a function here that alerts to the game over
 					player.deathAnimation();
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
@@ -266,7 +329,6 @@ Game.model = (function(music, components){
 					playerLives--;
 					player.isInvulnerable = true;
 					if(gameOver()){
-						console.log("GAME OVER");
 						player.deathAnimation();
 						setTimeout(function(){player.isInvulnerable = false;}, 4000);
 						if(checkHighScore()){
@@ -303,7 +365,6 @@ Game.model = (function(music, components){
 				player.isInvulnerable = true;
 				enemyBullets.splice(bullet, 1);
 				if(gameOver()){
-					console.log("GAME OVER");
 					player.deathAnimation();
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 					if(checkHighScore()){
@@ -329,7 +390,7 @@ Game.model = (function(music, components){
 						//bullet is no longer defined and so it doesn't read its intersect function
 						//console.log("bullet hit enemy");
 						enemyActive[enemy].hit();
-						score += 50;
+						score += 100;
 						playerBullets.splice(bullet, 1);
 						//console.log(enemy, enemyActive[enemy].health);
 					}
@@ -340,14 +401,21 @@ Game.model = (function(music, components){
 		//Update items array
 		for(var item = items.length - 1; item >= 0; item--){
 			if(items[item].intersects(player.graze)){
-				if(powerLevel < 4.0){
+				if(powerLevel < 4.0 && (items[item].itemType === 1 || items[item].itemType === 3)){
+					var prevPowerLevel = powerLevel;
 					powerLevel += items[item].value;
-					music.playSound('Audio/se_item00');
-					if(powerLevel % 1.0 === 0){
+					if(powerLevel > 4.0){
+						powerLevel = 4.0;
+					}
+					if((prevPowerLevel < 1.0 && powerLevel >= 1.0) || (prevPowerLevel < 2.0 && powerLevel >= 2.0) ||
+					(prevPowerLevel < 3.0 && powerLevel >= 3.0) || (prevPowerLevel < 4.0 && powerLevel >= 4.0)){
 						music.playSound('Audio/se_powerup');
 					}
-					items.splice(item, 1);
+				} else {
+					pointLevel += 1;
 				}
+				music.playRepeatedSounds('Audio/se_item00');
+				items.splice(item, 1);
 				continue;
 			}
 			if(items[item].update(elapsedTime)){

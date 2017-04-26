@@ -43,8 +43,15 @@ Game.components.EnemyMovePattern = function(spec){
 					spec.direction.x = -(spec.direction.x);
 				}
 				break;
-
-
+			case 3:
+				time += elapsedTime;
+				if(spec.center.y >= 0.2 && event === 0){
+					//Stop in place
+					spec.direction.x = 0;
+					spec.direction.y = 0;
+					event++;
+				}
+				break;
 		}
 	}
 

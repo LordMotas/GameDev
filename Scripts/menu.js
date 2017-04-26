@@ -353,6 +353,7 @@ Game.menu = (function(music, input, model){
 							if(!modelInitialized){
 								model.initialize();
 								cancelNextRequest = false;
+								isGameOver = false;
 							} else {
 								cancelNextRequest = false;
 							}
@@ -484,6 +485,12 @@ Game.menu = (function(music, input, model){
 			menus[currentMenu].menuItem[1].text.text = 'Score      ' + String('000000' + model.score()).slice(-7)
 			menus[currentMenu].menuItem[3].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
 			menus[currentMenu].menuItem[4].text.text = 'Graze ' + String(model.grazeScore()).slice(-7);
+			menus[currentMenu].menuItem[5].text.text = 'Point ' + String('0' + pointLevel).slice(-2) + '/' + extendArray[extendIterator];
+			if(pointLevel >= extendArray[extendIterator]){
+				extendIterator++;
+				playerLives++;
+				music.playSound('Audio/se_extend');
+			}
 			if(playerLives === 0 && isGameOver === false){
 				//Swap over to the pause menu and update it to show gameover stuff
 				setTimeout(function(){
@@ -492,14 +499,11 @@ Game.menu = (function(music, input, model){
 					menus[4].subtitle.text = 'Game Over';
 					//Change the function to allow continues
 					menus[4].menuItem[0].func = function(){
-						console.log("Doing things");
 						cancelNextRequest = false;
 						playerLives = 3;
 						isGameOver = false;
 						model.setScore(model.score() * 0.5);
-						console.log(menus[1].func);
 						menus[1].func = function(){
-							console.log("Continuing game");
 							menus[4].subtitle.text = 'Game Paused';
 							menus[4].menuItem[0].text.text = 'Resume';
 							menus[4].menuItem[0].func = function(){menus[1].display = true; music.pauseMusic('Audio/mainBGM');};
@@ -508,12 +512,13 @@ Game.menu = (function(music, input, model){
 								//music.playMusic('Audio/mainBGM');
 								if(!modelInitialized){
 									model.initialize();
+									cancelNextRequest = false;
+									isGameOver = false;
 								} else {
 									cancelNextRequest = false;
 								}
 							}
 						};
-						console.log(menus[1].func);
 					};
 					//Change Resume to Continue
 					menus[4].menuItem[0].text.text = 'Continue';
@@ -521,8 +526,62 @@ Game.menu = (function(music, input, model){
 				}, 800);
 				isGameOver = true;
 			}
+			//The last enemy in the queue has been beaten and there are no more enemies left
+			if(model.enemyQueueLength === 0 && model.enemyActiveLength === 0 && isGameOver === false){
+				//Change the pause menu to say Victory!
+				setTimeout(function(){
+					cancelNextRequest = true;
+					//Change Game Paused to Victory
+					menus[4].subtitle.text = 'Victory!';
+					var previous = menus[4].menuItem[0];
+					menus[4].menuItem[0] = menus[4].menuItem[1];
+					setTimeout(function(){
+						if(checkHighScore()){
+							enterHighScore();
+						}
+					}, 800);
+					menus[1].func = function(){
+						menus[4].subtitle.text = 'Game Paused';
+						menus[4].menuItem[0] = previous;
+						menus[4].menuItem[1].text.text = 'Quit';
+						music.resetMusic('Audio/menuRemix');
+						//music.playMusic('Audio/mainBGM');
+						if(!modelInitialized){
+							model.initialize();
+							cancelNextRequest = false;
+							isGameOver = false;
+						} else {
+							cancelNextRequest = false;
+						}
+					};
+					that.selectMenu(false);
+				}, 800);
+				isGameOver = true;
+			}
 		}
 	};
+
+	function checkHighScore(){
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(model.score() > highScoreArray[i].score)
+				return true;
+		}
+		return false;
+	}
+
+	function enterHighScore(){
+		var playerName = prompt("You had a great run! Enter your name (Up to 10 characters)");
+		var highScoreEntry = {name : String(playerName + "----------").slice(0,10), score : model.score()};
+		//Loop through and place it where it goes
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(highScoreEntry.score > highScoreArray[i].score){
+				var temp = highScoreArray[i];
+				highScoreArray[i] = highScoreEntry;
+				highScoreEntry = temp;
+			}
+		}
+		localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+	}
 
 	that.toggleMenuDown = function(){
 		//Move the menu selection down one

@@ -16,7 +16,8 @@
 //		health: (higher value),
 //		timeStamp: performance.now(),
 //		interval: interval,
-//		itemType: (1 or 2)
+//		itemType: (1 or 2),
+//		isBoss: true or false
 //	}
 //
 //------------------------------------------------------------------
@@ -31,7 +32,10 @@ Game.components.Enemy = function(spec){
 			get bullets() { return bulletArray; },
 			get health() { return spec.health; },
 			get points() { return spec.points; },
-			get itemType() { return spec.itemType; }
+			get itemType() { return spec.itemType; },
+			set itemType(value) { spec.itemType = value; },
+			get isBoss() { return spec.isBoss; },
+			get func() { return spec.func; }
 	};
 
 	//Inherits entity info
@@ -75,19 +79,41 @@ Game.components.Enemy = function(spec){
 		}
 
 		//Checks if the enemy is off the screen or down to zero health
-		if(spec.center.y > 1.01 || spec.center.x > 1.01 || spec.center.x < -0.01 || spec.health <= 0){
-			if(spec.health <= 0){
-				Game.music.playSound('Audio/se_enep00');
+		if(!spec.isBoss){
+			if(spec.center.y > 1.01 || spec.center.x > 1.01 || spec.center.x < -0.01 || spec.health <= 0){
+				if(spec.health <= 0){
+					Game.music.playSound('Audio/se_enep00');
+				}
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		} else {
-			return false;
+			//Checks for boss
+			if(spec.health <= 0){
+				//Switch patterns
+				spec.bulletPatternType++;
+				if (spec.bulletPatternType === 7){
+					spec.interval = 1;
+				} else {
+					spec.interval = 1000;
+				}
+				if(spec.bulletPatternType > 11){
+					Game.music.playSound('Audio/se_enep01');
+					return true;
+				} else {
+					//Play the transition
+					Game.music.playSound('Audio/se_ch00');
+					spec.health += 20;
+					return false;
+				}
+			}
 		}
 	}
 
 	//Generates the enemy sprite animation
 	entity.sprite = Game.components.AnimatedSprite({
-		spriteSheet: Game.assets['animated-enemy1'],
+		spriteSheet: spec.img,
 		spriteCount: 4,
 		spriteTime: [125, 125, 125, 125],
 		animationScale: spec.animationScale,
