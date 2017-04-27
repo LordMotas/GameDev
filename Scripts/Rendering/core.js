@@ -37,6 +37,21 @@ Game.renderer.core = (function(){
 		context.clearRect(0, 0, canvas.width, canvas.height);
 	}
 
+	function drawParticle(spec){
+		context.save();
+
+		context.translate(spec.center.x, spec.center.y);
+		context.rotate(spec.rotation);
+		context.translate(-spec.center.x, -spec.center.y);
+		context.drawImage(
+			spec.image,
+			(spec.center.x - spec.size/2)*world.size + world.left,
+			(spec.center.y - spec.size/2)*world.size + world.top,
+			spec.size*world.size, spec.size*world.size);
+
+		context.restore();
+	}
+
 	//The initialization of the canvas
 	function initialize(){
 		canvas = document.getElementById('canvas-main');
@@ -176,7 +191,8 @@ Game.renderer.core = (function(){
 		drawRectangle: drawRectangle,
 		drawCircle: drawCircle,
 		drawImage: drawImage,
-		drawBackground: drawBackground
+		drawBackground: drawBackground,
+		drawParticle: drawParticle
 	};
 
 }());

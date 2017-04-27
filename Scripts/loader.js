@@ -3,6 +3,7 @@ var Game = {
 	components: {},
 	renderer: {},
 	assets: {},
+	utilities: {},
 },
 myKeyboard,
 cancelNextRequest = false,
@@ -13,6 +14,7 @@ pointLevel = 49,
 playerLives = 3,
 extendArray = [50, 125, 250, 300, 450],
 extendIterator = 0;
+background = {};
 
 //------------------------------------------------------------------
 //
@@ -25,7 +27,7 @@ extendIterator = 0;
 Game.loader = (function() {
 	'use strict';
 	var scriptOrder = [{
-			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player', 'Components/Item'],
+			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player', 'Components/Item', 'Components/QuadTree', 'Components/ParticleSystem'],
 			message: 'Components loaded',
 			onComplete: null
 		}, {
@@ -37,8 +39,8 @@ Game.loader = (function() {
 			message: 'Particles loaded',
 			onComplete: null
 		}, {
-			scripts: ['Utilities/Random'],
-			message: 'Random loaded',
+			scripts: ['Utilities/Random','Utilities/Math'],
+			message: 'Utilities loaded',
 			onComplete: null
 		}, {
 			scripts: ['Input/Keyboard', ],
@@ -126,6 +128,10 @@ Game.loader = (function() {
 			source: '/Images/Bullets/Circles/BlueCircle.png'
 		},
 		{
+			key: 'enemy-bullet-yellow',
+			source: '/Images/Bullets/Circles/YellowCircle.png'
+		},
+		{
 			key: 'enemy-bullet-red-large',
 			source: '/Images/Bullets/LargeCircles/RedCircleLarge.png'
 		},
@@ -152,6 +158,10 @@ Game.loader = (function() {
 		{
 			key: 'background',
 			source: '/Images/background.png'
+		},
+		{
+			key: 'backgroundRed',
+			source: '/Images/backgroundRed.png'
 		},
 		{
 			key: 'power-small',

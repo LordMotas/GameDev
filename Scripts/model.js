@@ -3,7 +3,6 @@ Game.model = (function(music, components){
 	'use strict';
 
 	var player = null;
-	var background = {};
 	var enemyQueue;
 	var enemyQueueInterval;
 	var enemyQueueTimeFrame;
@@ -14,12 +13,16 @@ Game.model = (function(music, components){
 	var score;
 	var grazeScore;
 	var highScoreArray;
+	var particleSystem;
+	var quadTree = null;
+	var quadTreeCriteria = 40;
 
 	//Variables for the game model go here
 	var that = {
 		get highScoreArray() { return highScoreArray; },
 		get enemyQueueLength() { return enemyQueue.length; },
-		get enemyActiveLength() { return enemyActive.length; }
+		get enemyActiveLength() { return enemyActive.length; },
+		get quadTreeCriteria() { return quadTreeCriteria; }
 	};
 
 	//This function initializes the Game model
@@ -66,6 +69,7 @@ Game.model = (function(music, components){
 			direction: {x:0, y:0},
 			bombActive: false,
 			radius: 0.003,
+			particleType: 1,
 		});
 
 		enemyActive = [];
@@ -80,9 +84,9 @@ Game.model = (function(music, components){
 
 		// Generates the 2D array of enemies to pull from
 		// during the game
-		for(var i = 0; i < 0; i++){
+		for(var i = 0; i < 5; i++){
 			enemyQueue[i] = [];
-			for(var j = 0; j < 0; j++){
+			for(var j = 0; j < 4; j++){
 				if(i === 0 || i === 3){
 					enemyQueue[i].push(components.Enemy({
 						center: {x: j/10 + .1, y: -0.2},
@@ -94,6 +98,7 @@ Game.model = (function(music, components){
 						movePatternType: 1,
 						health: 10,
 						points: 500,
+						particleType: 2,
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 1000,
@@ -111,6 +116,7 @@ Game.model = (function(music, components){
 						movePatternType: 2,
 						health: 10,
 						points: 500,
+						particleType: 2,
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 500,
@@ -121,8 +127,8 @@ Game.model = (function(music, components){
 			}
 		}
 		//Put the boss into the queue
-		enemyQueue[0] = [];
-		enemyQueue[0].push(components.Enemy({
+		enemyQueue[5] = [];
+		enemyQueue[5].push(components.Enemy({
 			center: {x: 0.5, y: -0.05},
 			img : Game.assets['animated-mokou'],
 			size: {width:0.1, height:0.1},
@@ -130,46 +136,26 @@ Game.model = (function(music, components){
 			radius: 0.05,
 			bulletPatternType: 4,
 			movePatternType: 3,
-			health: 20,
+			health: 400,
 			points: 100000,
 			timeStamp: performance.now(),
 			interval: 1000,
 			waitTime: 5000,
+			particleType: 2,
 			isBoss : true,
-			//func : function(){music.resetMusic('Audio/mainBGM'); music.playMusic('Audio/bossBGM')}
+			func : function(){music.resetMusic('Audio/mainBGM'); music.playMusic('Audio/bossBGM')}
 		}));
 
-
-		/*Test setups for immediate enemies*/
-		// for(var i = 0; i < 8; i++){
-		// 	enemyActive[i] = components.Enemy({
-		// 		center: {x: i/8 + .1, y:0.1},
-		// 		size: {width:0.075, height:0.075},
-		// 		direction: {x:0, y:0.02*i + .02},
-		// 		radius: .01,
-		// 		bulletPatternType: 1,
-		// 		movePatternType: 1,
-		// 		health: 10,
-		// 		points: 500,
-		// 		timeStamp: performance.now(),
-		// 		interval: 750
-		// 	});
-		// }
-
-		// for(var i = 0; i < 5; i++){
-		// 	enemyActive.push(components.Enemy({
-		// 		center: {x: .01*i + .1, y: i/6 - 1},
-		// 		size: {width:0.075, height:0.075},
-		// 		direction: {x:0, y:0.01*i + .01},
-		// 		radius: .01,
-		// 		bulletPatternType: 2,
-		// 		movePatternType: 2,
-		// 		health: 10,
-		// 		points: 500,
-		// 		timeStamp: performance.now(),
-		// 		interval: 750
-		// 	}));
-		// }
+		particleSystem = Game.components.ParticleSystem({
+			image : {
+				player : '/Images/Bullets/Circles/YellowCircle.png',
+				enemy : '/Images/Bullets/Circles/BlueCircle.png',
+				bullet : '/Images/Particles/smoke.png'
+			},
+			center: {x: .5, y: .5},
+			speed: {mean: .05, stdev: .01},
+			lifetime: {mean: 4, stdev: 1}
+		}, Game.renderer.core);
 
 		powerLevel = 0.0;
 		pointLevel = 0;
@@ -180,7 +166,23 @@ Game.model = (function(music, components){
 		extendIterator = 0;
 		//Allow the main program to render and update the model
 		modelInitialized = true;
+
+		buildQuadTree();
 	};
+
+	function buildQuadTree() {
+		var enemy = 0;
+		var enemyBullet = 0;
+		var playerBullet = 0;
+
+		//Insert things into the quad tree
+		quadTree = components.QuadTree(quadTreeCriteria);
+		//Put in the player
+		quadTree.insert(player);
+		for(enemyBullet = 0; enemyBullet < enemyBullets.length; enemyBullet++){
+			quadTree.insert(enemyBullets[enemyBullet]);
+		}
+	}
 
 	that.score = function(){
 		return score;
@@ -210,8 +212,49 @@ Game.model = (function(music, components){
 		return (playerLives === 0);
 	}
 
+	function decision(e1, e2) {
+		if((e1.isPlayer && e2.isBullet) || (e2.isPlayer && e1.isBullet))
+			return true;
+		else
+			return false;
+	}
+
 	//This function is used to update the state of the Game model
 	that.update = function(elapsedTime){
+		var other = null,
+				enemyBullet = 0;
+
+		buildQuadTree();
+
+		//Player is hit by bullet
+		for(enemyBullet = 0; enemyBullet < enemyBullets.length; enemyBullet++){
+			other = quadTree.intersects(enemyBullets[enemyBullet]);
+			if (other) {
+				console.log("Doing it?");
+				if(decision(enemyBullets[enemyBullet], other)){
+					console.log("Doing it?");
+					if(!player.isInvulnerable){
+						playerLives--;
+						console.log("Doing it?");
+						particleSystem.create(player);
+						player.isInvulnerable = true;
+						enemyBullets.splice(bullet, 1);
+						if(gameOver()){
+							player.deathAnimation();
+							setTimeout(function(){player.isInvulnerable = false;}, 4000);
+							if(checkHighScore()){
+								enterHighScore();
+							}
+						} else {
+							player.deathAnimation();
+							setTimeout(function(){player.isInvulnerable = false;}, 4000);
+						}
+						continue;
+					}
+				}
+			}
+		}
+
 		player.update(elapsedTime);
 		//Idea for looping backwards:
 		// http://stackoverflow.com/questions/9882284/looping-through-array-and-removing-items-without-breaking-for-loop
@@ -246,6 +289,7 @@ Game.model = (function(music, components){
 			if(enemyActive[enemy].update(elapsedTime)){
 				if(enemyActive[enemy].health <= 0){
 					score += enemyActive[enemy].points;
+					particleSystem.create(enemyActive[enemy]);
 					//console.log(score);
 					//Drop the item
 					switch(enemyActive[enemy].itemType){
@@ -295,7 +339,7 @@ Game.model = (function(music, components){
 				enemyActive.splice(enemy, 1);
 				continue;
 			}
-			if(enemyActive[enemy].intersects(player) && !player.isInvulnerable){
+			/*if(enemyActive[enemy].intersects(player) && !player.isInvulnerable){
 				//console.log("player hit an enemy");
 				playerLives--;
 				player.isInvulnerable = true;
@@ -310,7 +354,7 @@ Game.model = (function(music, components){
 					player.deathAnimation();
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 				}
-			}
+			}*/
 			if(enemyActive[enemy].intersects(player.bomb)){
 				enemyActive[enemy].hit();
 			}
@@ -322,35 +366,35 @@ Game.model = (function(music, components){
 					continue;
 				}
 			}
-			for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
-				if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
-					//console.log("bullet hit player");
-					enemyBullets.splice(bullet, 1);
-					playerLives--;
-					player.isInvulnerable = true;
-					if(gameOver()){
-						player.deathAnimation();
-						setTimeout(function(){player.isInvulnerable = false;}, 4000);
-						if(checkHighScore()){
-							enterHighScore();
-						}
-					} else {
-						player.deathAnimation();
-						setTimeout(function(){player.isInvulnerable = false;}, 4000);
+		}
+		for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
+			/*if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
+				//console.log("bullet hit player");
+				enemyBullets.splice(bullet, 1);
+				playerLives--;
+				player.isInvulnerable = true;
+				if(gameOver()){
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
+					if(checkHighScore()){
+						enterHighScore();
 					}
-					continue;
+				} else {
+					player.deathAnimation();
+					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 				}
-				if(enemyBullets[bullet].isGraze && enemyBullets[bullet].intersects(player.graze)){
-					enemyBullets[bullet].isGraze = false;
-					music.playRepeatedSounds('Audio/se_graze');
-					grazeScore++;
-					//console.log("Grazing", grazeScore);
-				}
-				if(enemyBullets[bullet].intersects(player.bomb)){
-					//console.log("bomb hits bullets");
-					enemyBullets.splice(bullet, 1);
-					continue;
-				}
+				continue;
+			}*/
+			if(enemyBullets[bullet].isGraze && enemyBullets[bullet].intersects(player.graze)){
+				enemyBullets[bullet].isGraze = false;
+				music.playRepeatedSounds('Audio/se_graze');
+				grazeScore++;
+				//console.log("Grazing", grazeScore);
+			}
+			if(enemyBullets[bullet].intersects(player.bomb)){
+				//console.log("bomb hits bullets");
+				enemyBullets.splice(bullet, 1);
+				continue;
 			}
 		}
 		//Checks each enemy bullet for going off screen or colliding with player
@@ -359,7 +403,7 @@ Game.model = (function(music, components){
 				enemyBullets.splice(bullet, 1);
 				continue;
 			}
-			if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
+			/*if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
 				console.log("bullet hit player");
 				playerLives--;
 				player.isInvulnerable = true;
@@ -375,7 +419,7 @@ Game.model = (function(music, components){
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 				}
 				continue;
-			}
+			}*/
 		}
 
 		//Checks each player bullet for going off screen or colliding with an enemy
@@ -386,11 +430,10 @@ Game.model = (function(music, components){
 			}
 			for(var enemy = enemyActive.length - 1; enemy >= 0; enemy--){
 				if(playerBullets[bullet] !== undefined){
-					if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
-						//bullet is no longer defined and so it doesn't read its intersect function
-						//console.log("bullet hit enemy");
+					if(playerBullets[bullet].intersects(enemyActive[enemy])){
 						enemyActive[enemy].hit();
 						score += 100;
+						//particleSystem.create(player.bullets[bullet]);
 						playerBullets.splice(bullet, 1);
 						//console.log(enemy, enemyActive[enemy].health);
 					}
@@ -423,6 +466,7 @@ Game.model = (function(music, components){
 				continue;
 			}
 		}
+		particleSystem.update(elapsedTime);
 	};
 
 	function checkHighScore(){
@@ -463,6 +507,7 @@ Game.model = (function(music, components){
 		for(var item = 0; item < items.length; item++){
 			renderer.Entity.render(items[item]);
 		}
+		particleSystem.render();
 	};
 
 	that.moveLeft = function(elapsedTime){

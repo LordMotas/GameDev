@@ -32,10 +32,12 @@ Game.components.Enemy = function(spec){
 			get bullets() { return bulletArray; },
 			get health() { return spec.health; },
 			get points() { return spec.points; },
+			get particleType() { return spec.particleType; },
 			get itemType() { return spec.itemType; },
 			set itemType(value) { spec.itemType = value; },
 			get isBoss() { return spec.isBoss; },
-			get func() { return spec.func; }
+			get func() { return spec.func; },
+			set img(value) { spec.img = value; }
 	};
 
 	//Inherits entity info
@@ -54,7 +56,15 @@ Game.components.Enemy = function(spec){
 	}
 
 	that.hit = function(){
-		Game.music.playRepeatedSounds('Audio/se_damage01');
+		if(spec.isBoss){
+			if(spec.health <= 100){
+				Game.music.playRepeatedSounds('Audio/se_damage01');
+			} else {
+				Game.music.playRepeatedSounds('Audio/se_damage00');
+			}
+		} else {
+			Game.music.playRepeatedSounds('Audio/se_damage00');
+		}
 		spec.health--;
 	}
 
@@ -91,12 +101,48 @@ Game.components.Enemy = function(spec){
 		} else {
 			//Checks for boss
 			if(spec.health <= 0){
+				var healthToGain = 500;
 				//Switch patterns
 				spec.bulletPatternType++;
 				if (spec.bulletPatternType === 7){
 					spec.interval = 1;
+				} else if(spec.bulletPatternType === 11){
+					spec.interval = 25;
 				} else {
 					spec.interval = 1000;
+				}
+				if(spec.bulletPatternType === 4 || spec.bulletPatternType === 6 || spec.bulletPatternType === 8 || spec.bulletPatternType === 10){
+					healthToGain = 300;
+					spec.img = Game.assets['animated-mokou'];
+					entity.sprite.spritSheet = Game.assets['animated-mokou'];
+					spec.size = {width: 0.1, height: 0.1};
+					entity.sprite.size = {width: 0.1, height: 0.1};
+					var previousY = background.y;
+					background.image = new Image();
+					background.image.isReady = false;
+					background.image.src = '/Images/background.png';
+					background.image.onload = function(){
+						background.image.isReady = true;
+					};
+					background.y = previousY;
+					background.speed = 1;
+				} else {
+					spec.img = Game.assets['animated-mokou-phoenix'];
+					entity.sprite.spriteSheet = Game.assets['animated-mokou-phoenix'];
+					spec.size = {width: 0.4, height: 0.4};
+					entity.sprite.size = {width: 0.4, height: 0.4};
+					var previousY = background.y;
+					background.image = new Image();
+					background.image.isReady = false;
+					background.image.src = '/Images/backgroundRed.png';
+					background.image.onload = function(){
+						background.image.isReady = true;
+					};
+					background.y = previousY;
+					background.speed = 1;
+				}
+				if(spec.bulletPatternType === 11){
+					healthToGain = 800;
 				}
 				if(spec.bulletPatternType > 11){
 					Game.music.playSound('Audio/se_enep01');
@@ -104,7 +150,7 @@ Game.components.Enemy = function(spec){
 				} else {
 					//Play the transition
 					Game.music.playSound('Audio/se_ch00');
-					spec.health += 20;
+					spec.health += healthToGain;
 					return false;
 				}
 			}

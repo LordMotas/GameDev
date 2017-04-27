@@ -28,6 +28,16 @@ var Random = (function(){
 		};
 	}
 
+	//Generate a uniformly selected vector (x,y) around the circumference of a unit circle
+	function nextHalfCircleVector(scale){
+		var angle = Math.random() * Math.PI;
+
+		return {
+			x: Math.cos(angle) * scale,
+			y: Math.sin(angle) * scale
+		};
+	}
+
 	//Generate a normally distributed random number
 	function nextGaussian(mean, stdDev){
 		var x1 = 0,
@@ -61,7 +71,8 @@ var Random = (function(){
 		nextDouble : nextDouble,
 		nextRange : nextRange,
 		nextCircleVector : nextCircleVector,
-		nextGaussian : nextGaussian
+		nextGaussian : nextGaussian,
+		nextHalfCircleVector: nextHalfCircleVector
 	};
 
 }());
