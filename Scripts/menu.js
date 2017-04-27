@@ -11,6 +11,7 @@ Game.menu = (function(music, input, model){
 		resultMenu = [],
 		pauseMenu = [],
 		creditsMenu = [],
+		isGameOver = false,
 		//Text for the main menu
 		textStart = {
 			text : 'Start',
@@ -250,7 +251,7 @@ Game.menu = (function(music, input, model){
 
 		//Craft the resultMenu
 		for(var option in highScoreText){
-			resultMenu.push({text : highScoreText[option], back : 0, func : function(){enterHighScore();}});
+			resultMenu.push({text : highScoreText[option], back : 0});
 		}
 
 		//Craft the keyConfigMenu
@@ -268,8 +269,8 @@ Game.menu = (function(music, input, model){
 		creditsMenu.push({text : creditsText, back : 0});
 
 		//Craft the pauseMenu
-		pauseMenu.push({text : pauseGameResume, select : 1, func : function(){cancelNextRequest = false}});
-		pauseMenu.push({text : pauseGameQuit, select : 0});
+		pauseMenu.push({text : pauseGameResume, select : 1, func : function(){cancelNextRequest = false;}});
+		pauseMenu.push({text : pauseGameQuit, select : 0, func : function(){modelInitialized = false;}});
 
 		//index 0
 		menus.push({
@@ -351,6 +352,8 @@ Game.menu = (function(music, input, model){
 							//music.playMusic('Audio/mainBGM');
 							if(!modelInitialized){
 								model.initialize();
+								cancelNextRequest = false;
+								isGameOver = false;
 							} else {
 								cancelNextRequest = false;
 							}
@@ -380,6 +383,7 @@ Game.menu = (function(music, input, model){
 				],
 				ids: [],
 			},
+			func : function(){ updateHighScores(); }
 		});
 
 		//index 3
@@ -427,9 +431,9 @@ Game.menu = (function(music, input, model){
 				handlers : [
 					function(){that.toggleMenuDown();},
 					function(){that.toggleMenuUp();},
-					function(){that.selectMenu();},
+					function(){that.executeFunction(); that.selectMenu();},
 					function(){that.cancelButton();},
-					function(){that.selectMenu();}
+					function(){that.executeFunction(); that.selectMenu();}
 				],
 				keys : [
 					input.KeyEvent.DOM_VK_DOWN,
@@ -481,8 +485,103 @@ Game.menu = (function(music, input, model){
 			menus[currentMenu].menuItem[1].text.text = 'Score      ' + String('000000' + model.score()).slice(-7)
 			menus[currentMenu].menuItem[3].text.text = 'Power ' + powerLevel.toFixed(2) + '/4.00';
 			menus[currentMenu].menuItem[4].text.text = 'Graze ' + String(model.grazeScore()).slice(-7);
+			menus[currentMenu].menuItem[5].text.text = 'Point ' + String('0' + pointLevel).slice(-2) + '/' + extendArray[extendIterator];
+			if(pointLevel >= extendArray[extendIterator]){
+				extendIterator++;
+				playerLives++;
+				music.playSound('Audio/se_extend');
+			}
+			if(playerLives === 0 && isGameOver === false){
+				//Swap over to the pause menu and update it to show gameover stuff
+				setTimeout(function(){
+					cancelNextRequest = true;
+					//Change Game Paused to Game Over
+					menus[4].subtitle.text = 'Game Over';
+					//Change the function to allow continues
+					menus[4].menuItem[0].func = function(){
+						cancelNextRequest = false;
+						playerLives = 3;
+						isGameOver = false;
+						model.setScore(model.score() * 0.5);
+						menus[1].func = function(){
+							menus[4].subtitle.text = 'Game Paused';
+							menus[4].menuItem[0].text.text = 'Resume';
+							menus[4].menuItem[0].func = function(){menus[1].display = true; music.pauseMusic('Audio/mainBGM');};
+							menus[1].func = function(){
+								music.resetMusic('Audio/menuRemix');
+								//music.playMusic('Audio/mainBGM');
+								if(!modelInitialized){
+									model.initialize();
+									cancelNextRequest = false;
+									isGameOver = false;
+								} else {
+									cancelNextRequest = false;
+								}
+							}
+						};
+					};
+					//Change Resume to Continue
+					menus[4].menuItem[0].text.text = 'Continue';
+					that.selectMenu(false);
+				}, 800);
+				isGameOver = true;
+			}
+			//The last enemy in the queue has been beaten and there are no more enemies left
+			if(model.enemyQueueLength === 0 && model.enemyActiveLength === 0 && isGameOver === false){
+				//Change the pause menu to say Victory!
+				setTimeout(function(){
+					cancelNextRequest = true;
+					//Change Game Paused to Victory
+					menus[4].subtitle.text = 'Victory!';
+					var previous = menus[4].menuItem[0];
+					menus[4].menuItem[0] = menus[4].menuItem[1];
+					setTimeout(function(){
+						if(checkHighScore()){
+							enterHighScore();
+						}
+					}, 800);
+					menus[1].func = function(){
+						menus[4].subtitle.text = 'Game Paused';
+						menus[4].menuItem[0] = previous;
+						menus[4].menuItem[1].text.text = 'Quit';
+						music.resetMusic('Audio/menuRemix');
+						//music.playMusic('Audio/mainBGM');
+						if(!modelInitialized){
+							model.initialize();
+							cancelNextRequest = false;
+							isGameOver = false;
+						} else {
+							cancelNextRequest = false;
+						}
+					};
+					that.selectMenu(false);
+				}, 800);
+				isGameOver = true;
+			}
 		}
 	};
+
+	function checkHighScore(){
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(model.score() > highScoreArray[i].score)
+				return true;
+		}
+		return false;
+	}
+
+	function enterHighScore(){
+		var playerName = prompt("You had a great run! Enter your name (Up to 10 characters)");
+		var highScoreEntry = {name : String(playerName + "----------").slice(0,10), score : model.score()};
+		//Loop through and place it where it goes
+		for(var i = 0; i < highScoreArray.length; i++){
+			if(highScoreEntry.score > highScoreArray[i].score){
+				var temp = highScoreArray[i];
+				highScoreArray[i] = highScoreEntry;
+				highScoreEntry = temp;
+			}
+		}
+		localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+	}
 
 	that.toggleMenuDown = function(){
 		//Move the menu selection down one
@@ -509,6 +608,7 @@ Game.menu = (function(music, input, model){
 			menus[currentMenu].menuItem[menuSelection].func();
 		}
 	};
+
 	that.changeKeyBinding = function(oldKey){
 		music.playSound('Audio/se_ok');
 		window.addEventListener('keydown', function test(event) {
@@ -614,22 +714,31 @@ Game.menu = (function(music, input, model){
 		}
 	}
 
-	function enterHighScore(){
-		var playerName = prompt("You had a great run! Enter your name (Up to 10 characters)");
-		var highScoreEntry = {name : String(playerName + "----------").slice(0,10), score : playerScore};
-		//Loop through and place it where it goes
-		for(var i = 0; i < highScoreArray.length; i++){
-			if(highScoreEntry.score > highScoreArray[i].score){
-				var temp = highScoreArray[i];
-				highScoreArray[i] = highScoreEntry;
-				highScoreEntry = temp;
-			}
+	function updateHighScores(){
+
+		var storedHighScoreArray = JSON.parse(localStorage.getItem('highScores'));
+
+		//This is the command needed to make it happen
+		//localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+		if(storedHighScoreArray === null){
+			highScoreArray = [
+				{name: 'Motas-----', score: 5000000},
+				{name: 'Motas-----', score: 4000000},
+				{name: 'Motas-----', score: 3000000},
+				{name: 'Motas-----', score: 2000000},
+				{name: 'Motas-----', score: 1000000}
+			];
+		}else{
+			highScoreArray = storedHighScoreArray;
 		}
-		localStorage.setItem("highScores", JSON.stringify(highScoreArray));
+
 		//Show the updated scores on the page
 		for(var highScore in menus[2].menuItem){
-			menus[2].menuItem[highScore].text.text = highScoreArray[highScore].name + highScoreArray[highScore].score;
+			menus[2].menuItem[highScore].text.text = highScoreArray[highScore].name + String("000000" + highScoreArray[highScore].score).slice(-7);
 		}
+
+		//Update the ingame high score as well
+		menus[1].menuItem[0].text.text = "HIScore  " + highScoreArray[0].score;
 	}
 
 	//Selects the option currently highlighted

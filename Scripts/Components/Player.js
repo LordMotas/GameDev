@@ -92,111 +92,130 @@ Game.components.Player = function(spec){
 	};
 
 	that.playerFire = function(elapsedTime){
-		var bullet;
-		//Create the positions of the bullets and their respective
-		Game.music.playRepeatedSounds('Audio/se_shot');
-		var bulletSet = [];
-		if(spec.isFocused){
-			if(powerLevel >= 0.0){
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
-				});
+	if(spec.center.x > 0.0 && spec.center.y > 0.0){
+			var bullet;
+			//Create the positions of the bullets and their respective
+			Game.music.playRepeatedSounds('Audio/se_shot');
+			var bulletSet = [];
+			if(spec.isFocused){
+				if(powerLevel >= 0.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 1.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 2.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 3.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 4.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
+					});
+				}
+			} else {
+				if(powerLevel >= 0.0){
+					bulletSet.push({
+						direction : {x : 0, y : -0.75},
+						center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0, y : -0.75},
+						center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 1.0){
+					bulletSet.push({
+						direction : {x : 0.05, y : -0.75},
+						center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : -0.05, y : -0.75},
+						center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 2.0){
+					bulletSet.push({
+						direction : {x : 0.10, y : -0.75},
+						center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : -0.10, y : -0.75},
+						center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 3.0){
+					bulletSet.push({
+						direction : {x : 0.15, y : -0.75},
+						center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : -0.15, y : -0.75},
+						center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
+					});
+				}
+				if(powerLevel >= 4.0){
+					bulletSet.push({
+						direction : {x : 0.20, y : -0.75},
+						center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : -0.20, y : -0.75},
+						center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
+					});
+				}
 			}
-			if(powerLevel >= 1.0){
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
+			for(var index in bulletSet){
+				bullet = Game.components.Bullet({
+					direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
+					center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
+					radius: .005,
+					sprite: Game.components.AnimatedSprite({
+						spriteSheet: Game.assets['animated-player-bullet'],
+						spriteCount: 12,
+						spriteTime: [125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125],
+						animationScale: spec.animationScale,
+						spriteSize: {width: 0.05, height: 0.05},			// Maintain the size on the sprite
+						spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
+						})
 				});
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 2.0){
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 3.0){
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 4.0){
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : 0.0, y : -0.75},
-					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
-				});
-			}
-		} else {
-			if(powerLevel >= 0.0){
-				bulletSet.push({
-					direction : {x : 0, y : -0.75},
-					center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : 0, y : -0.75},
-					center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 1.0){
-				bulletSet.push({
-					direction : {x : 0.05, y : -0.75},
-					center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : -0.05, y : -0.75},
-					center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 2.0){
-				bulletSet.push({
-					direction : {x : 0.10, y : -0.75},
-					center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : -0.10, y : -0.75},
-					center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 3.0){
-				bulletSet.push({
-					direction : {x : 0.15, y : -0.75},
-					center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : -0.15, y : -0.75},
-					center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
-				});
-			}
-			if(powerLevel >= 4.0){
-				bulletSet.push({
-					direction : {x : 0.20, y : -0.75},
-					center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
-				});
-				bulletSet.push({
-					direction : {x : -0.20, y : -0.75},
-					center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
-				});
+				bullet.isAnimated = true;
+				bulletArray.push(bullet);
 			}
 		}
 		for(var index in bulletSet){
@@ -220,19 +239,20 @@ Game.components.Player = function(spec){
 	}
 
 	that.playerBomb = function(elapsedTime){
-		if(!bombActive){
-			if(powerLevel >= 1.0){
-				powerLevel -= 1.0;
-				bomb = Game.components.Entity(spec);
-				bomb.radius = 0.005;
-				bomb.center = spec.center;
+		if(spec.center.x > 0.0 && spec.center.y > 0.0){
+			if(!bombActive){
+				if(powerLevel >= 1.0){
+					Game.music.playSound('Audio/se_nep00');
+					powerLevel -= 1.0;
+					bomb = Game.components.Entity(spec);
+					bomb.radius = 0.005;
+					bomb.center = spec.center;
 
-				focus1.isAnimated = true;
-				bombActive = true;
-				isInvulnerable = true;
-				setTimeout(function(){bombActive = false; isInvulnerable = false;}, 3000);
-			} else {
-				console.log("Player doesn't have enough power to do so");
+					focus1.isAnimated = true;
+					bombActive = true;
+					isInvulnerable = true;
+					setTimeout(function(){bombActive = false; isInvulnerable = false;}, 3500);
+				}
 			}
 		}
 	}
@@ -273,18 +293,25 @@ Game.components.Player = function(spec){
 
 	that.deathAnimation = function(){
 		//Sound effect here
-
+		Game.music.playSound('Audio/se_pldead00');
 		//Play the animation particle thing
 
 		//Remove the player sprite from the board
 		entity.center = {x: 500, y: 500};
 		entity.sprite.center = {x: 500, y: 500};
-		setTimeout(function(){entity.center = {x: 0.5, y: 0.95};entity.sprite.center = {x: 0.5, y: 0.95};}, 1000);
 		//After one second, place the player back in the original position
-
-		//Do something to show that you're invincible for a few frames
-
+		setTimeout(function(){entity.center = {x: 0.5, y: 0.95};entity.sprite.center = {x: 0.5, y: 0.95};}, 1000);
 	}
+
+	/*that.gameOverAnimation = function(){
+		//Sound effect here
+		Game.music.playSound('Audio/se_pldead00');
+		//Play the animation particle thing
+
+		//Remove the player sprite from the board
+		entity.center = {x: 500, y: 500};
+		entity.sprite.center = {x: 500, y: 500};
+	}*/
 
 	entity.sprite = Game.components.AnimatedSprite({
 		spriteSheet: Game.assets['animated-byakuren-standard'],

@@ -8,8 +8,11 @@ myKeyboard,
 cancelNextRequest = false,
 modelInitialized = false,
 elapsedTime,
-powerLevel = 0.0;
-playerLives = 3;
+powerLevel = 0.0,
+pointLevel = 49,
+playerLives = 3,
+extendArray = [50, 125, 250, 300, 450],
+extendIterator = 0;
 
 //------------------------------------------------------------------
 //
@@ -32,6 +35,10 @@ Game.loader = (function() {
 		}, {
 			scripts: ['Components/ParticleSystem'],
 			message: 'Particles loaded',
+			onComplete: null
+		}, {
+			scripts: ['Utilities/Random'],
+			message: 'Random loaded',
 			onComplete: null
 		}, {
 			scripts: ['Input/Keyboard', ],
@@ -91,16 +98,36 @@ Game.loader = (function() {
 			source: '/Images/Player/bullets.png'
 		},
 		{
-			key: 'animated-enemy1',
-			source: '/Images/Enemies/Enemy1.png'
+			key: 'animated-enemy-blue',
+			source: '/Images/Enemies/EnemyBlue.png'
+		},
+		{
+			key: 'animated-enemy-red',
+			source: '/Images/Enemies/EnemyRed.png'
+		},
+		{
+			key: 'animated-enemy-green',
+			source: '/Images/Enemies/EnemyGreen.png'
+		},
+		{
+			key: 'animated-enemy-yellow',
+			source: '/Images/Enemies/EnemyYellow.png'
 		},
 		{
 			key: 'enemy-bullet-red-small',
 			source: '/Images/Bullets/SmallCircles/RedCircleSmall.png'
 		},
 		{
+			key: 'enemy-bullet-blue-small',
+			source: '/Images/Bullets/SmallCircles/BlueCircleSmall.png'
+		},
+		{
 			key: 'enemy-bullet-red',
 			source: '/Images/Bullets/Circles/RedCircle.png'
+		},
+		{
+			key: 'enemy-bullet-blue',
+			source: '/Images/Bullets/Circles/BlueCircle.png'
 		},
 		{
 			key: 'enemy-bullet-red-large',
@@ -131,8 +158,16 @@ Game.loader = (function() {
 			source: '/Images/background.png'
 		},
 		{
-			key: 'item-small',
-			source: '/Images/Items/Item.png'
+			key: 'power-small',
+			source: '/Images/Items/power.png'
+		},
+		{
+			key: 'power-large',
+			source: '/Images/Items/powerLarge.png'
+		},
+		{
+			key: 'point',
+			source: '/Images/Items/point.png'
 		}
 		];
 

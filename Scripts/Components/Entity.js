@@ -7,6 +7,7 @@
 //		center: {x, y},
 //		direction:  {x, y},
 //		radius:
+//		moveRate
 //	}
 //
 //------------------------------------------------------------------
@@ -16,6 +17,13 @@ Game.components.Entity = function(spec){
 
 	Object.defineProperty(that, 'direction', {
 		value: spec.direction,
+		writable: true,
+		enumerable: true,
+		configurable: true
+	});
+
+	Object.defineProperty(that, 'moveRate', {
+		value: spec.moveRate,
 		writable: true,
 		enumerable: true,
 		configurable: true
@@ -38,19 +46,13 @@ Game.components.Entity = function(spec){
 	//------------------------------------------------------------------
 	that.update = function(elapsedTime){
 		// Divide by 1000 to convert elapsedTime from milliseconds to seconds
-		spec.center.x += (spec.direction.x * elapsedTime / 1000);
-		spec.center.y += (spec.direction.y * elapsedTime / 1000);
-
-		/*
-		This code is for bouncing off of walls if a circle hits the wall
-		// If the circle hits the world walls, reflect its direction.
-		if((spec.center.x < spec.radius) || (spec.center.x > (1.0 - spec.radius))){
-			spec.direction.x *= -1;
+		if(spec.moveRate === undefined){
+			spec.center.x += (spec.direction.x * elapsedTime / 1000);
+			spec.center.y += (spec.direction.y * elapsedTime / 1000);
+		} else {
+			spec.center.x += (spec.direction.x * spec.moveRate * elapsedTime / 1000);
+			spec.center.y += (spec.direction.y * spec.moveRate * elapsedTime / 1000);
 		}
-		if((spec.center.y < spec.radius) || (spec.center.y > (1.0 - spec.radius))){
-			spec.direction.y *= -1;
-		}
-		*/
 	};
 
 	that.updateBomb = function(elapsedTime){
