@@ -27,6 +27,7 @@ Game.components.EnemyBulletPattern = function(spec){
 						direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 						center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
 						radius: .01,
+						particleType: 3,
 						sprite: Game.components.AnimatedSprite({
 							spriteSheet: Game.assets['enemy-bullet-red-small'],
 							spriteCount: 1,
@@ -58,6 +59,7 @@ Game.components.EnemyBulletPattern = function(spec){
 						direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 						center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
 						radius: .005,
+						particleType: 3,
 						sprite: Game.components.AnimatedSprite({
 							spriteSheet: Game.assets['animated-player-bullet'],
 							spriteCount: 12,
@@ -88,6 +90,7 @@ Game.components.EnemyBulletPattern = function(spec){
 						direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 						center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
 						radius: .005,
+						particleType: 3,
 						sprite: Game.components.AnimatedSprite({
 							spriteSheet: Game.assets['animated-player-bullet'],
 							spriteCount: 12,

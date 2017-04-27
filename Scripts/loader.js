@@ -30,7 +30,7 @@ Game.loader = (function() {
 			message: 'Patterns loaded',
 			onComplete: null
 		}, {
-			scripts: ['Components/Particles/BulletParticleDeath', 'Components/Particles/EnemyParticleDeath', 'Components/Particles/PlayerParticleDeath'],
+			scripts: ['Components/ParticleSystem'],
 			message: 'Particles loaded',
 			onComplete: null
 		}, {
@@ -64,6 +64,10 @@ Game.loader = (function() {
 		},	{
 			scripts: ['main'],
 			message: 'Main loaded',
+			onComplete: null
+		}, {
+			scripts: [/*'Utilities/Math',*/ 'Utilities/Random'],
+			message: 'Utilities loaded',
 			onComplete: null
 		}],
 		assetOrder = [{
@@ -186,6 +190,7 @@ Game.loader = (function() {
 			entry = assets[0];
 			loadAsset(entry.source,
 				function(asset) {
+					console.log(entry.source, 'the source');
 					onSuccess(entry, asset);
 					assets.splice(0, 1);
 					loadAssets(assets, onSuccess, onError, onComplete);

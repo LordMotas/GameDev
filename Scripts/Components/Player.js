@@ -33,7 +33,8 @@ Game.components.Player = function(spec){
 				set bomb(value){ bomb = value; },
 				get isInvulnerable() { return isInvulnerable; },
 				set isInvulnerable(value) { isInvulnerable = value; },
-				get playerLives() { return playerLives; }
+				get playerLives() { return playerLives; },
+				get particleType() { return spec.particleType; }
 			};
 
 	//Inherits character info
@@ -203,6 +204,7 @@ Game.components.Player = function(spec){
 				direction: {x:bulletSet[index].direction.x, y:bulletSet[index].direction.y},
 				center: {x:bulletSet[index].center.x, y:bulletSet[index].center.y},
 				radius: .005,
+				particleType: 3,
 				sprite: Game.components.AnimatedSprite({
 					spriteSheet: Game.assets['animated-player-bullet'],
 					spriteCount: 12,

@@ -32,7 +32,8 @@ Game.components.Enemy = function(spec){
 			get radius() { return spec.radius; },
 			get bullets() { return bulletArray; },
 			get health() { return spec.health; },
-			get points() { return spec.points; }
+			get points() { return spec.points; },
+			get particleType() { return spec.particleType; }
 	};
 
 	//Inherits entity info

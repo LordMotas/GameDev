@@ -15,6 +15,7 @@ Game.model = (function(music, components){
 	var items;
 	var score;
 	var grazeScore;
+	var particleSystem;
 
 	//This function initializes the Game model
 	that.initialize = function(){
@@ -37,7 +38,8 @@ Game.model = (function(music, components){
 			isFocused: false,
 			direction: {x:0, y:0},
 			bombActive: false,
-			radius: 0.005
+			radius: 0.005,
+			particleType: 1
 		});
 
 		enemyActive = [];
@@ -68,7 +70,8 @@ Game.model = (function(music, components){
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 1000,
-						itemType: 1
+						itemType: 1,
+						particleType: 2
 					}));
 				} else if(i === 1 || i === 2){
 					enemyQueue[i].push(components.Enemy({
@@ -83,43 +86,25 @@ Game.model = (function(music, components){
 						timeStamp: performance.now(),
 						interval: 750,
 						waitTime: 500,
-						itemType: 2
+						itemType: 2,
+						particleType: 2
 					}));
 				}
 			}
 		}
 
+		console.log(Game.assets['particle-fire']);
+		particleSystem = Game.components.ParticleSystem({
+			image : {
+				player : '/Images/Bullets/Circles/YellowCircle.png',
+				enemy : '/Images/Bullets/Circles/BlueCircle.png',
+				bullet : '/Images/Particles/smoke.png'
+			},
+			center: {x: .5, y: .5},
+			speed: {mean: .05, stdev: .01},
+			lifetime: {mean: 4, stdev: 1}
+		}, Game.renderer.core);
 
-		/*Test setups for immediate enemies*/
-		// for(var i = 0; i < 8; i++){
-		// 	enemyActive[i] = components.Enemy({
-		// 		center: {x: i/8 + .1, y:0.1},
-		// 		size: {width:0.075, height:0.075},
-		// 		direction: {x:0, y:0.02*i + .02},
-		// 		radius: .01,
-		// 		bulletPatternType: 1,
-		// 		movePatternType: 1,
-		// 		health: 10,
-		// 		points: 500,
-		// 		timeStamp: performance.now(),
-		// 		interval: 750
-		// 	});
-		// }
-
-		// for(var i = 0; i < 5; i++){
-		// 	enemyActive.push(components.Enemy({
-		// 		center: {x: .01*i + .1, y: i/6 - 1},
-		// 		size: {width:0.075, height:0.075},
-		// 		direction: {x:0, y:0.01*i + .01},
-		// 		radius: .01,
-		// 		bulletPatternType: 2,
-		// 		movePatternType: 2,
-		// 		health: 10,
-		// 		points: 500,
-		// 		timeStamp: performance.now(),
-		// 		interval: 750
-		// 	}));
-		// }
 
 		//Allow the main program to render and update the model
 		modelInitialized = true;
@@ -144,6 +129,9 @@ Game.model = (function(music, components){
 		//Idea for looping backwards:
 		// http://stackoverflow.com/questions/9882284/looping-through-array-and-removing-items-without-breaking-for-loop
 		for(var bullet = player.bullets.length - 1; bullet >= 0; bullet--){
+			if(player.bullets[bullet] == undefined){
+				console.log("here it is...");
+			}
 			playerBullets.push(player.bullets[bullet]);
 			player.bullets.splice(bullet, 1);
 		}
@@ -171,6 +159,7 @@ Game.model = (function(music, components){
 			if(enemyActive[enemy].update(elapsedTime)){
 				if(enemyActive[enemy].health === 0){
 					score += enemyActive[enemy].points;
+					particleSystem.create(enemyActive[enemy]);
 					//console.log(score);
 				}
 				enemyActive.splice(enemy, 1);
@@ -196,9 +185,12 @@ Game.model = (function(music, components){
 				if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
 					//console.log("bullet hit player");
 					//Player death sound
+					particleSystem.create(enemyBullets[bullet]);
 					enemyBullets.splice(bullet, 1);
 					playerLives--;
 					player.isInvulnerable = true;
+					//Test of the particle system
+					particleSystem.create(player);
 					player.deathAnimation();
 					setTimeout(function(){player.isInvulnerable = false;}, 4000);
 					if(gameOver()){
@@ -221,14 +213,11 @@ Game.model = (function(music, components){
 		}
 		//Checks each enemy bullet for going off screen or colliding with player
 		for(var bullet = enemyBullets.length - 1; bullet >= 0; bullet--){
-			if(enemyBullets[bullet].update(elapsedTime)){
-				enemyBullets.splice(bullet, 1);
-				continue;
-			}
 			if(enemyBullets[bullet].intersects(player) && !player.isInvulnerable){
 				console.log("bullet hit player");
 				playerLives--;
 				player.isInvulnerable = true;
+				particleSystem.create(player);
 				player.deathAnimation();
 				enemyBullets.splice(bullet, 1);
 				setTimeout(function(){player.isInvulnerable = false;}, 4000);
@@ -238,18 +227,23 @@ Game.model = (function(music, components){
 				}
 				continue;
 			}
+			if(enemyBullets[bullet].update(elapsedTime)){
+				enemyBullets.splice(bullet, 1);
+				continue;
+			}
 		}
 
 		//Checks each player bullet for going off screen or colliding with an enemy
 		for(var bullet = playerBullets.length - 1; bullet >= 0; bullet--){
-			if(playerBullets[bullet].update(elapsedTime)){
-				playerBullets.splice(bullet, 1);
-				continue;
-			}
 			for(var enemy = enemyActive.length - 1; enemy >= 0; enemy--){
+				if(playerBullets[bullet] === undefined){
+					break;
+					console.log(bullet, "here it is...");
+				}
 				if(playerBullets[bullet].intersects(enemyActive[enemy])){ //Gives a weird error here sometimes where the player
 					//bullet is no longer defined and so it doesn't read its intersect function
 					//console.log("bullet hit enemy");
+					particleSystem.create(player.bullets[bullet]);
 					player.bullets.splice(bullet, 1);
 					enemyActive[enemy].hit();
 					score += 50;
@@ -257,7 +251,13 @@ Game.model = (function(music, components){
 					//console.log(enemy, enemyActive[enemy].health);
 				}
 			}
+			if(playerBullets[bullet].update(elapsedTime)){
+				playerBullets.splice(bullet, 1);
+				//console.log(bullet, "Spliced and diced");
+				continue;
+			}
 		}
+		particleSystem.update(elapsedTime);
 	};
 
 	//This function renders the Game model
@@ -273,6 +273,7 @@ Game.model = (function(music, components){
 		for(var bullet = 0; bullet < enemyBullets.length; bullet++){
 			renderer.Bullet.render(enemyBullets[bullet]);
 		}
+		particleSystem.render();
 	};
 
 	that.moveLeft = function(elapsedTime){

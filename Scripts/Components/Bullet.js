@@ -15,7 +15,8 @@ Game.components.Bullet = function(spec){
 		get direction() { return spec.direction; },
 		set direction(value) {spec.direction = value; },
 		get isGraze() { return entity.isGraze; },
-		set isGraze(value) { entity.isGraze = value; }
+		set isGraze(value) { entity.isGraze = value; },
+		get particleType() { return spec.particleType; }
 	};
 
 	that.intersects = function(other){
