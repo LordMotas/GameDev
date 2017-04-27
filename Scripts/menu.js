@@ -300,7 +300,9 @@ Game.menu = (function(music, input, model){
 								menus[i].display = false;
 							}
 							menus[0].display = true;
-							//music.playMusic('Audio/menuRemix');
+							music.playMusic('Audio/menuRemix');
+							music.resetMusic('Audio/mainBGM');
+							music.resetMusic('Audio/bossBGM');
 						}
 		});
 
@@ -349,7 +351,7 @@ Game.menu = (function(music, input, model){
 			},
 			func : function(){
 							music.resetMusic('Audio/menuRemix');
-							//music.playMusic('Audio/mainBGM');
+							music.playMusic('Audio/mainBGM');
 							if(!modelInitialized){
 								model.initialize();
 								cancelNextRequest = false;
@@ -471,7 +473,7 @@ Game.menu = (function(music, input, model){
 			},
 		});
 
-		//music.playMusic('Audio/menuRemix');
+		music.playMusic('Audio/menuRemix');
 
 	};
 
@@ -509,7 +511,7 @@ Game.menu = (function(music, input, model){
 							menus[4].menuItem[0].func = function(){menus[1].display = true; music.pauseMusic('Audio/mainBGM');};
 							menus[1].func = function(){
 								music.resetMusic('Audio/menuRemix');
-								//music.playMusic('Audio/mainBGM');
+								music.playMusic('Audio/mainBGM');
 								if(!modelInitialized){
 									model.initialize();
 									cancelNextRequest = false;
@@ -545,7 +547,7 @@ Game.menu = (function(music, input, model){
 						menus[4].menuItem[0] = previous;
 						menus[4].menuItem[1].text.text = 'Quit';
 						music.resetMusic('Audio/menuRemix');
-						//music.playMusic('Audio/mainBGM');
+						music.playMusic('Audio/mainBGM');
 						if(!modelInitialized){
 							model.initialize();
 							cancelNextRequest = false;

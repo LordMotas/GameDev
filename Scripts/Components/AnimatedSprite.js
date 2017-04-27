@@ -25,7 +25,8 @@ Game.components.AnimatedSprite = function(spec) {
 			get center() { return spec.spriteCenter; },
 			set center(value) {spec.spriteCenter = value; },
 			get sprite() { return spec.sprite; },
-			set spriteSheet(value) { spec.spriteSheet = value; }
+			set spriteSheet(value) { spec.spriteSheet = value; },
+			set size(value) { spec.spriteSize = value; }
 		};
 
 	//

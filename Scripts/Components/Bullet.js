@@ -19,6 +19,9 @@ Game.components.Bullet = function(spec){
 		get particleType() { return spec.particleType; }
 	};
 
+	that.isBullet = true;
+	that.isPlayer = false;
+
 	that.intersects = function(other){
 		return(entity.intersects(other));
 	}
@@ -28,7 +31,10 @@ Game.components.Bullet = function(spec){
 		entity.update(elapsedTime);
 		spec.sprite.center.y = entity.center.y;
 		spec.sprite.center.x = entity.center.x;
-		if(spec.center.y < -0.001 || spec.center.x > 1.001 || spec.center.x < -0.001 || spec.center.y > 1.001){
+		if(spec.center.y < 0.0 - spec.radius || 
+			spec.center.x > 1.0 + spec.radius ||
+			spec.center.x < 0.0 - spec.radius ||
+			spec.center.y > 1.0 + spec.radius){
 			return true;
 		} else {
 			return false;

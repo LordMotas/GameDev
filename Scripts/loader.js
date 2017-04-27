@@ -3,6 +3,7 @@ var Game = {
 	components: {},
 	renderer: {},
 	assets: {},
+	utilities: {},
 },
 myKeyboard,
 cancelNextRequest = false,
@@ -12,7 +13,8 @@ powerLevel = 0.0,
 pointLevel = 49,
 playerLives = 3,
 extendArray = [50, 125, 250, 300, 450],
-extendIterator = 0;
+extendIterator = 0,
+background = {};
 
 //------------------------------------------------------------------
 //
@@ -25,7 +27,7 @@ extendIterator = 0;
 Game.loader = (function() {
 	'use strict';
 	var scriptOrder = [{
-			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player', 'Components/Item'],
+			scripts: ['Components/Bullet', 'Components/AnimatedSprite', 'Components/Circle', 'Components/Enemy', 'Components/Entity', 'Components/Player', 'Components/Item', 'Components/QuadTree'],
 			message: 'Components loaded',
 			onComplete: null
 		}, {
@@ -37,8 +39,8 @@ Game.loader = (function() {
 			message: 'Particles loaded',
 			onComplete: null
 		}, {
-			scripts: ['Utilities/Random'],
-			message: 'Random loaded',
+			scripts: ['Utilities/Random', 'Utilities/Math'],
+			message: 'Utilities loaded',
 			onComplete: null
 		}, {
 			scripts: ['Input/Keyboard', ],

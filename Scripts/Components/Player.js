@@ -37,6 +37,9 @@ Game.components.Player = function(spec){
 				get particleType() { return spec.particleType; }
 			};
 
+		that.isPlayer = true;
+		that.isBullet = false;
+
 	//Inherits character info
 	var entity = Game.components.Entity(spec);
 	var graze = Game.components.Entity({
@@ -98,7 +101,13 @@ Game.components.Player = function(spec){
 			Game.music.playRepeatedSounds('Audio/se_shot');
 			var bulletSet = [];
 			if(spec.isFocused){
-				if(powerLevel >= 0.0){
+				if(powerLevel >= 0.0 && powerLevel < 1.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x, y : spec.center.y - 0.05}
+					});
+				}
+				else if(powerLevel >= 1.0 && powerLevel < 2.0){
 					bulletSet.push({
 						direction : {x : 0.0, y : -0.75},
 						center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
@@ -108,7 +117,11 @@ Game.components.Player = function(spec){
 						center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
 					});
 				}
-				if(powerLevel >= 1.0){
+				else if(powerLevel >= 2.0 && powerLevel < 3.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x, y : spec.center.y - 0.05}
+					});
 					bulletSet.push({
 						direction : {x : 0.0, y : -0.75},
 						center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
@@ -118,7 +131,15 @@ Game.components.Player = function(spec){
 						center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
 					});
 				}
-				if(powerLevel >= 2.0){
+				else if(powerLevel >= 3.0 && powerLevel < 4.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.01, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.01, y : spec.center.y - 0.05}
+					});
 					bulletSet.push({
 						direction : {x : 0.0, y : -0.75},
 						center : {x : spec.center.x + 0.03, y : spec.center.y - 0.05}
@@ -128,7 +149,19 @@ Game.components.Player = function(spec){
 						center : {x : spec.center.x - 0.03, y : spec.center.y - 0.05}
 					});
 				}
-				if(powerLevel >= 3.0){
+				else if(powerLevel >= 4.0){
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x + 0.02, y : spec.center.y - 0.05}
+					});
+					bulletSet.push({
+						direction : {x : 0.0, y : -0.75},
+						center : {x : spec.center.x - 0.02, y : spec.center.y - 0.05}
+					});
 					bulletSet.push({
 						direction : {x : 0.0, y : -0.75},
 						center : {x : spec.center.x + 0.04, y : spec.center.y - 0.05}
@@ -136,16 +169,6 @@ Game.components.Player = function(spec){
 					bulletSet.push({
 						direction : {x : 0.0, y : -0.75},
 						center : {x : spec.center.x - 0.04, y : spec.center.y - 0.05}
-					});
-				}
-				if(powerLevel >= 4.0){
-					bulletSet.push({
-						direction : {x : 0.0, y : -0.75},
-						center : {x : spec.center.x + 0.05, y : spec.center.y - 0.05}
-					});
-					bulletSet.push({
-						direction : {x : 0.0, y : -0.75},
-						center : {x : spec.center.x - 0.05, y : spec.center.y - 0.05}
 					});
 				}
 			} else {
@@ -212,7 +235,9 @@ Game.components.Player = function(spec){
 						animationScale: spec.animationScale,
 						spriteSize: {width: 0.05, height: 0.05},			// Maintain the size on the sprite
 						spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
-						})
+					}),
+					isPlayerBullet : true,
+					isEnemyBullet : false,
 				});
 				bullet.isAnimated = true;
 				bulletArray.push(bullet);
@@ -303,16 +328,6 @@ Game.components.Player = function(spec){
 		setTimeout(function(){entity.center = {x: 0.5, y: 0.95};entity.sprite.center = {x: 0.5, y: 0.95};}, 1000);
 	}
 
-	/*that.gameOverAnimation = function(){
-		//Sound effect here
-		Game.music.playSound('Audio/se_pldead00');
-		//Play the animation particle thing
-
-		//Remove the player sprite from the board
-		entity.center = {x: 500, y: 500};
-		entity.sprite.center = {x: 500, y: 500};
-	}*/
-
 	entity.sprite = Game.components.AnimatedSprite({
 		spriteSheet: Game.assets['animated-byakuren-standard'],
 		spriteCount: 8,
@@ -332,13 +347,6 @@ Game.components.Player = function(spec){
 		spriteSize: spec.size,			// Maintain the size on the sprite
 		spriteCenter: spec.center		// Maintain the center on the sprite
 	});
-
-	//Attempt to implement particle effect when player dies,
-	//but I think this would only make a single particle as a sprite
-	//in place of the player
-	death = Game.components.AnimatedSprite
-
-
 
 	focus1.isAnimated = true;
 

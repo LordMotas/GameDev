@@ -32,6 +32,7 @@ Game.music = (function(){
 		//Enemy firing bullets
 		Game.sounds['Audio/se_tan0'] = loadSound('Audio/se_tan00.wav');
 		//Enemy taking damage
+		Game.sounds['Audio/se_damage00'] = loadSound('Audio/se_damage00.wav');
 		Game.sounds['Audio/se_damage01'] = loadSound('Audio/se_damage01.wav');
 		//Player death sound
 		Game.sounds['Audio/se_pldead00'] = loadSound('Audio/se_pldead00.wav');
