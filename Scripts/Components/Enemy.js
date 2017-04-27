@@ -32,6 +32,7 @@ Game.components.Enemy = function(spec){
 			get bullets() { return bulletArray; },
 			get health() { return spec.health; },
 			get points() { return spec.points; },
+			get particleType() { return spec.particleType; }
 			get itemType() { return spec.itemType; },
 			set itemType(value) { spec.itemType = value; },
 			get isBoss() { return spec.isBoss; },
