@@ -16,11 +16,14 @@ Game.components.Bullet = function(spec){
 		set direction(value) {spec.direction = value; },
 		get isGraze() { return entity.isGraze; },
 		set isGraze(value) { entity.isGraze = value; },
-		get particleType() { return spec.particleType; }
+		get particleType() { return spec.particleType; },
+		get entity() { return entity; },
+		get isPlayer() { return false; },
+		get isBullet() { return true; },
+		get isGraze() { return false; }
 	};
 
-	that.isBullet = true;
-	that.isPlayer = false;
+	that.hasBeenGrazed = true;
 
 	that.intersects = function(other){
 		return(entity.intersects(other));
@@ -31,7 +34,7 @@ Game.components.Bullet = function(spec){
 		entity.update(elapsedTime);
 		spec.sprite.center.y = entity.center.y;
 		spec.sprite.center.x = entity.center.x;
-		if(spec.center.y < 0.0 - spec.radius || 
+		if(spec.center.y < 0.0 - spec.radius ||
 			spec.center.x > 1.0 + spec.radius ||
 			spec.center.x < 0.0 - spec.radius ||
 			spec.center.y > 1.0 + spec.radius){

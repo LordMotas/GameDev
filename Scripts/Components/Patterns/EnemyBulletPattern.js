@@ -36,8 +36,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 						}),
-						isPlayerBullet : false,
-						isEnemyBullet : true,
+						hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -69,8 +68,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -102,8 +100,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -139,8 +136,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -175,8 +171,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.1, height: 0.1},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -211,8 +206,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -246,8 +240,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.1, height: 0.1},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -265,8 +258,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -284,8 +276,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -321,8 +312,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -357,8 +347,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -379,8 +368,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -401,8 +389,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.1, height: 0.1},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -439,8 +426,7 @@ Game.components.EnemyBulletPattern = function(spec){
 							spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 							spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 							}),
-							isPlayerBullet : false,
-							isEnemyBullet : true,
+							hasBeenGrazed: true,
 					});
 					bullet.isAnimated = true;
 					bulletArray.push(bullet);
@@ -481,8 +467,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.075, height: 0.075},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -500,8 +485,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.03, height: 0.03},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);
@@ -519,8 +503,7 @@ Game.components.EnemyBulletPattern = function(spec){
 								spriteSize: {width: 0.015, height: 0.015},			// Maintain the size on the sprite
 								spriteCenter: {x: bulletSet[index].center.x, y: bulletSet[index].center.y}		// Maintain the center on the sprite
 								}),
-								isPlayerBullet : false,
-								isEnemyBullet : true,
+								hasBeenGrazed: true,
 						});
 						bullet.isAnimated = true;
 						bulletArray.push(bullet);

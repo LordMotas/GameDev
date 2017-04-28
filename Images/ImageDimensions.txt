@@ -1,8 +1,0 @@
-All Small Circle Images:
-Height & Width: 0.015
-
-All Large Circle Images:
-Height & Width: 0.03
-
-All Normal Circle Images:
-Height & Width: 0.75
